@@ -1,68 +1,236 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import "tailwindcss";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@theme {
+  /* Arrivio Brand Palette — matches B2C tailwind.config.js */
+  --color-arrivio-green: #0f4c3a;
+  --color-arrivio-beige: #f2f2f2;
+  --color-arrivio-accent: #186b53;
+  --color-arrivio-dark: #0a3a2b;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  /* Semantic aliases (kept for existing B2B component usage) */
+  --color-primary-green: #0f4c3a;
+  --color-primary-green-light: #186b53;
+  --color-background-neutral: #f2f2f2;
+  --color-surface-white: #ffffff;
+  --color-text-dark: #111827;
+  --color-text-muted: #4b5563;
+  --color-border-light: #e5e7eb;
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  /* Typography — matches B2C */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Playfair Display', serif;
+  --font-heading: 'IBM Plex Sans', sans-serif;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color-scheme: light;
+    color: var(--color-text-dark);
+    background-color: var(--color-background-neutral);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  a:hover {
-    color: #747bff;
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
   }
-  button {
-    background-color: #f9f9f9;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
   }
+}
+
+/* Subtle animations & utilities */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-slide-up {
+  opacity: 0;
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(-5%); }
+  50% { transform: translateY(5%); }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 4s infinite ease-in-out;
+}
+
+@keyframes gradient-x {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+}
+
+/* Skeleton shimmer — matches B2C */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 100%);
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.stagger-1 { animation-delay: 100ms; }
+.stagger-2 { animation-delay: 200ms; }
+.stagger-3 { animation-delay: 300ms; }
+.stagger-4 { animation-delay: 400ms; }
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Invisible scrollbar utility — matches B2C */
+.custom-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Arrivio themed scrollbar — matches B2C */
+.arrivio-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 76, 58, 0.15) transparent;
+}
+
+.arrivio-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.arrivio-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.arrivio-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(15, 76, 58, 0.15);
+  border-radius: 999px;
+}
+
+.arrivio-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 76, 58, 0.3);
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide navbar when map is fullscreen on mobile */
+body.mobile-map-open nav,
+body.mobile-map-open [data-mobile-nav] {
+  display: none !important;
+}
+
+/* Map pin styles — matches B2C */
+.price-pin {
+  background: transparent;
+  border: none;
+}
+
+.pin-bubble {
+  background-color: #FFFFFF;
+  color: #0f4c3a;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-family: sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: all 0.2s ease-out;
+}
+
+.pin-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #FFFFFF;
+}
+
+.pin-bubble.selected {
+  background-color: #0f4c3a;
+  color: #FFFFFF;
+  transform: scale(1.2) translateY(-4px);
+  z-index: 9999 !important;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+}
+
+.pin-bubble.selected::after {
+  border-top-color: #0f4c3a;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-radius: 4px;
+  padding: 0 6px !important;
+  font-size: 9px !important;
+  color: #666 !important;
+  margin-right: 20px !important;
+  margin-bottom: 10px !important;
+  text-decoration: none !important;
 }
