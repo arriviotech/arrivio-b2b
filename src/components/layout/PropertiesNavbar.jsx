@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingBag, User, Search, X } from 'lucide-react';
+import { Heart, ClipboardList, User, Search, X } from 'lucide-react';
 import greenLogo from '../../assets/greenlogo.png';
 import { useWishlist } from '../../context/WishlistContext';
 import { useReservation } from '../../context/ReservationContext';
@@ -68,13 +68,13 @@ const PropertiesNavbar = ({ searchTerm = '', onSearchChange, isHidden = false })
             <WishlistDropdown isOpen={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
           </div>
 
-          {/* Overview */}
+          {/* Proposal */}
           <button
-            onClick={() => navigate('/overview')}
+            onClick={() => navigate('/proposal')}
             className="hidden md:flex items-center gap-2 border border-[#ddd] bg-white rounded-full px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest text-[#111827] hover:bg-[#f7f7f7] transition-all duration-300 relative"
           >
-            <ShoppingBag size={14} />
-            Overview
+            <ClipboardList size={14} />
+            Proposal
             {totalUnits > 0 && (
               <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#0f4c3a] text-[10px] font-bold text-white">
                 {totalUnits}

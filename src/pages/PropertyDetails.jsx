@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import PropertiesNavbar from '../components/layout/PropertiesNavbar';
 import Footer from '../components/layout/Footer';
 import { useProperty } from '../supabase/hooks/useProperty';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, SearchX, ArrowRight } from 'lucide-react';
 import PropertyInfo from '../components/propertydetails/PropertyInfo';
 import StudioSection from '../components/propertydetails/StudioSection';
 import SharedSection from '../components/propertydetails/SharedSection';
@@ -17,8 +17,11 @@ const PropertyDetails = () => {
     return (
       <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#f2f2f2]">
         <PropertiesNavbar />
-        <main className="flex-grow pt-32 pb-24 flex items-center justify-center">
-          <Loader2 size={32} className="animate-spin text-[#0f4c3a]" />
+        <main className="flex-grow pt-40 pb-32 flex items-center justify-center px-6">
+          <div className="text-center">
+            <Loader2 size={44} className="animate-spin text-[#0f4c3a] mx-auto mb-5" />
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Loading property…</p>
+          </div>
         </main>
         <Footer />
       </div>
@@ -29,8 +32,32 @@ const PropertyDetails = () => {
     return (
       <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#f2f2f2]">
         <PropertiesNavbar />
-        <main className="flex-grow pt-32 pb-24 flex items-center justify-center">
-          <div className="text-xl">Property not found.</div>
+        <main className="flex-grow pt-40 pb-32 flex items-center justify-center px-6">
+          <div className="bg-white rounded-3xl p-10 md:p-14 text-center shadow-sm border border-gray-100 max-w-md w-full">
+            <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+              <SearchX className="w-10 h-10 text-red-400" />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-serif font-medium text-gray-900 mb-3">Property not found</h1>
+            <p className="text-gray-500 mb-8 max-w-sm mx-auto">
+              We couldn't find this property. It may have been removed, or the link is incorrect.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                to="/properties"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#0f4c3a] hover:bg-[#1A2E22] text-white px-6 py-3 rounded-xl text-sm font-bold transition-all"
+              >
+                Browse Properties
+                <ArrowRight size={14} />
+              </Link>
+              <button
+                onClick={() => navigate(-1)}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-xl text-sm font-bold transition-all"
+              >
+                <ArrowLeft size={14} />
+                Go Back
+              </button>
+            </div>
+          </div>
         </main>
         <Footer />
       </div>
@@ -51,7 +78,7 @@ const PropertyDetails = () => {
     const cheapest = Math.min(...oneBedUnits.flatMap(u => (u.unit_pricing_rules || []).map(p => p.monthly_rent_cents)));
     sharedOptions.push({
       title: "1-Bedroom Apartment",
-      description: `${oneBedUnits.length} available — 1 bedroom apartment`,
+      description: "Full apartment with one private bedroom",
       price: cheapest > 0 ? cheapest / 100 : property.price,
       units: oneBedUnits,
     });
@@ -61,7 +88,7 @@ const PropertyDetails = () => {
     const cheapest = Math.min(...twoBedUnits.flatMap(u => (u.unit_pricing_rules || []).map(p => p.monthly_rent_cents)));
     sharedOptions.push({
       title: "2-Bedroom Apartment",
-      description: `${twoBedUnits.length} available — 2 bedroom apartment`,
+      description: "Full apartment with two private bedrooms",
       price: cheapest > 0 ? cheapest / 100 : property.price + 200,
       units: twoBedUnits,
     });
@@ -71,7 +98,7 @@ const PropertyDetails = () => {
     const cheapest = Math.min(...sharedUnits.flatMap(u => (u.unit_pricing_rules || []).map(p => p.monthly_rent_cents)));
     sharedOptions.push({
       title: "Shared Room",
-      description: `${sharedUnits.length} available — shared room`,
+      description: "Private bedroom with shared common areas",
       price: cheapest > 0 ? cheapest / 100 : property.price - 100,
       units: sharedUnits,
     });

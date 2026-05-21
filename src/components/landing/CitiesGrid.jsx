@@ -73,7 +73,7 @@ const LocationsSection = () => {
   };
 
   return (
-    <section className="py-24 bg-[#f8f9fa] relative overflow-hidden" id="locations">
+    <section className="py-24 bg-[#f4f7f6] relative overflow-hidden" id="cities">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -86,7 +86,7 @@ const LocationsSection = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-5xl font-serif font-bold text-[#2C3E30] mb-6 leading-tight">
+              <h2 className="text-3xl md:text-5xl font-serif font-bold text-[#0f4c3a] mb-6 leading-tight">
                 Explore our <br />
                 <span className="italic text-[#D4A017]">prime locations</span>
               </h2>
@@ -105,8 +105,8 @@ const LocationsSection = () => {
                   className={`
                     px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-between group border
                     ${activeCityId === city.id
-                      ? 'bg-[#2C3E30] text-white border-[#2C3E30] shadow-lg scale-105'
-                      : 'bg-white border-gray-200 text-[#2C3E30]/70 hover:border-[#2C3E30]/30 hover:bg-white/50'
+                      ? 'bg-[#0f4c3a] text-white border-[#0f4c3a] shadow-lg scale-105'
+                      : 'bg-white border-gray-200 text-[#0f4c3a]/70 hover:border-[#0f4c3a]/30 hover:bg-white/50'
                     }
                   `}
                 >
@@ -114,7 +114,7 @@ const LocationsSection = () => {
                     {activeCityId === city.id && <Sparkles size={14} className="animate-pulse text-[#D4A017]" />}
                     {city.name}
                   </span>
-                  <span className={`text-[10px] font-bold uppercase tracking-wider ${activeCityId === city.id ? 'text-white/60' : 'text-[#2C3E30]/40'}`}>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider ${activeCityId === city.id ? 'text-white/60' : 'text-[#0f4c3a]/40'}`}>
                     {city.count} homes
                   </span>
                 </button>

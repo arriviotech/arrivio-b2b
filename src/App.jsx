@@ -4,13 +4,12 @@ import Landing from './pages/Landing';
 import Properties from './pages/Properties';
 import PropertyDetails from './pages/PropertyDetails';
 import UnitDetails from './pages/UnitDetails';
-import Overview from './pages/Overview';
-import Dashboard from './pages/hrdashboard/Dashboard';
+import Proposal from './pages/Proposal';
+import Dashboard from './pages/dashboard/Dashboard';
 import MeetingSchedule from './pages/MeetingSchedule';
 import Profile from './pages/account/Profile';
-import Shortlist from './pages/account/Shortlist';
 import Help from './pages/account/Help';
-import Bookings from './pages/account/Bookings';
+import Shortlist from './pages/Shortlist';
 import { ReservationProvider } from './context/ReservationContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { ModalProvider } from './context/ModalContext';
@@ -43,13 +42,12 @@ function App() {
               <Route path="/properties" element={<Properties />} />
               <Route path="/property/:slug" element={<PropertyDetails />} />
               <Route path="/property/:slug/unit/:unitId" element={<UnitDetails />} />
-              <Route path="/overview" element={<Overview />} />
+              <Route path="/proposal" element={<Proposal />} />
+              <Route path="/shortlist" element={<Shortlist />} />
               <Route path="/schedule" element={<MeetingSchedule />} />
               <Route path="/dashboard/*" element={<Dashboard />} />
               <Route path="/account/profile" element={<Profile />} />
-              <Route path="/account/shortlist" element={<Shortlist />} />
               <Route path="/account/help" element={<Help />} />
-              <Route path="/account/bookings" element={<Bookings />} />
               <Route path="/imprint" element={<Imprint />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />

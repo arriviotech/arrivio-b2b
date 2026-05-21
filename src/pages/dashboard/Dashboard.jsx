@@ -8,6 +8,8 @@ import Employee from './Employee';
 import Billing from './Billing';
 import Invoices from './Invoices';
 import Payments from './Payments';
+import Contracts from './Contracts';
+import Team from './Team';
 
 const Dashboard = () => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -24,7 +26,9 @@ const Dashboard = () => {
                     <Route index element={<DashboardHome />} />
                     <Route path="properties" element={<DashboardProperties />} />
                     <Route path="properties/:id" element={<DashboardPropertyDetails />} />
+                    <Route path="contracts" element={<Contracts />} />
                     <Route path="employees" element={<Employee />} />
+                    <Route path="team" element={<Team />} />
                     <Route path="billing" element={<Billing />} />
                     <Route path="invoices" element={<Invoices />} />
                     <Route path="payments" element={<Payments />} />

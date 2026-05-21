@@ -215,7 +215,7 @@ const MapView = ({ properties, searchMarker: externalSearchMarker, onSearchMarke
               <Popup closeButton={false} autoPan={false} className="property-popup">
                 <div 
                   className="w-[220px] bg-white overflow-hidden shadow-2xl cursor-pointer hover:shadow-3xl transition-shadow duration-300"
-                  onClick={() => navigate(`/property/${p.id}`)}
+                  onClick={() => navigate(`/property/${p.slug || p.id}`)}
                 >
                   <div className="relative h-28 w-full">
                     <img src={p.image} alt={p.name} className="w-full h-full object-cover" />

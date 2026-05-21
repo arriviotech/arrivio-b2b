@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Download } from 'lucide-react';
+import { Handshake, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import HeroVisual from './HeroVisual';
 
@@ -37,8 +37,8 @@ const Hero = () => {
               }} 
               className="flex items-center justify-center gap-2 bg-[#0f4c3a] hover:bg-[#186b53] text-white px-8 py-4 rounded-xl font-medium transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >
+              <Handshake size={22} />
               Partner with Arrivio
-              <ArrowRight size={18} />
             </button>
             <button onClick={() => navigate('/properties')} className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-800 border border-gray-200 px-8 py-4 rounded-xl font-medium transition-all shadow-sm">
               View Properties

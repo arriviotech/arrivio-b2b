@@ -1,17 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { User, Heart, Calendar, HelpCircle, LogOut } from 'lucide-react';
+import { User, HelpCircle, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useWishlist } from '../../context/WishlistContext';
 
 const AccountSidebar = () => {
   const { user, logout } = useAuth();
-  const { wishlist } = useWishlist();
 
   const menuItems = [
     { icon: <User className="w-5 h-5" />, label: 'Profile', path: '/account/profile' },
-    { icon: <Heart className="w-5 h-5" />, label: 'Shortlist', path: '/account/shortlist', badge: wishlist.length },
-    { icon: <Calendar className="w-5 h-5" />, label: 'My Bookings', path: '/account/bookings' },
     { icon: <HelpCircle className="w-5 h-5" />, label: 'Help', path: '/account/help' },
   ];
 

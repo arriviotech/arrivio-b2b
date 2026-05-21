@@ -31,7 +31,7 @@ const Capabilities = () => {
   ];
 
   return (
-    <section id="capabilities" className="py-24 bg-[#f4f7f6]">
+    <section id="platform" className="py-24 bg-[#f4f7f6]">
       <div className="max-w-7xl mx-auto px-6">
 
         <div className="text-center mb-16 max-w-2xl mx-auto">

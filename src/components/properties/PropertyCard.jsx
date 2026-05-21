@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, MapPin, DoorOpen, Ruler, ArrowRight, Home } from 'lucide-react';
+import { Heart, MapPin, DoorOpen, Ruler, ArrowRight, Home, ChevronDown, Zap } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
+import QuickAddBar from '../proposal/QuickAddBar';
 
 const PropertyCard = ({ property }) => {
   const navigate = useNavigate();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
 
   const isWishlisted = isInWishlist(property.id);
 
@@ -14,9 +16,23 @@ const PropertyCard = ({ property }) => {
     toggleWishlist(property);
   };
 
+  const handleQuickAddToggle = (e) => {
+    e.stopPropagation();
+    setIsQuickAddOpen((v) => !v);
+  };
+
   const handleClick = () => {
     navigate(`/property/${property.slug || property.id}`);
   };
+
+  // Unit types present with at least one available unit on this property
+  const UNIT_TYPE_ORDER = ['studio', 'one_bedroom', 'two_bedroom', 'shared_room'];
+  const availableTypes = UNIT_TYPE_ORDER.filter((type) => {
+    const list = (property.units || []).filter(
+      (u) => u.unit_type === type && u.status === 'available'
+    );
+    return list.length > 0;
+  });
 
   const availableCount = property.availableUnits || 0;
   const isAvailable = availableCount > 0;
@@ -135,6 +151,46 @@ const PropertyCard = ({ property }) => {
             View details <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
           </span>
         </div>
+
+        {/* Quick-add toggle + panel — stops propagation from the parent card click */}
+        {availableTypes.length > 0 && (
+          <div className="mt-3" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={handleQuickAddToggle}
+              className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-colors ${
+                isQuickAddOpen
+                  ? 'bg-[#0f4c3a] text-white'
+                  : 'bg-[#0f4c3a]/5 text-[#0f4c3a] hover:bg-[#0f4c3a]/10'
+              }`}
+            >
+              <span className="flex items-center gap-1.5">
+                <Zap size={12} />
+                Quick Add
+              </span>
+              <ChevronDown
+                size={14}
+                className={`transition-transform ${isQuickAddOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+
+            {isQuickAddOpen && (
+              <div className="mt-3 space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                {availableTypes.map((type) => {
+                  const typeUnits = (property.units || []).filter((u) => u.unit_type === type);
+                  return (
+                    <QuickAddBar
+                      key={type}
+                      property={property}
+                      units={typeUnits}
+                      unitTypeKey={type}
+                      compact
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
