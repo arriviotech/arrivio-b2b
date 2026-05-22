@@ -1,6 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Heart, X } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Heart, X, ArrowRight } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
 
 const WishlistDropdown = ({ isOpen, onClose }) => {
@@ -34,13 +34,14 @@ const WishlistDropdown = ({ isOpen, onClose }) => {
             <p className="text-gray-400 text-xs mt-1">Save properties you like</p>
           </div>
         ) : (
+          <>
           <div className="max-h-[320px] overflow-y-auto space-y-3 pr-2 scrollbar-thin">
             {wishlist.map((property) => (
               <div 
                 key={property.id} 
                 className="flex gap-3 items-center group cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors border border-transparent hover:border-gray-100"
                 onClick={() => {
-                  navigate(`/property/${property.id}`);
+                  navigate(`/property/${property.slug || property.id}`);
                   onClose();
                 }}
               >
@@ -67,6 +68,15 @@ const WishlistDropdown = ({ isOpen, onClose }) => {
               </div>
             ))}
           </div>
+          <Link
+            to="/shortlist"
+            onClick={onClose}
+            className="mt-3 flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-[#0f4c3a] hover:bg-[#1A2E22] text-white text-sm font-bold transition-colors"
+          >
+            View All
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          </>
         )}
       </div>
     </>

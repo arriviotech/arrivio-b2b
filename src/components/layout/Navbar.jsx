@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, LayoutDashboard } from 'lucide-react';
+import { Menu, X, User, LayoutDashboard, Calendar } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useModal } from '../../context/ModalContext';
 import { useAuth } from '../../context/AuthContext';
@@ -39,9 +39,8 @@ const Navbar = ({ minimal = false }) => {
   }, [isMobileMenuOpen]);
 
   const landingLinks = [
-    { name: 'How It Works', href: '#how-it-works' },
-    { name: 'Platform', href: '#platform' },
-    { name: 'Cities', href: '#cities' },
+    { name: 'Properties', to: '/properties' },
+    { name: 'How It Works', to: '/how-it-works' },
   ];
 
   return (
@@ -64,15 +63,14 @@ const Navbar = ({ minimal = false }) => {
           {/* CENTER LINKS — truly centered */}
           {!minimal && (
             <div className="hidden md:flex items-center gap-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-              {landingLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="px-6 py-2.5 rounded-full text-[11px] font-medium uppercase tracking-[0.2em] text-[#4b5563] hover:bg-[#0f4c3a]/5 hover:text-[#1A2E22] transition-all duration-300"
-                >
-                  {link.name}
-                </a>
-              ))}
+              {landingLinks.map((link) => {
+                const cls = "px-6 py-2.5 rounded-full text-[11px] font-medium uppercase tracking-[0.2em] text-[#4b5563] hover:bg-[#0f4c3a]/5 hover:text-[#1A2E22] transition-all duration-300";
+                return link.to ? (
+                  <Link key={link.name} to={link.to} className={cls}>{link.name}</Link>
+                ) : (
+                  <a key={link.name} href={link.href} className={cls}>{link.name}</a>
+                );
+              })}
             </div>
           )}
 
@@ -91,13 +89,22 @@ const Navbar = ({ minimal = false }) => {
                   <AccountDropdown />
                 </>
               ) : (
-                <button
-                  onClick={openSignin}
-                  className="flex items-center gap-2 border border-transparent bg-[#0f4c3a] text-[#f2f2f2] rounded-full px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-[#1A2E22] transition-all duration-300"
-                >
-                  <User size={14} />
-                  Sign In
-                </button>
+                <>
+                  <button
+                    onClick={() => navigate('/schedule')}
+                    className="flex items-center gap-2 border border-transparent bg-[#0f4c3a] text-[#f2f2f2] rounded-full px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-[#1A2E22] transition-all duration-300"
+                  >
+                    <Calendar size={14} />
+                    Book a Demo
+                  </button>
+                  <button
+                    onClick={openSignin}
+                    className="flex items-center gap-2 border border-[#ddd] bg-white rounded-full px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest text-[#111827] hover:bg-[#f7f7f7] transition-all duration-300"
+                  >
+                    <User size={14} />
+                    Sign In
+                  </button>
+                </>
               )}
             </div>
           )}
@@ -164,16 +171,15 @@ const MobileDrawer = ({ isOpen, onClose, landingLinks, isLoggedIn, openSignin, n
             {/* Browse */}
             <div className="px-3 py-1">
               <p className="text-[13px] font-bold uppercase tracking-widest text-[#9ca3af] px-3 mb-2">Browse</p>
-              {landingLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={onClose}
-                  className="flex items-center gap-4 px-3 py-3.5 rounded-xl hover:bg-[#f7f7f7] active:bg-[#f2f2f2] transition-colors group"
-                >
-                  <span className="text-[16px] text-[#374151] group-hover:text-[#111827] font-medium">{link.name}</span>
-                </a>
-              ))}
+              {landingLinks.map((link) => {
+                const cls = "flex items-center gap-4 px-3 py-3.5 rounded-xl hover:bg-[#f7f7f7] active:bg-[#f2f2f2] transition-colors group";
+                const label = <span className="text-[16px] text-[#374151] group-hover:text-[#111827] font-medium">{link.name}</span>;
+                return link.to ? (
+                  <Link key={link.name} to={link.to} onClick={onClose} className={cls}>{label}</Link>
+                ) : (
+                  <a key={link.name} href={link.href} onClick={onClose} className={cls}>{label}</a>
+                );
+              })}
             </div>
 
             {/* Dashboard — only when logged in */}
@@ -191,12 +197,19 @@ const MobileDrawer = ({ isOpen, onClose, landingLinks, isLoggedIn, openSignin, n
             )}
           </div>
 
-          {/* Footer — Sign In */}
+          {/* Footer — Book a Demo (primary) + Sign In (secondary) */}
           {!isLoggedIn && (
-            <div className="px-5 py-5 border-t border-[#f2f2f2]">
+            <div className="px-5 py-5 border-t border-[#f2f2f2] space-y-3">
+              <button
+                onClick={() => { onClose(); navigate('/schedule'); }}
+                className="w-full py-3.5 bg-[#0f4c3a] text-white rounded-xl text-base font-bold uppercase tracking-widest active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
+              >
+                <Calendar size={18} />
+                Book a Demo
+              </button>
               <button
                 onClick={() => { onClose(); openSignin(); }}
-                className="w-full py-3.5 bg-[#0f4c3a] text-white rounded-xl text-base font-bold uppercase tracking-widest active:scale-[0.98] transition-transform"
+                className="w-full py-3.5 bg-white text-[#111827] border border-[#ddd] rounded-xl text-base font-bold uppercase tracking-widest active:scale-[0.98] transition-transform"
               >
                 Sign In
               </button>
