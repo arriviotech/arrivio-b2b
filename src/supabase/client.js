@@ -27,15 +27,40 @@ const customStorage = {
   }
 };
 
-export const supabase = createClient(
-  supabaseUrl,
-  supabaseAnonKey,
-  {
-    auth: {
-      storage: customStorage,
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true
+function createUnconfiguredSupabaseClient() {
+  const err = () =>
+    new Error("Supabase is not configured (missing VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY).");
+
+  const builder = new Proxy(
+    {},
+    {
+      get(_target, prop) {
+        if (prop === "then") {
+          return (resolve) => resolve({ data: null, error: err() });
+        }
+        if (prop === "single") {
+          return () => builder;
+        }
+        return () => builder;
+      },
     }
-  }
-);
+  );
+
+  return {
+    from() {
+      return builder;
+    },
+  };
+}
+
+export const supabase =
+  supabaseUrl && supabaseAnonKey
+    ? createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          storage: customStorage,
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: true,
+        },
+      })
+    : createUnconfiguredSupabaseClient();

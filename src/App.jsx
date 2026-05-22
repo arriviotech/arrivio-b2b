@@ -23,6 +23,7 @@ import DetailedHowItWorks from './pages/DetailedHowItWorks';
 import NotFound from './pages/NotFound';
 import { useModal } from './context/ModalContext';
 import ScrollToTop from './components/ScrollToTop';
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const ModalOrchestrator = () => {
   const { isSigninOpen, closeSignin } = useModal();
@@ -38,26 +39,28 @@ function App() {
           <BrowserRouter>
             <ScrollToTop />
             <ModalOrchestrator />
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/properties" element={<Properties />} />
-              <Route path="/property/:slug" element={<PropertyDetails />} />
-              <Route path="/property/:slug/unit/:unitId" element={<UnitDetails />} />
-              <Route path="/overview" element={<Overview />} />
-              <Route path="/schedule" element={<MeetingSchedule />} />
-              <Route path="/dashboard/*" element={<Dashboard />} />
-              <Route path="/account/profile" element={<Profile />} />
-              <Route path="/account/shortlist" element={<Shortlist />} />
-              <Route path="/account/help" element={<Help />} />
-              <Route path="/account/bookings" element={<Bookings />} />
-              <Route path="/imprint" element={<Imprint />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/how-it-works" element={<DetailedHowItWorks />} />
+            <ErrorBoundary>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/properties" element={<Properties />} />
+                <Route path="/property/:slug" element={<PropertyDetails />} />
+                <Route path="/property/:slug/unit/:unitId" element={<UnitDetails />} />
+                <Route path="/overview" element={<Overview />} />
+                <Route path="/schedule" element={<MeetingSchedule />} />
+                <Route path="/dashboard/*" element={<Dashboard />} />
+                <Route path="/account/profile" element={<Profile />} />
+                <Route path="/account/shortlist" element={<Shortlist />} />
+                <Route path="/account/help" element={<Help />} />
+                <Route path="/account/bookings" element={<Bookings />} />
+                <Route path="/imprint" element={<Imprint />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/how-it-works" element={<DetailedHowItWorks />} />
 
-              {/* Catch-all route for undefined pages */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                {/* Catch-all route for undefined pages */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </ErrorBoundary>
           </BrowserRouter>
         </ModalProvider>
         </AuthProvider>

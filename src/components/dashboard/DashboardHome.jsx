@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import Status from './Status';
 import { Search, ArrowUpDown } from 'lucide-react';
+import ServicesStrip from '../services/ServicesStrip';
+import RecentServiceOrders from '../services/RecentServiceOrders';
 
 const DashboardHome = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -104,19 +106,25 @@ const DashboardHome = () => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 min-h-[400px]">
-                <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-xl font-bold tracking-tight">Recent Activity</h2>
-                </div>
-                <div className="flex flex-col items-center justify-center h-48 text-gray-400">
-                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                        <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+            <ServicesStrip />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-gray-100 min-h-[320px]">
+                    <div className="flex justify-between items-center mb-8">
+                        <h2 className="text-xl font-bold tracking-tight">Recent Activity</h2>
                     </div>
-                    <p className="font-medium text-gray-500">No recent activity to display</p>
-                    <p className="text-sm mt-1">Activity will appear here as you manage reservations.</p>
+                    <div className="flex flex-col items-center justify-center h-48 text-gray-400">
+                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                            <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <p className="font-medium text-gray-500">No recent activity to display</p>
+                        <p className="text-sm mt-1">Activity will appear here as you manage reservations.</p>
+                    </div>
                 </div>
+
+                <RecentServiceOrders />
             </div>
         </div>
     );
