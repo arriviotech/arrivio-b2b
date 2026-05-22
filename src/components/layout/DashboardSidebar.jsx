@@ -84,6 +84,11 @@ const DashboardSidebar = ({ isCollapsed, toggleSidebar }) => {
                             {!isCollapsed && <span>Employees</span>}
                             {isCollapsed && <Tooltip text="Employees" />}
                         </NavLink>
+                        <NavLink to="/dashboard/services" className={navLinkClass}>
+                            <Folder className="w-5 h-5 min-w-[20px]" />
+                            {!isCollapsed && <span>Services</span>}
+                            {isCollapsed && <Tooltip text="Services" />}
+                        </NavLink>
                         <NavLink to="/dashboard/team" className={navLinkClass}>
                             <UserCog className="w-5 h-5 min-w-[20px]" />
                             {!isCollapsed && <span>Team</span>}

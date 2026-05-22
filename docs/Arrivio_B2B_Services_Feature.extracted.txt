@@ -1,0 +1,441 @@
+===== PAGE 1 =====
+
+Arrivio B2B — Services Feature
+Implementation Speciﬁcation for Codex
+Prepared by: Arrivio Dev Team Date: May 21, 2026 Status: Ready for Implementation Version:
+MVP v1.0
+Table of Contents
+1. Overview
+2. Tech Stack
+3. Before You Write Any Code
+4. Visual Reference
+5. Navigation Changes
+6. Services Catalogue
+7. Screen Speciﬁcations
+7.1 Dashboard Services Strip
+7.2 Full Services Page
+7.3 Request Modal
+7.4 My Orders Tab
+8. Service Bundles
+9. Backend Requirements
+10. Database Schema
+11. API Endpoints
+12. TBD / Post-MVP
+1. Overview
+Add a Services feature to the Arrivio B2B Partner Platform. This allows HR admins and company
+administrators to browse, request, and track relocation services for their employees — either
+individually or in bulk.
+The feature is inspired by the existing B2C services ﬂow (see Section 4 — Visual Reference) but
+adapted speciﬁcally for B2B use cases: multi-employee ordering, per-employee customization,
+and centralized order tracking.
+Entry points:
+A Services strip on the main dashboard (quick discovery)
+A Services nav item in the sidebar (primary navigation)
+
+===== PAGE 2 =====
+
+Both lead to the same full Services page.
+2. Tech Stack
+Layer Technology
+Frontend Framework React 19 + Vite
+Styling Tailwind CSS
+Icons Lucide React
+Animations Framer Motion
+HTTP Client Axios
+Backend Node.js + Express.js
+Database PostgreSQL via Supabase
+Auth Supabase Auth
+Storage Supabase Storage
+3. Before You Write Any Code
+This is the most important section. Read it fully before doing anything else.
+This feature is being added to an existing B2B codebase. Before writing a single line of code,
+Codex must:
+3.1 Read and Understand the Codebase
+Explore the full project structure — understand how folders are organised, where pages
+live, where components live, where API routes are deﬁned
+Read at least 2–3 existing page components to understand the coding style, how state is
+managed, how Axios is used, how props are structured
+Read the existing sidebar/navigation component — understand exactly how nav items
+are added so the new Services item follows the same pattern precisely
+Read the existing dashboard page — understand the layout structure so the Services strip
+is inserted correctly without breaking existing sections
+Read existing modal components if any exist — follow the same pattern for the Request
+Modal
+
+===== PAGE 3 =====
+
+Read existing backend route ﬁles — follow the same structure, middleware usage, error
+handling, and response format already established
+Read existing Supabase schema or migration ﬁles — understand existing table
+structures, naming conventions, and foreign key patterns before creating new tables
+3.2 Follow Existing Conventions — Always
+File naming: match whatever convention is already used (PascalCase, camelCase, kebab-
+case)
+Folder structure: place new ﬁles exactly where similar existing ﬁles are placed
+Component patterns: if existing components use a certain prop pattern, hooks pattern, or
+state management approach — replicate it
+API patterns: match the existing route structure, middleware chain, and response format
+Styling: use the same Tailwind class patterns already used in the codebase — do not
+introduce new design tokens or override existing ones
+Database: follow the existing table naming conventions, column naming style, and foreign
+key references
+3.3 Do Not Assume
+Do not assume folder paths — read the codebase ﬁrst
+Do not assume table names — check existing Supabase schema ﬁrst
+Do not assume how auth/session works — read existing authenticated routes ﬁrst
+Do not assume how company_id or employee_id is stored — read existing data models
+ﬁrst
+4. Visual Reference
+The following screenshots are attached to this document and should be used as functional
+reference only — not as a design template. The B2B implementation must follow the B2B
+platform's existing design language, not the B2C design.
+Attached Screenshots
+Screenshot What it shows
+screenshot-1-
+dashboard.png
+B2C dashboard with the Popular Services strip — reference for strip
+placement and card layout concept
+screenshot-2-services-
+page.png
+B2C full services page — reference for category ﬁlters, service cards
+grid, and Browse/My Orders toggle
+
+===== PAGE 4 =====
+
+Screenshot What it shows
+screenshot-3-request-
+modal.png
+B2C request modal — reference for the modal's functional elements
+(quantity, special requests, conﬁrm)
+screenshot-4-my-
+orders.png
+B2C My Orders tab — reference for order list layout, status badges,
+and tab structure
+How to Use These Screenshots
+Use them to understand what each screen should do and what elements it should contain
+Do not copy the B2C visual style — colours, fonts, spacing, and component shapes must
+match the existing B2B platform
+The B2B platform uses a dark sidebar, white content area, and Arrivio green as the primary
+accent — stay consistent with that
+5. Navigation Changes
+Current Sidebar Structure
+Updated Sidebar Structure
+MENU
+- Dashboard
+- Properties
+- Employees
+FINANCIAL
+- Billing
+- Invoices
+- Payments
+MENU
+- Dashboard
+- Properties
+- Employees
+- Services        ← ADD THIS
+FINANCIAL
+- Billing
+- Invoices
+- Payments
+
+===== PAGE 5 =====
+
+Implementation notes:
+Read the existing sidebar component before making changes
+Follow the exact same pattern used to add existing nav items (icon, label, route, active state)
+Use a relevant Lucide icon (suggestion: Briefcase or ShoppingBag — choose whichever
+ﬁts better visually)
+Route: follow the existing routing convention in the codebase (e.g. /dashboard/services
+or whatever pattern is used)
+Active state must match the existing sidebar active item style exactly
+6. Services Catalogue
+These are the 7 services available in MVP. Pricing is placeholder and will be updated by the
+Arrivio team before go-live.
+# Service Name Category Placeholder
+Price
+Description
+1 Airport Pickup Transport €89 Private transfer from any German airport to the
+employee's new address
+2 Housing Housing €199 Assisted housing search and placement support
+for relocating employees
+3 Bank Account Banking €29 Guided bank account opening appointment at a
+partner bank
+4 Insurance Insurance €49 Health insurance comparison, selection, and
+enrollment support
+5 SIM Card Connectivity €15 Pre-activated German SIM card with data plan
+delivered to the employee
+6 Anmeldung
+Support
+Legal €39 Assisted appointment booking and guidance for
+oﬃcial German address registration
+7 Tax ID
+Guidance
+Legal €25 Step-by-step support for obtaining the German
+Tax Identiﬁcation Number (Steuer-ID)
+Category Tags
+Transport · Housing · Banking · Insurance · Connectivity · Legal
+
+===== PAGE 6 =====
+
+7. Screen Speciﬁcations
+7.1 Dashboard Services Strip
+Location: Main dashboard page, placed below the stats cards (Active Properties, Total
+Employees, Monthly Spend) and above the Recent Activity section.
+Purpose: Quick discovery of available services. A teaser strip — not the primary entry point.
+What it should contain
+Section heading: "Popular Services"
+Sub-label: "Help your employees settle in faster"
+A "View All →" link on the right of the heading — navigates to the full Services page
+4 service cards in a horizontal row (responsive: 4 columns desktop, 2 tablet, 1 mobile)
+Suggested featured services: Airport Pickup, SIM Card, Bank Account, Anmeldung
+Support
+Each card should show
+Service icon (use an appropriate Lucide icon per service)
+Category tag (small, muted)
+Service name (bold)
+Short description (1 line, truncated if needed)
+Price
+REQUEST button
+Behaviour
+Clicking REQUEST opens the Request Modal for that service
+Clicking anywhere else on the card navigates to the full Services page
+Implementation note
+Read the existing dashboard layout carefully before inserting this section
+Match the heading style used by other dashboard sections (e.g. "Onboarding Status")
+Follow existing card patterns in the codebase if any exist
+7.2 Full Services Page
+Accessible via: Sidebar nav item OR "View All" from dashboard strip
+
+===== PAGE 7 =====
+
+Page Header
+Title: "Services"
+Subtitle: "Everything your employees need to settle into life in Germany"
+Tab Toggle
+Two tabs at the top:
+BROWSE SERVICES (default active)
+MY ORDERS (with a count badge showing active orders if > 0)
+Follow the existing tab/toggle pattern used elsewhere in the B2B codebase.
+Category Filter Bar (Browse Services tab)
+Horizontally scrollable ﬁlter chips:
+ALL (7) · TRANSPORT (1) · HOUSING (1) · BANKING (1) · INSURANCE (1) · CONNECTIVITY
+(1) · LEGAL (2)
+ALL selected by default
+Clicking a category ﬁlters the service cards
+Active ﬁlter: ﬁlled Arrivio green, white text
+Inactive: outlined, muted text
+Service Cards Grid
+3-column grid desktop, 2 tablet, 1 mobile
+Each card: category tag, service icon, service name, description, price, REQUEST button
+Bundles Section
+Below the service cards grid
+Heading: "Relocation Packages"
+Sub-label: "Pre-bundled services for a complete relocation experience"
+Bundle cards (see Section 8)
+7.3 Request Modal
+Triggered when HR admin clicks REQUEST on any service card.
+Modal Header
+Service icon, category tag, service name, description, price
+
+===== PAGE 8 =====
+
+Step 1 — Choose Recipients
+Two options displayed as selectable cards or a segmented control:
+Option A — All Employees
+Order applies to all employees under the company
+Show a count: e.g. "48 employees will receive this service"
+Read how employees are fetched/stored from existing code before implementing
+Option B — Select Speciﬁc Employees
+Searchable multi-select dropdown
+Each employee shown as: [Avatar initial] Full Name · Job Title
+Selected employees shown as removable tags
+Step 2 — Per-Employee Customization
+Only shown when Option B is selected AND more than one employee is chosen.
+A collapsible accordion — one row per selected employee. When expanded, shows a small form
+with ﬁelds relevant to the service:
+Service Fields
+Airport Pickup Pickup date, Pickup time, Flight number (optional)
+Housing Preferred city/area, Move-in date, Duration (months)
+Bank Account Preferred appointment date
+Insurance Coverage preference, Start date
+SIM Card Delivery address
+Anmeldung Support Appointment date preference, Current address
+Tax ID Guidance Preferred contact method
+If HR does not customize a row, default/blank values apply.
+Step 3 — Additional Details
+Quantity stepper (− / number / +)
+Special requests text area (optional)
+Modal Footer
+CANCEL (outlined) and CONFIRM (Arrivio green) buttons
+
+===== PAGE 9 =====
+
+On conﬁrm: success toast, modal closes, My Orders badge updates
+Conﬁrm disabled until a recipient is selected
+Implementation note
+Read existing modal components in the codebase and follow the same pattern
+Do not create a new modal system if one already exists
+7.4 My Orders Tab
+Filters
+1. Status tabs:ACTIVE · DELIVERED · CANCELLED (each with a count badge)
+2. Employee ﬁlter dropdown (right-aligned): All Employees + individual employee names
+Order Row
+Each order shows:
+Service icon
+Service name (bold)
+"For: [Employee Name]" or "For: All Employees"
+Order date
+Price (right-aligned)
+Status badge: PENDING (amber) · ACTIVE (green) · DELIVERED (blue) · CANCELLED (muted)
+Sorted by date descending
+Empty state with a friendly message and CTA to browse services
+MVP Payment Note
+All conﬁrmed orders are created with PENDING status. Payment is handled manually by the
+Arrivio ops team. Do not implement any payment UI for MVP.
+8. Service Bundles
+Pre-deﬁned relocation packages curated by Arrivio. Shown in a dedicated section on the Browse
+Services tab.
+
+===== PAGE 10 =====
+
+MVP Bundles (Placeholder — conﬁrm with Arrivio team before go-live)
+Bundle Name Included Services Placeholder Price
+Starter Pack SIM Card + Bank Account €40
+Relocation Essentials Airport Pickup + Anmeldung Support + SIM Card €130
+Full Relocation Package All 7 services €440
+Bundle Card
+Bundle name, short description
+Included services shown as small icon + name chips
+Bundle price (show savings vs individual if possible)
+REQUEST BUNDLE button
+Bundle Request Flow
+Same modal as individual service request (Section 7.3). Each service in the bundle creates a
+separate order row in My Orders, linked by a shared bundle reference ID.
+Future Enhancement — Phase 2
+Custom bundle builder: allow HR admins to create their own service combinations. Do not
+implement in MVP.
+9. Backend Requirements
+General Instructions
+Read existing Express route ﬁles before creating new ones
+Follow the same middleware, auth veriﬁcation, error handling, and response format already
+in use
+All new routes must be protected — only authenticated users with the correct company role
+can access them
+Orders must always be scoped to the authenticated user's company_id — read how this is
+handled in existing routes
+Required Endpoints
+MethodEndpoint Description
+GET /api/services Fetch all active services
+
+===== PAGE 11 =====
+
+MethodEndpoint Description
+GET /api/services/bundles Fetch all active bundles
+POST /api/orders Create one or more service orders
+GET /api/orders Fetch all orders for the company (ﬁlterable by status,
+employee)
+GET /api/orders/:id Fetch a single order by ID
+PATCH /api/orders/:id/status Update order status (for Arrivio ops/admin use)
+Adjust route paths to match existing API conventions in the codebase.
+10. Database Schema
+General Instructions
+Read existing Supabase migration ﬁles or schema before creating new tables
+Follow existing naming conventions (snake_case assumed but verify)
+Use existing companies and employees table names and foreign key references — do not
+create duplicate tables
+Add RLS (Row Level Security) policies consistent with how existing tables are secured
+New Tables Required
+services
+Stores the service catalogue.
+Columns needed:
+Unique ID (primary key)
+Name
+Description
+Category
+Price
+Icon identiﬁer (maps to a Lucide icon name)
+Active/inactive ﬂag
+Created timestamp
+service_bundles
+Stores pre-deﬁned bundles.
+
+===== PAGE 12 =====
+
+Columns needed:
+Unique ID (primary key)
+Name
+Description
+Total price
+Active/inactive ﬂag
+Created timestamp
+bundle_services (junction table)
+Links bundles to their included services.
+Columns needed:
+Bundle ID (foreign key → service_bundles)
+Service ID (foreign key → services)
+Composite primary key on both
+service_orders
+Stores all placed orders.
+Columns needed:
+Unique ID (primary key)
+Company ID (foreign key → existing companies table)
+Service ID (foreign key → services)
+Bundle reference ID (nullable — groups bundle orders together)
+Employee ID (nullable — NULL means "All Employees", foreign key → existing employees
+table)
+Quantity
+Special requests (text, nullable)
+Custom ﬁelds (JSON — stores per-employee customization data)
+Status (pending / active / delivered / cancelled)
+Ordered timestamp
+Updated timestamp
+11. API Endpoints
+General Response Format
+Follow the exact response format already used in the existing API. Read existing route handlers
+
+===== PAGE 13 =====
+
+to conﬁrm the structure before implementing.
+POST /api/orders — Key Request Fields
+The order creation endpoint must handle:
+service_id — which service is being ordered
+recipient_type — "all" or "specific"
+employee_ids — array of employee IDs (used when recipient_type is "specific")
+quantity — number per employee
+special_requests — optional free text
+custom_fields — object keyed by employee ID, containing per-employee customization
+data
+When recipient_type is "all", the backend should fetch all active employees under the
+company and create an order row for each one (or a single order with a null employee_id —
+decide based on what makes the My Orders view easier to query).
+GET /api/orders — Supported Filters
+status — ﬁlter by order status
+employee_id — ﬁlter by speciﬁc employee
+Pagination (follow existing pagination pattern in the codebase)
+12. TBD / Post-MVP
+The following are intentionally out of scope for MVP. Do not implement. They are documented
+here for future reference.
+
+===== PAGE 14 =====
+
+Item Notes
+Payment ﬂow To be conﬁrmed — consolidated monthly invoice vs direct Stripe/Cashfree
+payment. Add a payment step to the Request Modal once conﬁrmed.
+Bundle deﬁnitions Placeholder bundles in Section 8 need to be conﬁrmed with the Arrivio team
+before go-live.
+Custom bundle
+builder
+Allow HR admins to create their own service combinations. Phase 2 only.
+Employee
+notiﬁcations
+Email / WhatsApp (Twilio) notiﬁcations to employees when a service is ordered
+for them.
+Arrivio Ops order
+management
+Admin-side view to manage and update order statuses across all companies.
+Reporting Service usage analytics per company (total spend on services, most ordered
+services, etc.)
+This document is intended for Codex implementation. Codex must read and understand the
+existing codebase before writing any code, and must follow all existing conventions found there.
+Placeholder values (pricing, bundle deﬁnitions) must be replaced with conﬁrmed ﬁgures before
+production deployment.
