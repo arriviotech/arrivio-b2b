@@ -29,7 +29,7 @@ export default function ServicesStrip() {
       <div className="flex items-center justify-between mb-5">
         <div>
           <h2 className="text-xl font-bold tracking-tight text-gray-900">Popular Services</h2>
-          <p className="text-gray-500 mt-1 text-sm">Quickly request relocation services.</p>
+          <p className="text-gray-500 mt-1 text-sm">Quickly add relocation services.</p>
         </div>
         <NavLink
           to="/dashboard/services"
@@ -42,12 +42,12 @@ export default function ServicesStrip() {
       {loading ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-8 text-gray-500">Loading services...</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {top.map((s) => (
             <ServiceCard
               key={s.id}
               service={s}
-              variant="dashboard"
+              variant="popular"
               onRequest={(svc) => setSelectedService(svc)}
             />
           ))}

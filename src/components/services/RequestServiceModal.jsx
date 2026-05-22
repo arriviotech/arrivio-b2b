@@ -276,7 +276,7 @@ export default function RequestServiceModal({ isOpen, service, onClose, onConfir
     >
         <div
         ref={modalRef}
-        className="relative bg-white w-full max-w-[520px] rounded-2xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative bg-white w-full max-w-[480px] rounded-2xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col max-h-[90vh]"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="p-5 border-b border-gray-100 flex items-center justify-between">
