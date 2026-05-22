@@ -1,14 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Heart, Calendar, HelpCircle, LogOut, Menu } from 'lucide-react';
+import { User, HelpCircle, LogOut, Menu } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useWishlist } from '../../context/WishlistContext';
 
 const AccountDropdown = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
-  const { wishlist } = useWishlist();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -51,33 +49,12 @@ const AccountDropdown = () => {
 
           {/* Menu Items */}
           <div className="py-1">
-            <button 
+            <button
               onClick={() => { navigate('/account/profile'); setIsOpen(false); }}
               className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
             >
               <User className="w-4 h-4 text-gray-400" />
               <span>Profile</span>
-            </button>
-            <button 
-              onClick={() => { navigate('/account/shortlist'); setIsOpen(false); }}
-              className="w-full flex items-center justify-between px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Heart className="w-4 h-4 text-gray-400" />
-                <span>Shortlist</span>
-              </div>
-              {wishlist.length > 0 && (
-                <span className="w-5 h-5 flex items-center justify-center bg-red-500 text-white text-[10px] font-bold rounded-full">
-                  {wishlist.length}
-                </span>
-              )}
-            </button>
-            <button 
-              onClick={() => { navigate('/account/bookings'); setIsOpen(false); }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              <Calendar className="w-4 h-4 text-gray-400" />
-              <span>My Bookings</span>
             </button>
           </div>
 

@@ -14,7 +14,9 @@ import {
     ChevronRight,
     CircleSlash,
     Folder,
-    CheckCircle2
+    CheckCircle2,
+    FileSignature,
+    UserCog
 } from 'lucide-react';
 import greenLogo from '../../assets/whitelogo.png';
 import singleGreen from '../../assets/singlewhite.png';
@@ -72,10 +74,25 @@ const DashboardSidebar = ({ isCollapsed, toggleSidebar }) => {
                             {!isCollapsed && <span className="whitespace-nowrap">Properties</span>}
                             {isCollapsed && <Tooltip text="Properties" />}
                         </NavLink>
+                        <NavLink to="/dashboard/contracts" className={navLinkClass}>
+                            <FileSignature className="w-5 h-5 min-w-[20px]" />
+                            {!isCollapsed && <span>Contracts</span>}
+                            {isCollapsed && <Tooltip text="Contracts" />}
+                        </NavLink>
                         <NavLink to="/dashboard/employees" className={navLinkClass}>
                             <Users className="w-5 h-5 min-w-[20px]" />
                             {!isCollapsed && <span>Employees</span>}
                             {isCollapsed && <Tooltip text="Employees" />}
+                        </NavLink>
+                        <NavLink to="/dashboard/services" className={navLinkClass}>
+                            <Folder className="w-5 h-5 min-w-[20px]" />
+                            {!isCollapsed && <span>Services</span>}
+                            {isCollapsed && <Tooltip text="Services" />}
+                        </NavLink>
+                        <NavLink to="/dashboard/team" className={navLinkClass}>
+                            <UserCog className="w-5 h-5 min-w-[20px]" />
+                            {!isCollapsed && <span>Team</span>}
+                            {isCollapsed && <Tooltip text="Team" />}
                         </NavLink>
                     </div>
                 </div>

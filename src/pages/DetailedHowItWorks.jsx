@@ -181,7 +181,7 @@ const DetailedHowItWorks = () => {
 
   return (
     <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#fdfdfd] selection:bg-[#0f4c3a]/10 overflow-x-hidden">
-      <Navbar minimal />
+      <Navbar />
 
       <main className="flex-grow pt-40 pb-32 relative" ref={containerRef}>
 

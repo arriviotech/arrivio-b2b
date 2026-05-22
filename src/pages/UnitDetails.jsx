@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import PropertiesNavbar from '../components/layout/PropertiesNavbar';
 import Footer from '../components/layout/Footer';
 import { useProperty } from '../supabase/hooks/useProperty';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, SearchX, ArrowRight } from 'lucide-react';
 import UnitGallery from '../components/unitdetails/UnitGallery';
 import UnitStats from '../components/unitdetails/UnitStats';
 import Amenities from '../components/unitdetails/Amenities';
@@ -32,15 +32,16 @@ const UnitDetails = () => {
 
   const [quantity, setQuantity] = useState(existingReservation ? existingReservation.quantity : 0);
   const [isAdded, setIsAdded] = useState(false);
-  const [isShared, setIsShared] = useState(existingReservation ? existingReservation.isShared : false);
-  const [sharedCount, setSharedCount] = useState(existingReservation?.isShared ? existingReservation.sharedCount : 1);
 
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#f2f2f2]">
         <PropertiesNavbar />
-        <main className="flex-grow pt-32 pb-24 flex items-center justify-center">
-          <Loader2 size={32} className="animate-spin text-[#0f4c3a]" />
+        <main className="flex-grow pt-40 pb-32 flex items-center justify-center px-6">
+          <div className="text-center">
+            <Loader2 size={44} className="animate-spin text-[#0f4c3a] mx-auto mb-5" />
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Loading unit details…</p>
+          </div>
         </main>
         <Footer />
       </div>
@@ -51,8 +52,32 @@ const UnitDetails = () => {
     return (
       <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#f2f2f2]">
         <PropertiesNavbar />
-        <main className="flex-grow pt-32 pb-24 flex items-center justify-center">
-          <div className="text-xl">Unit not found.</div>
+        <main className="flex-grow pt-40 pb-32 flex items-center justify-center px-6">
+          <div className="bg-white rounded-3xl p-10 md:p-14 text-center shadow-sm border border-gray-100 max-w-md w-full">
+            <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+              <SearchX className="w-10 h-10 text-red-400" />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-serif font-medium text-gray-900 mb-3">Unit not found</h1>
+            <p className="text-gray-500 mb-8 max-w-sm mx-auto">
+              This unit may have been removed or is no longer available.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                to="/properties"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#0f4c3a] hover:bg-[#1A2E22] text-white px-6 py-3 rounded-xl text-sm font-bold transition-all"
+              >
+                Browse Properties
+                <ArrowRight size={14} />
+              </Link>
+              <button
+                onClick={() => navigate(-1)}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-xl text-sm font-bold transition-all"
+              >
+                <ArrowLeft size={14} />
+                Go Back
+              </button>
+            </div>
+          </div>
         </main>
         <Footer />
       </div>
@@ -83,20 +108,20 @@ const UnitDetails = () => {
     ];
 
   const isStudio = unit.unit_type === 'studio';
-  const isIndividual = unit.unit_type === 'one_bedroom' || unit.unit_type === 'two_bedroom';
 
-  const handleAddToOverview = () => {
+  const handleAddToProposal = () => {
     addReservation({
       propertyId: property.id,
+      propertySlug: property.slug,
       propertyName: property.name,
       propertyCity: property.city,
       propertyNeighborhood: property.neighborhood || property.district,
       propertyImage: property.image,
       unitType: formattedTitle,
+      unitTypeKey: unit.unit_type,
       unitPrice: unitPrice,
       quantity: quantity,
-      isShared: isShared,
-      sharedCount: isShared ? sharedCount : 0
+      maxAvailable: totalAvailable,
     }, !!existingReservation);
 
     setIsAdded(true);
@@ -149,13 +174,7 @@ const UnitDetails = () => {
                 quantity={quantity}
                 setQuantity={setQuantity}
                 isAdded={isAdded}
-                handleAddToOverview={handleAddToOverview}
-                isIndividual={isIndividual}
-                isShared={isShared}
-                setIsShared={setIsShared}
-                sharedCount={sharedCount}
-                setSharedCount={setSharedCount}
-                property={property}
+                handleAddToProposal={handleAddToProposal}
                 existingReservation={!!existingReservation}
               />
             </div>
