@@ -6,6 +6,8 @@ import { useReservation } from '../context/ReservationContext';
 import { ArrowLeft, Building2, Plane, Search, Landmark, ShieldCheck, Smartphone, FileText, Receipt, Check, Minus, Plus, X } from 'lucide-react';
 import { generateNativePDF } from '../components/proposal/Pdf';
 import Summary from '../components/proposal/Summary';
+import { useArixDesigner } from '../context/ArixDesignerContext';
+import ArixDesignerStep from '../components/arix/ArixDesignerStep';
 import PropertyCard from '../components/proposal/PropertyCard';
 import { supabase } from '../supabase/client';
 
@@ -194,6 +196,24 @@ const Proposal = () => {
     }, 0);
   }, [reservations]);
 
+  const { getDesignForProperty } = useArixDesigner();
+  const furnitureAddOnTotal = useMemo(() => {
+    const propertyIds = Object.keys(groupedProperties || {});
+    return groupedProperties.reduce((acc, prop) => {
+      const d = getDesignForProperty(prop.id);
+      return acc + (d?.addOnTotal || 0);
+    }, 0);
+  }, [groupedProperties, getDesignForProperty]);
+
+  const furnitureCount = useMemo(() => {
+    return groupedProperties.reduce((acc, prop) => {
+      const d = getDesignForProperty(prop.id);
+      return acc + (d?.selectedItems?.length || 0);
+    }, 0);
+  }, [groupedProperties, getDesignForProperty]);
+
+  const estimatedMonthlyTotalWithAddons = estimatedMonthlyCost + furnitureAddOnTotal;
+
   const resolvedServices = Object.entries(selectedServices).map(([id, qty]) => {
     const svc = RELOCATION_SERVICES.find((s) => s.id === id);
     return { id, label: svc?.label || id, qty, scalable: !!svc?.scalable };
@@ -318,10 +338,22 @@ const Proposal = () => {
                 </section>
               )}
 
+                {/* Section 2: Arix Magic Designer (NEW) */}
+                {hasItems && (
+                  <section>
+                    <SectionHeader number="2" title="✦ Arix Magic Designer" subtitle="Design furniture per property" />
+                    <div className="space-y-4">
+                      {hydratedProperties.map(property => (
+                        <ArixDesignerStep key={property.id} property={property} />
+                      ))}
+                    </div>
+                  </section>
+                )}
+
               {/* Section 2: Relocation Services */}
               {hasItems && (
                 <section>
-                  <SectionHeader number="2" title="Relocation Services" subtitle="(Optional)" />
+                  <SectionHeader number="3" title="Relocation Services" subtitle="(Optional)" />
                   <p className="text-sm text-gray-500 -mt-2 mb-3">
                     Add-ons our team can bundle with this proposal. Final pricing on the call.
                   </p>
@@ -417,7 +449,7 @@ const Proposal = () => {
               {/* Section 3: Notes */}
               {hasItems && (
                 <section>
-                  <SectionHeader number="3" title="Notes for our team" subtitle="(Optional)" />
+                  <SectionHeader number="4" title="Notes for our team" subtitle="(Optional)" />
                   <div className="bg-white rounded-2xl p-6 md:p-7 shadow-sm border border-gray-100">
                     <p className="text-sm text-gray-500 mb-4">
                       Headcount waves, timing, special requirements anything our team should know before the call.
@@ -448,7 +480,9 @@ const Proposal = () => {
                 isGeneratingPDF={isGeneratingPDF}
                 isProcessingCheckout={isProcessingCheckout}
                 servicesCount={selectedServiceCount}
-                estimatedMonthlyCost={estimatedMonthlyCost}
+                estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
+                furnitureAddOnTotal={furnitureAddOnTotal}
+                furnitureCount={furnitureCount}
                 cityCounts={cityCounts}
               />
             </div>

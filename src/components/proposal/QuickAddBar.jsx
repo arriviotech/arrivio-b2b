@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Minus, Plus, Check, Trash2 } from 'lucide-react';
 import { useReservation } from '../../context/ReservationContext';
+import { useArixDesigner } from '../../context/ArixDesignerContext';
 
 const UNIT_TYPE_LABELS = {
   studio: 'Private Studio',
@@ -17,6 +18,7 @@ const QuickAddBar = ({
   compact = false,
 }) => {
   const { reservations, addReservation, removeReservation } = useReservation();
+  const { openModal } = useArixDesigner();
   const formattedTitle = customTitle || UNIT_TYPE_LABELS[unitTypeKey] || unitTypeKey;
   const existing = reservations.find(
     (r) => r.propertyId === property.id && r.unitType === formattedTitle
@@ -77,6 +79,8 @@ const QuickAddBar = ({
         },
         true // isUpdate = true → stepper sets absolute qty
       );
+      // Automatically open the Arix designer modal to customize furniture for this room!
+      openModal({ propertyId: property.id, propertyName: property.name, roomType: formattedTitle });
     }
   };
 

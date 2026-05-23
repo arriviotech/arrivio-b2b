@@ -10,6 +10,8 @@ const Summary = ({
   isProcessingCheckout,
   servicesCount = 0,
   estimatedMonthlyCost = 0,
+  furnitureAddOnTotal = 0,
+  furnitureCount = 0,
   cityCounts = [],
 }) => {
   const totalUnits = reservations.filter(r => r.propertyId !== 'services').reduce((acc, curr) => acc + curr.quantity, 0);
@@ -38,6 +40,12 @@ const Summary = ({
             <span className="font-bold text-gray-900">{servicesCount}</span>
           </div>
         )}
+        {furnitureCount > 0 && (
+          <div className="flex justify-between text-gray-600">
+            <span>Furniture</span>
+            <span className="font-bold text-gray-900">{furnitureCount}</span>
+          </div>
+        )}
       </div>
 
       {cityCounts.length > 0 && (
@@ -60,6 +68,14 @@ const Summary = ({
       {estimatedMonthlyCost > 0 && (
         <div className="bg-[#0f4c3a]/5 rounded-xl p-4 mb-6">
           <div className="text-[10px] font-bold uppercase tracking-widest text-[#0f4c3a]/70 mb-1">Estimated Monthly</div>
+          <div className="text-sm text-gray-600 mb-2">
+            {furnitureAddOnTotal > 0 && (
+              <div className="flex justify-between">
+                <span>Furniture add-on</span>
+                <span className="font-bold">{formatCurrency(furnitureAddOnTotal)}/mo</span>
+              </div>
+            )}
+          </div>
           <div className="text-2xl font-bold text-[#0f4c3a]">{formatCurrency(estimatedMonthlyCost)}<span className="text-sm font-normal text-[#0f4c3a]/60">/mo</span></div>
           <div className="text-[11px] text-gray-500 mt-1.5 leading-snug">
             Housing only. Services and final pricing confirmed on the call.
