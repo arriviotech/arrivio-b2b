@@ -31,6 +31,7 @@ export const generateNativePDF = async (...args) => {
   const {
     groupedProperties = [],
     services = [],
+    furniture = [],
     additionalNotes = '',
     estimatedMonthlyCost = 0,
     cityCounts = [],
@@ -213,6 +214,47 @@ export const generateNativePDF = async (...args) => {
     });
 
     yPos += 4;
+  }
+
+  // ============================================================
+  // SECTION 3.5: FURNITURE ADD-ON (Arix Designer selections)
+  // ============================================================
+  if (furniture && furniture.length > 0) {
+    const totalFurnitureLines = furniture.reduce((n, f) => n + 1 + (f.items?.length || 0), 0);
+    checkPageBreak(20 + totalFurnitureLines * 6);
+    yPos += 4;
+
+    setText(15, 'bold', DARK);
+    pdf.text('Furniture Add-on', margin, yPos);
+
+    setText(9, 'normal', MUTED);
+    pdf.text('Lease-included furnishing per property', pageWidth - margin, yPos, { align: 'right' });
+    yPos += 9;
+
+    furniture.forEach((f) => {
+      checkPageBreak(8 + (f.items?.length || 0) * 6);
+
+      setText(10, 'bold', DARK);
+      pdf.text(f.propertyName, margin + 2, yPos);
+
+      setText(10, 'bold', GREEN);
+      pdf.text(`+ EUR ${(f.total || 0).toLocaleString()} / mo`, pageWidth - margin - 2, yPos, { align: 'right' });
+
+      yPos += 5;
+
+      (f.items || []).forEach((it) => {
+        checkPageBreak(6);
+        setText(9, 'normal', MUTED);
+        pdf.text(`  • ${it.name}`, margin + 4, yPos);
+        setText(9, 'normal', MUTED);
+        pdf.text(`EUR ${(it.price || 0).toLocaleString()}`, pageWidth - margin - 2, yPos, { align: 'right' });
+        yPos += 5;
+      });
+
+      yPos += 3;
+    });
+
+    yPos += 2;
   }
 
   // ============================================================
