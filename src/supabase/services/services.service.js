@@ -5,6 +5,7 @@ function normalizeService(row) {
     id: row.id,
     name: row.name,
     description: row.description ?? "",
+    detailedDescription: row.detailedDescription ?? row.detailed_description ?? "",
     category: row.category,
     priceEur:
       typeof row.priceEur === "number"
@@ -25,6 +26,7 @@ const SERVICE_ORDER = [
   "SIM Card Setup",
   "Anmeldung Support",
   "Tax ID Support",
+  "City Integration Guide",
 ];
 
 function sortServices(services) {
