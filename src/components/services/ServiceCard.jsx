@@ -62,6 +62,12 @@ function getServiceDetails(service) {
         { label: "Expertise", value: "Tax ID and tax office guidance" },
         { label: "Benefit", value: "Assistance with forms and local authority requirements" },
       ];
+    case "seed-city-guide":
+      return [
+        { label: "Specialist", value: "Sarah, integration expert" },
+        { label: "Tour Duration", value: "Half-day neighborhood orientation" },
+        { label: "Benefit", value: "1-on-1 welcome consultation call and local integration guide" },
+      ];
     default:
       return transportDetails;
   }
@@ -85,9 +91,9 @@ export default function ServiceCard({ service, onRequest, variant = "default" })
           <div>
             <h2 className="text-xl font-bold text-gray-900">{service.name}</h2>
             <p className="text-sm text-gray-500 mt-0.5">€{Number(service.priceEur || 0).toFixed(0)}</p>
-            {service.description ? (
+            {service.detailedDescription || service.description ? (
               <p className="text-sm text-gray-600 mt-2 max-w-[440px]">
-                {service.description}
+                {service.detailedDescription || service.description}
               </p>
             ) : null}
           </div>

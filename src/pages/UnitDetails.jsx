@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import PropertiesNavbar from '../components/layout/PropertiesNavbar';
 import Footer from '../components/layout/Footer';
@@ -14,7 +14,7 @@ const UnitDetails = () => {
   const { slug, unitId } = useParams();
   const navigate = useNavigate();
   const { property, loading } = useProperty(slug);
-  const { addReservation, reservations } = useReservation();
+  const { addReservation, removeReservation, reservations } = useReservation();
 
   // Find the specific unit
   const unit = property?.units?.find(u => u.id === unitId) || null;
@@ -31,7 +31,15 @@ const UnitDetails = () => {
   const existingReservation = reservations.find(r => r.propertyId === property?.id && r.unitType === formattedTitle);
 
   const [quantity, setQuantity] = useState(existingReservation ? existingReservation.quantity : 0);
-  const [isAdded, setIsAdded] = useState(false);
+
+  // Keep local quantity in sync with the reservation context. Needed for two cases:
+  // (1) Initial load — property/unit aren't ready on first render, so existingReservation
+  //     is undefined and useState defaults to 0. Once data arrives, we sync.
+  // (2) User updates the cart elsewhere (e.g., on the Proposal page) — this page reflects it.
+  useEffect(() => {
+    setQuantity(existingReservation?.quantity || 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [existingReservation?.quantity]);
 
   if (loading) {
     return (
@@ -122,10 +130,11 @@ const UnitDetails = () => {
       unitPrice: unitPrice,
       quantity: quantity,
       maxAvailable: totalAvailable,
-    }, !!existingReservation);
+    }, true /* isUpdate=true → stepper sets absolute qty */);
+  };
 
-    setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 800);
+  const handleRemoveFromProposal = () => {
+    removeReservation(property.id, formattedTitle);
   };
 
   return (
@@ -157,25 +166,32 @@ const UnitDetails = () => {
             </div>
           </div>
 
+          {/* Title strip — full width, above the columns */}
+          <div className="mb-6">
+            <UnitStats property={property} formattedTitle={formattedTitle} unit={unit} />
+          </div>
+
           <div className="flex flex-col lg:flex-row gap-10">
 
-            {/* Left: Gallery & Details */}
+            {/* Left: Gallery + Description/Amenities */}
             <div className="w-full lg:w-2/3 flex flex-col gap-8">
               <UnitGallery galleryImages={galleryImages} />
-              <UnitStats property={property} formattedTitle={formattedTitle} unit={unit} />
               <Amenities isStudio={isStudio} property={property} formattedTitle={formattedTitle} unit={unit} />
             </div>
 
-            {/* Right: Pricing & CTA */}
+            {/* Right: Sticky buy box with specs */}
             <div className="w-full lg:w-1/3">
               <UnitBox
+                unit={unit}
+                property={property}
+                formattedTitle={formattedTitle}
                 unitPrice={unitPrice}
                 totalAvailable={totalAvailable}
                 quantity={quantity}
                 setQuantity={setQuantity}
-                isAdded={isAdded}
                 handleAddToProposal={handleAddToProposal}
-                existingReservation={!!existingReservation}
+                handleRemoveFromProposal={handleRemoveFromProposal}
+                existingReservation={existingReservation}
               />
             </div>
 

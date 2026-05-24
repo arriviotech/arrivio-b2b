@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import PropertiesNavbar from '../components/layout/PropertiesNavbar';
 import Footer from '../components/layout/Footer';
 import { useReservation } from '../context/ReservationContext';
-import { ArrowLeft, Building2, Plane, Search, Landmark, ShieldCheck, Smartphone, FileText, Receipt, Check, Minus, Plus, X } from 'lucide-react';
+import { ArrowLeft, Building2, Plane, Search, Landmark, ShieldCheck, Smartphone, FileText, Receipt, Check, Minus, Plus, X, Compass, Home, BadgeInfo } from 'lucide-react';
 import { generateNativePDF } from '../components/proposal/Pdf';
 import Summary from '../components/proposal/Summary';
+import { useArixDesigner } from '../context/ArixDesignerContext';
+import ArixDesignerStep from '../components/arix/ArixDesignerStep';
 import PropertyCard from '../components/proposal/PropertyCard';
 import { supabase } from '../supabase/client';
+import { ARIX_ENABLED } from '../App';
 
 // Reverse map: formatted display label → raw DB unit_type
 // Used to look up availability for cart items added before unitTypeKey was stored.
@@ -19,13 +22,15 @@ const UNIT_TYPE_KEY_BY_LABEL = {
 };
 
 const RELOCATION_SERVICES = [
-  { id: 'airport_pickup', icon: Plane, label: 'Airport pickup', desc: 'Driver meets your employee at arrival.', scalable: true },
-  { id: 'housing_search', icon: Search, label: 'Housing search assistance', desc: 'Help sourcing housing beyond Arrivio inventory.', scalable: false },
-  { id: 'bank_account', icon: Landmark, label: 'Bank account opening', desc: 'German bank account setup support.', scalable: true },
-  { id: 'insurance', icon: ShieldCheck, label: 'Insurance setup', desc: 'Health, liability, and renters insurance.', scalable: true },
-  { id: 'sim_card', icon: Smartphone, label: 'SIM card', desc: 'German SIM and mobile plan setup.', scalable: true },
-  { id: 'anmeldung', icon: FileText, label: 'Anmeldung support', desc: 'Residence registration (Bürgeramt) assistance.', scalable: false },
-  { id: 'tax_id', icon: Receipt, label: 'Tax ID guidance', desc: 'Steuer-ID application and tax basics.', scalable: false },
+  { id: 'airport_pickup', icon: Plane, label: 'Airport Pickup', desc: 'Private transfer from the airport to the new home.', scalable: true },
+  { id: 'airport_dropoff', icon: Plane, label: 'Airport Drop-off', desc: 'Private transfer from home to the airport.', scalable: true },
+  { id: 'housing', icon: Home, label: 'Housing Support', desc: 'Support finding and securing corporate accommodation.', scalable: false },
+  { id: 'bank_account', icon: Landmark, label: 'Bank Account Setup', desc: 'Guided setup for expat-friendly bank accounts.', scalable: true },
+  { id: 'insurance', icon: ShieldCheck, label: 'Insurance Setup', desc: 'Consultation for mandatory health and liability insurance.', scalable: true },
+  { id: 'sim_card', icon: Smartphone, label: 'SIM Card Setup', desc: 'Pre-activated local SIM loaded with high-speed data.', scalable: true },
+  { id: 'anmeldung', icon: FileText, label: 'Anmeldung Support', desc: 'Accompanied translator and appointment assistance.', scalable: false },
+  { id: 'tax_id', icon: BadgeInfo, label: 'Tax ID Support', desc: 'Steuer-ID tracking and tax class optimization.', scalable: false },
+  { id: 'city_guide', icon: Compass, label: 'City Integration Guide', desc: 'Neighborhood tour and settling-in welcome call.', scalable: false },
 ];
 
 const SectionHeader = ({ number, title, subtitle }) => (
@@ -194,14 +199,50 @@ const Proposal = () => {
     }, 0);
   }, [reservations]);
 
+  const { getDesignForProperty } = useArixDesigner();
+  const furnitureAddOnTotal = useMemo(() => {
+    if (!ARIX_ENABLED) return 0;
+    return groupedProperties.reduce((acc, prop) => {
+      const d = getDesignForProperty(prop.id);
+      return acc + (d?.addOnTotal || 0);
+    }, 0);
+  }, [groupedProperties, getDesignForProperty]);
+
+  const furnitureCount = useMemo(() => {
+    if (!ARIX_ENABLED) return 0;
+    return groupedProperties.reduce((acc, prop) => {
+      const d = getDesignForProperty(prop.id);
+      return acc + (d?.selectedItems?.length || 0);
+    }, 0);
+  }, [groupedProperties, getDesignForProperty]);
+
+  const estimatedMonthlyTotalWithAddons = estimatedMonthlyCost + furnitureAddOnTotal;
+
   const resolvedServices = Object.entries(selectedServices).map(([id, qty]) => {
     const svc = RELOCATION_SERVICES.find((s) => s.id === id);
     return { id, label: svc?.label || id, qty, scalable: !!svc?.scalable };
   });
 
+  // Furniture add-ons per property (from Arix Designer selections)
+  const resolvedFurniture = !ARIX_ENABLED
+    ? []
+    : groupedProperties
+        .map((prop) => {
+          const d = getDesignForProperty(prop.id);
+          const items = d?.selectedItems || [];
+          return {
+            propertyId: prop.id,
+            propertyName: prop.name,
+            items: items.map((it) => ({ id: it.id, name: it.name, price: it.price || 0 })),
+            total: d?.addOnTotal || 0,
+          };
+        })
+        .filter((f) => f.items.length > 0);
+
   const pdfPayload = {
     groupedProperties,
     services: resolvedServices,
+    furniture: resolvedFurniture,
     additionalNotes,
     estimatedMonthlyCost,
     cityCounts,
@@ -227,7 +268,12 @@ const Proposal = () => {
               return `• ${svc?.label}${svc?.scalable ? ` (x${qty})` : ''}`;
             }).join('\n')}\n\n`
           : '';
-        const notes = `${notesLine}${servicesLine}Here is my requested housing proposal:\n${fileUrl}\n(Note: Link expires in 60 minutes)`;
+        const furnitureLine = resolvedFurniture.length > 0
+          ? `Furniture add-on (Arix Designer):\n${resolvedFurniture.map(f =>
+              `• ${f.propertyName}: ${f.items.map(i => i.name).join(', ')} (+€${f.total}/mo)`
+            ).join('\n')}\n\n`
+          : '';
+        const notes = `${notesLine}${servicesLine}${furnitureLine}Here is my requested housing proposal:\n${fileUrl}\n(Note: Link expires in 60 minutes)`;
         clearReservations();
         navigate('/schedule', { state: { bookingNotes: notes } });
       } else {
@@ -318,10 +364,22 @@ const Proposal = () => {
                 </section>
               )}
 
+                {/* Section 2: Arix Magic Designer — gated by ARIX_ENABLED flag */}
+                {ARIX_ENABLED && hasItems && (
+                  <section>
+                    <SectionHeader number="2" title="✦ Arix Magic Designer" subtitle="Design furniture per property" />
+                    <div className="space-y-4">
+                      {hydratedProperties.map(property => (
+                        <ArixDesignerStep key={property.id} property={property} />
+                      ))}
+                    </div>
+                  </section>
+                )}
+
               {/* Section 2: Relocation Services */}
               {hasItems && (
                 <section>
-                  <SectionHeader number="2" title="Relocation Services" subtitle="(Optional)" />
+                  <SectionHeader number="3" title="Relocation Services" subtitle="(Optional)" />
                   <p className="text-sm text-gray-500 -mt-2 mb-3">
                     Add-ons our team can bundle with this proposal. Final pricing on the call.
                   </p>
@@ -417,7 +475,7 @@ const Proposal = () => {
               {/* Section 3: Notes */}
               {hasItems && (
                 <section>
-                  <SectionHeader number="3" title="Notes for our team" subtitle="(Optional)" />
+                  <SectionHeader number="4" title="Notes for our team" subtitle="(Optional)" />
                   <div className="bg-white rounded-2xl p-6 md:p-7 shadow-sm border border-gray-100">
                     <p className="text-sm text-gray-500 mb-4">
                       Headcount waves, timing, special requirements anything our team should know before the call.
@@ -448,7 +506,9 @@ const Proposal = () => {
                 isGeneratingPDF={isGeneratingPDF}
                 isProcessingCheckout={isProcessingCheckout}
                 servicesCount={selectedServiceCount}
-                estimatedMonthlyCost={estimatedMonthlyCost}
+                estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
+                furnitureAddOnTotal={furnitureAddOnTotal}
+                furnitureCount={furnitureCount}
                 cityCounts={cityCounts}
               />
             </div>

@@ -1,144 +1,206 @@
-import React, { useState, useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const UnitGallery = ({ galleryImages }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+const UnitGallery = ({ galleryImages = [] }) => {
+  // De-dupe (the old gallery showed the same image multiple times)
+  const photos = useMemo(() => {
+    const seen = new Set();
+    return galleryImages.filter((url) => {
+      if (!url || seen.has(url)) return false;
+      seen.add(url);
+      return true;
+    });
+  }, [galleryImages]);
 
-  // Close with Escape key
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  const hasPhotos = photos.length > 0;
+  const total = photos.length;
+
+  // Reset to first photo if list changes
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') closeLightbox();
-    };
+    setActiveIndex(0);
+  }, [photos.length]);
 
-    if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
-    }
-    
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen]);
-
-  const openLightbox = (index) => {
-    setCurrentIndex(index);
-    setIsOpen(true);
-    // Prevent scrolling when lightbox is open
-    document.body.style.overflow = 'hidden';
+  const next = (e) => {
+    e?.stopPropagation();
+    if (total === 0) return;
+    setActiveIndex((i) => (i + 1) % total);
+  };
+  const prev = (e) => {
+    e?.stopPropagation();
+    if (total === 0) return;
+    setActiveIndex((i) => (i - 1 + total) % total);
   };
 
+  const openLightbox = () => {
+    if (!hasPhotos) return;
+    setIsLightboxOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
   const closeLightbox = () => {
-    setIsOpen(false);
-    // Restore scrolling
+    setIsLightboxOpen(false);
     document.body.style.overflow = 'auto';
   };
 
-  const nextImage = (e) => {
-    e?.stopPropagation();
-    setCurrentIndex((prev) => (prev + 1) % galleryImages.length);
-  };
+  // Keyboard nav (arrows + esc)
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
+    };
+    if (isLightboxOpen) window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLightboxOpen, total]);
 
-  const prevImage = (e) => {
-    e?.stopPropagation();
-    setCurrentIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
-  };
+  if (!hasPhotos) {
+    return (
+      <div className="w-full h-[360px] md:h-[420px] rounded-[28px] bg-gradient-to-br from-[#0f4c3a]/8 to-[#0f4c3a]/3 flex items-center justify-center text-[#0f4c3a]/30 text-xs font-bold uppercase tracking-widest">
+        No photos available
+      </div>
+    );
+  }
+
+  // Show up to 5 thumbs + a "+N more" tile on the 6th slot
+  const VISIBLE_THUMBS = 5;
+  const visibleThumbs = photos.slice(0, VISIBLE_THUMBS);
+  const extraCount = total - VISIBLE_THUMBS;
 
   return (
     <>
-      <div className="grid grid-cols-3 grid-rows-3 gap-2 md:gap-3 h-[400px] sm:h-[500px] md:h-[580px] rounded-[32px] overflow-hidden">
-        {/* Main Large Image (Top Left, spanning 2 cols, 2 rows) */}
-        <div className="col-span-2 row-span-2 relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(0)}>
-          <img src={galleryImages[0]} alt="Main" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
-        </div>
-
-        {/* Top Right Image */}
-        <div className="col-span-1 row-span-1 relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(1)}>
-          <img src={galleryImages[1]} alt="Gallery 2" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
-        </div>
-
-        {/* Middle Right Image */}
-        <div className="col-span-1 row-span-1 relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(2)}>
-          <img src={galleryImages[2]} alt="Gallery 3" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
-        </div>
-
-        {/* Bottom Left Image */}
-        <div className="col-span-1 row-span-1 relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(3)}>
-          <img src={galleryImages[3] || galleryImages[0]} alt="Gallery 4" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
-        </div>
-
-        {/* Bottom Center Image */}
-        <div className="col-span-1 row-span-1 relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(1)}>
-          <img src={galleryImages[1]} alt="Gallery 5" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
-        </div>
-
-        {/* Bottom Right Image with "+4 Photos" Overlay */}
-        <div className="col-span-1 row-span-1 relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(4)}>
-          <img src={galleryImages[2]} alt="Gallery 6" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-300 flex flex-col items-center justify-center p-4">
-            <span className="text-white text-3xl md:text-4xl font-light mb-3">+4</span>
-            <div className="bg-white/10 backdrop-blur-lg border border-white/20 text-white text-[10px] font-bold tracking-widest uppercase px-5 py-2.5 rounded-full flex items-center gap-2.5 transition-all hover:bg-white/20 active:scale-95 shadow-xl">
-               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-80"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-               PHOTOS
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Lightbox Modal */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
+      {/* HERO */}
+      <div className="relative w-full h-[360px] md:h-[440px] rounded-[28px] overflow-hidden bg-gray-50 group">
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={activeIndex}
+            src={photos[activeIndex]}
+            alt={`Unit photo ${activeIndex + 1}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-black/95 flex flex-col items-center justify-center backdrop-blur-sm"
+            transition={{ duration: 0.25 }}
+            onClick={openLightbox}
+            className="w-full h-full object-cover cursor-zoom-in"
+          />
+        </AnimatePresence>
+
+        {/* Arrows */}
+        {total > 1 && (
+          <>
+            <button
+              onClick={prev}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-[#111827] flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+              aria-label="Previous photo"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-[#111827] flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+              aria-label="Next photo"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </>
+        )}
+
+        {/* Counter */}
+        <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full bg-black/55 backdrop-blur-sm text-white text-[11px] font-bold tracking-widest uppercase flex items-center gap-1.5">
+          <span>{activeIndex + 1} / {total}</span>
+        </div>
+
+        {/* Expand hint */}
+        <button
+          onClick={openLightbox}
+          className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-black/55 hover:bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold tracking-widest uppercase flex items-center gap-1.5 transition-colors"
+        >
+          <Maximize2 size={12} />
+          Expand
+        </button>
+      </div>
+
+      {/* THUMBS */}
+      {total > 1 && (
+        <div className="mt-3 grid grid-cols-5 sm:grid-cols-6 gap-2">
+          {visibleThumbs.map((url, i) => (
+            <button
+              key={url + i}
+              onClick={() => setActiveIndex(i)}
+              className={`relative h-16 sm:h-20 rounded-xl overflow-hidden transition-all ${
+                i === activeIndex
+                  ? 'ring-2 ring-[#0f4c3a] ring-offset-2 ring-offset-[#f2f2f2]'
+                  : 'opacity-70 hover:opacity-100'
+              }`}
+            >
+              <img src={url} alt={`Thumb ${i + 1}`} className="w-full h-full object-cover" />
+            </button>
+          ))}
+          {extraCount > 0 && (
+            <button
+              onClick={openLightbox}
+              className="relative h-16 sm:h-20 rounded-xl overflow-hidden bg-gray-900 text-white text-sm font-bold flex items-center justify-center hover:bg-black transition-colors"
+            >
+              +{extraCount}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* LIGHTBOX */}
+      <AnimatePresence>
+        {isLightboxOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={closeLightbox}
+            className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center"
           >
-            {/* Close button */}
-            <button 
-              className="absolute top-8 right-8 text-white/70 hover:text-white transition-colors p-2 z-10"
+            <button
               onClick={closeLightbox}
+              className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2 z-10"
+              aria-label="Close"
             >
-              <X size={32} strokeWidth={1.5} />
+              <X size={28} strokeWidth={1.5} />
             </button>
 
-            {/* Navigation buttons */}
-            <button 
-              className="absolute left-4 md:left-8 text-white/70 hover:text-white transition-colors p-4 z-10 bg-white/5 hover:bg-white/10 rounded-full"
-              onClick={prevImage}
-            >
-              <ChevronLeft size={40} strokeWidth={1} />
-            </button>
+            {total > 1 && (
+              <>
+                <button
+                  onClick={prev}
+                  className="absolute left-4 md:left-8 text-white/70 hover:text-white transition-colors p-3 z-10 bg-white/5 hover:bg-white/10 rounded-full"
+                  aria-label="Previous"
+                >
+                  <ChevronLeft size={32} strokeWidth={1.5} />
+                </button>
+                <button
+                  onClick={next}
+                  className="absolute right-4 md:right-8 text-white/70 hover:text-white transition-colors p-3 z-10 bg-white/5 hover:bg-white/10 rounded-full"
+                  aria-label="Next"
+                >
+                  <ChevronRight size={32} strokeWidth={1.5} />
+                </button>
+              </>
+            )}
 
-            <button 
-              className="absolute right-4 md:right-8 text-white/70 hover:text-white transition-colors p-4 z-10 bg-white/5 hover:bg-white/10 rounded-full"
-              onClick={nextImage}
-            >
-              <ChevronRight size={40} strokeWidth={1} />
-            </button>
-
-            {/* Main content area - clicking background closes */}
             <div className="relative w-full h-[85vh] flex items-center justify-center p-4 md:p-12">
-              <motion.img 
-                key={currentIndex}
-                initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                src={galleryImages[currentIndex]} 
-                alt={`Selected Gallery Image ${currentIndex + 1}`}
-                className="max-h-full max-w-full object-contain shadow-2xl rounded-lg cursor-default"
+              <motion.img
+                key={activeIndex}
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                src={photos[activeIndex]}
+                alt={`Photo ${activeIndex + 1}`}
                 onClick={(e) => e.stopPropagation()}
+                className="max-h-full max-w-full object-contain rounded-lg shadow-2xl cursor-default"
               />
-              
-              {/* Image counter indicator */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-xs font-bold tracking-[0.2em] uppercase">
-                {currentIndex + 1} / {galleryImages.length}
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/70 text-xs font-bold tracking-[0.2em] uppercase">
+                {activeIndex + 1} / {total}
               </div>
             </div>
           </motion.div>
