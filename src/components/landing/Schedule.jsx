@@ -22,7 +22,7 @@ const Schedule = () => {
     };
 
     // Construct the Cal.com URL with prefilled notes if available
-    const baseUrl = "https://cal.com/jahnavi/strategy-call?theme=light&primaryColor=%231e6f50&hideEventTypeDetails=false&layout=month_view";
+    const baseUrl = "https://cal.com/arrivio/strategy-call?theme=light&primaryColor=%231e6f50&hideEventTypeDetails=false&layout=month_view";
     const iframeUrl = bookingNotes 
         ? `${baseUrl}&notes=${encodeURIComponent(bookingNotes)}` 
         : baseUrl;
@@ -149,4 +149,4 @@ const Schedule = () => {
     );
 };
 
-export default Schedule;
+export default Schedule;

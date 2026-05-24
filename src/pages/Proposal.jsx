@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PropertiesNavbar from '../components/layout/PropertiesNavbar';
 import Footer from '../components/layout/Footer';
 import { useReservation } from '../context/ReservationContext';
-import { ArrowLeft, Building2, Plane, Search, Landmark, ShieldCheck, Smartphone, FileText, Receipt, Check, Minus, Plus, X } from 'lucide-react';
+import { ArrowLeft, Building2, Plane, Search, Landmark, ShieldCheck, Smartphone, FileText, Receipt, Check, Minus, Plus, X, Compass, Home, BadgeInfo } from 'lucide-react';
 import { generateNativePDF } from '../components/proposal/Pdf';
 import Summary from '../components/proposal/Summary';
 import { useArixDesigner } from '../context/ArixDesignerContext';
@@ -22,13 +22,15 @@ const UNIT_TYPE_KEY_BY_LABEL = {
 };
 
 const RELOCATION_SERVICES = [
-  { id: 'airport_pickup', icon: Plane, label: 'Airport pickup', desc: 'Driver meets your employee at arrival.', scalable: true },
-  { id: 'housing_search', icon: Search, label: 'Housing search assistance', desc: 'Help sourcing housing beyond Arrivio inventory.', scalable: false },
-  { id: 'bank_account', icon: Landmark, label: 'Bank account opening', desc: 'German bank account setup support.', scalable: true },
-  { id: 'insurance', icon: ShieldCheck, label: 'Insurance setup', desc: 'Health, liability, and renters insurance.', scalable: true },
-  { id: 'sim_card', icon: Smartphone, label: 'SIM card', desc: 'German SIM and mobile plan setup.', scalable: true },
-  { id: 'anmeldung', icon: FileText, label: 'Anmeldung support', desc: 'Residence registration (Bürgeramt) assistance.', scalable: false },
-  { id: 'tax_id', icon: Receipt, label: 'Tax ID guidance', desc: 'Steuer-ID application and tax basics.', scalable: false },
+  { id: 'airport_pickup', icon: Plane, label: 'Airport Pickup', desc: 'Private transfer from the airport to the new home.', scalable: true },
+  { id: 'airport_dropoff', icon: Plane, label: 'Airport Drop-off', desc: 'Private transfer from home to the airport.', scalable: true },
+  { id: 'housing', icon: Home, label: 'Housing Support', desc: 'Support finding and securing corporate accommodation.', scalable: false },
+  { id: 'bank_account', icon: Landmark, label: 'Bank Account Setup', desc: 'Guided setup for expat-friendly bank accounts.', scalable: true },
+  { id: 'insurance', icon: ShieldCheck, label: 'Insurance Setup', desc: 'Consultation for mandatory health and liability insurance.', scalable: true },
+  { id: 'sim_card', icon: Smartphone, label: 'SIM Card Setup', desc: 'Pre-activated local SIM loaded with high-speed data.', scalable: true },
+  { id: 'anmeldung', icon: FileText, label: 'Anmeldung Support', desc: 'Accompanied translator and appointment assistance.', scalable: false },
+  { id: 'tax_id', icon: BadgeInfo, label: 'Tax ID Support', desc: 'Steuer-ID tracking and tax class optimization.', scalable: false },
+  { id: 'city_guide', icon: Compass, label: 'City Integration Guide', desc: 'Neighborhood tour and settling-in welcome call.', scalable: false },
 ];
 
 const SectionHeader = ({ number, title, subtitle }) => (
