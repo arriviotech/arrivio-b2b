@@ -10,6 +10,7 @@ import { useArixDesigner } from '../context/ArixDesignerContext';
 import ArixDesignerStep from '../components/arix/ArixDesignerStep';
 import PropertyCard from '../components/proposal/PropertyCard';
 import { supabase } from '../supabase/client';
+import { ARIX_ENABLED } from '../App';
 
 // Reverse map: formatted display label → raw DB unit_type
 // Used to look up availability for cart items added before unitTypeKey was stored.
@@ -198,7 +199,7 @@ const Proposal = () => {
 
   const { getDesignForProperty } = useArixDesigner();
   const furnitureAddOnTotal = useMemo(() => {
-    const propertyIds = Object.keys(groupedProperties || {});
+    if (!ARIX_ENABLED) return 0;
     return groupedProperties.reduce((acc, prop) => {
       const d = getDesignForProperty(prop.id);
       return acc + (d?.addOnTotal || 0);
@@ -206,6 +207,7 @@ const Proposal = () => {
   }, [groupedProperties, getDesignForProperty]);
 
   const furnitureCount = useMemo(() => {
+    if (!ARIX_ENABLED) return 0;
     return groupedProperties.reduce((acc, prop) => {
       const d = getDesignForProperty(prop.id);
       return acc + (d?.selectedItems?.length || 0);
@@ -219,9 +221,26 @@ const Proposal = () => {
     return { id, label: svc?.label || id, qty, scalable: !!svc?.scalable };
   });
 
+  // Furniture add-ons per property (from Arix Designer selections)
+  const resolvedFurniture = !ARIX_ENABLED
+    ? []
+    : groupedProperties
+        .map((prop) => {
+          const d = getDesignForProperty(prop.id);
+          const items = d?.selectedItems || [];
+          return {
+            propertyId: prop.id,
+            propertyName: prop.name,
+            items: items.map((it) => ({ id: it.id, name: it.name, price: it.price || 0 })),
+            total: d?.addOnTotal || 0,
+          };
+        })
+        .filter((f) => f.items.length > 0);
+
   const pdfPayload = {
     groupedProperties,
     services: resolvedServices,
+    furniture: resolvedFurniture,
     additionalNotes,
     estimatedMonthlyCost,
     cityCounts,
@@ -247,7 +266,12 @@ const Proposal = () => {
               return `• ${svc?.label}${svc?.scalable ? ` (x${qty})` : ''}`;
             }).join('\n')}\n\n`
           : '';
-        const notes = `${notesLine}${servicesLine}Here is my requested housing proposal:\n${fileUrl}\n(Note: Link expires in 60 minutes)`;
+        const furnitureLine = resolvedFurniture.length > 0
+          ? `Furniture add-on (Arix Designer):\n${resolvedFurniture.map(f =>
+              `• ${f.propertyName}: ${f.items.map(i => i.name).join(', ')} (+€${f.total}/mo)`
+            ).join('\n')}\n\n`
+          : '';
+        const notes = `${notesLine}${servicesLine}${furnitureLine}Here is my requested housing proposal:\n${fileUrl}\n(Note: Link expires in 60 minutes)`;
         clearReservations();
         navigate('/schedule', { state: { bookingNotes: notes } });
       } else {
@@ -338,8 +362,8 @@ const Proposal = () => {
                 </section>
               )}
 
-                {/* Section 2: Arix Magic Designer (NEW) */}
-                {hasItems && (
+                {/* Section 2: Arix Magic Designer — gated by ARIX_ENABLED flag */}
+                {ARIX_ENABLED && hasItems && (
                   <section>
                     <SectionHeader number="2" title="✦ Arix Magic Designer" subtitle="Design furniture per property" />
                     <div className="space-y-4">

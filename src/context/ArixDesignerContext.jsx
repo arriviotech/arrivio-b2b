@@ -40,8 +40,9 @@ export const ArixDesignerProvider = ({ children }) => {
         });
       return { ...saved, selectedItems: freshItems };
     }
-    const defaultTotal = FURNITURE_ITEMS.reduce((sum, item) => sum + (item.price || 0), 0);
-    return { selectedItems: FURNITURE_ITEMS, addOnTotal: defaultTotal, hasInteracted: false };
+    // Default is EMPTY — user must actively pick furniture. Previously defaulted to all items
+    // selected (silently adding €170/mo per property), which read as a hidden charge.
+    return { selectedItems: [], addOnTotal: 0, hasInteracted: false };
   };
 
   const recalcAddOn = (selectedItems) => {

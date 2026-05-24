@@ -1,4 +1,5 @@
 import React from 'react';
+import { Sparkles } from 'lucide-react';
 import ArixRoomCanvas from './ArixRoomCanvas';
 import { useArixDesigner } from '../../context/ArixDesignerContext';
 
@@ -14,21 +15,12 @@ const ArixDesignerStep = ({ property }) => {
   const selectedCount = design?.selectedItems?.length || 0;
 
   return (
-    <div className="bg-white rounded-[28px] border border-gray-150 p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+    <div className="bg-white rounded-2xl p-6 transition-shadow duration-200">
       <div className="flex flex-col gap-4">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#0f4c3a]">{property.name}</div>
-            <h3 className="text-base font-bold text-gray-900 mt-1">✦ Staged Interior Layout</h3>
-          </div>
-          <button
-            type="button"
-            onClick={handleEdit}
-            className="rounded-2xl border border-gray-200 bg-white hover:bg-gray-50 px-4 py-2 text-xs font-bold text-gray-700 shadow-sm transition active:scale-95 duration-200 cursor-pointer"
-          >
-            {selectedCount > 0 ? 'Customize Selection' : 'Furnish Space'}
-          </button>
+        {/* Header — no redundant button; the body has its own CTA */}
+        <div className="border-b border-gray-100 pb-4">
+          <div className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#0f4c3a]">{property.name}</div>
+          <h3 className="text-base font-bold text-gray-900 mt-1">✦ Staged Interior Layout</h3>
         </div>
 
         {/* Content Body */}
@@ -93,14 +85,17 @@ const ArixDesignerStep = ({ property }) => {
             </div>
           </div>
         ) : (
-          <div className="rounded-[24px] border border-dashed border-gray-200 bg-gray-50 p-8 text-center text-gray-500">
-            <div className="mb-4 text-xs font-medium">You haven't designed this space yet. Customize furniture and see it come alive.</div>
+          <div className="rounded-2xl border border-[#0f4c3a]/20 bg-[#0f4c3a]/[0.06] p-5 flex items-center gap-4">
+            <div className="w-9 h-9 rounded-full bg-[#0f4c3a]/10 flex items-center justify-center shrink-0">
+              <Sparkles size={16} className="text-[#0f4c3a]" strokeWidth={2.25} />
+            </div>
+            <p className="flex-1 text-sm font-semibold text-gray-700">Bring this space to life</p>
             <button
               type="button"
               onClick={handleEdit}
-              className="rounded-2xl bg-[#0f4c3a] px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#08311c] active:scale-95 duration-200 cursor-pointer"
+              className="shrink-0 rounded-xl bg-[#0f4c3a] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#08311c] active:scale-95 duration-200 cursor-pointer whitespace-nowrap"
             >
-              ✦ Furnish this Space with Arix
+              ✦ Furnish Space
             </button>
           </div>
         )}

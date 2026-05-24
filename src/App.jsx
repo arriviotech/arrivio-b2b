@@ -1,5 +1,7 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles, X } from 'lucide-react';
 import Landing from './pages/Landing';
 import Properties from './pages/Properties';
 import PropertyDetails from './pages/PropertyDetails';
@@ -15,7 +17,6 @@ import { WishlistProvider } from './context/WishlistContext';
 import { ModalProvider, useModal } from './context/ModalContext';
 import { ArixDesignerProvider, useArixDesigner } from './context/ArixDesignerContext';
 import ArixDesignerModal from './components/arix/ArixDesignerModal';
-import { useEffect, useRef } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import Signin from './pages/Signin';
 import Imprint from './pages/legal/Imprint';
@@ -31,11 +32,21 @@ const ModalOrchestrator = () => {
   return <Signin isOpen={isSigninOpen} onClose={closeSignin} />;
 };
 
+// Feature flag for the Arix Magic Designer. Flip to false to fully hide the feature.
+export const ARIX_ENABLED = true;
+
+// Renders:
+//  (a) a soft slide-in toast at the bottom-right when a new reservation is added
+//      — invites the user to customize furniture without taking over the screen
+//  (b) the full Arix Designer modal (opened via the toast OR Proposal page)
 const ArixOrchestrator = () => {
   const { reservations } = useReservation();
   const { modalState, openModal, closeModal } = useArixDesigner();
+  const location = useLocation();
   const prevRef = useRef([]);
   const firstLoad = useRef(true);
+  const [toast, setToast] = useState(null);
+  const toastTimer = useRef(null);
 
   useEffect(() => {
     if (firstLoad.current) {
@@ -43,40 +54,104 @@ const ArixOrchestrator = () => {
       firstLoad.current = false;
       return;
     }
-
     const prev = prevRef.current || [];
-
     if (reservations.length > prev.length) {
       const added = reservations.find(
-        r =>
-          !prev.some(
-            p =>
-              p.propertyId === r.propertyId &&
-              p.unitType === r.unitType
-          )
+        r => !prev.some(p => p.propertyId === r.propertyId && p.unitType === r.unitType)
       );
-
       if (added) {
-        openModal({
+        setToast({
           propertyId: added.propertyId,
           propertyName: added.propertyName,
           roomType: added.unitType,
         });
+        if (toastTimer.current) clearTimeout(toastTimer.current);
+        toastTimer.current = setTimeout(() => setToast(null), 10000);
       }
     }
-
     prevRef.current = reservations;
-  }, [reservations, openModal]);
+  }, [reservations]);
+
+  // Dismiss the toast when the route changes — the prompt is contextual to the page
+  // the user was on; carrying it across navigation reads as a stale notification.
+  useEffect(() => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
+  useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
+
+  const handleCustomize = () => {
+    if (!toast) return;
+    openModal(toast);
+    setToast(null);
+  };
+  const handleDismiss = () => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast(null);
+  };
 
   return (
-    <ArixDesignerModal
-      isOpen={modalState.isOpen}
-      propertyId={modalState.propertyId}
-      propertyName={modalState.propertyName}
-      roomType={modalState.roomType}
-      onClose={closeModal}
-      onSave={closeModal}
-    />
+    <>
+      <AnimatePresence>
+        {toast && !modalState.isOpen && (
+          <motion.div
+            key={`${toast.propertyId}-${toast.roomType}`}
+            initial={{ opacity: 0, y: 24, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 24, scale: 0.96 }}
+            transition={{ type: 'spring', damping: 22, stiffness: 260 }}
+            className="fixed bottom-6 right-6 z-[200] w-[340px] max-w-[calc(100vw-32px)] bg-white rounded-2xl shadow-[0_18px_50px_rgba(0,0,0,0.18)] border border-gray-100 overflow-hidden"
+          >
+            <div className="p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-lg bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center shrink-0">
+                  <Sparkles size={18} strokeWidth={2.25} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-[#0f4c3a]/70 mb-1">✦ Arix Magic Designer</p>
+                  <p className="text-sm font-bold text-gray-900 leading-snug truncate">
+                    Customize furniture for {toast.propertyName}?
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">Optional — see your room come alive.</p>
+                </div>
+                <button
+                  onClick={handleDismiss}
+                  className="text-gray-400 hover:text-gray-700 transition-colors shrink-0"
+                  aria-label="Dismiss"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="flex items-center gap-2 mt-3">
+                <button
+                  onClick={handleCustomize}
+                  className="flex-1 py-2 rounded-lg bg-[#0f4c3a] hover:bg-[#0a3a2b] text-white text-xs font-bold uppercase tracking-wide transition-colors"
+                >
+                  Customize
+                </button>
+                <button
+                  onClick={handleDismiss}
+                  className="py-2 px-3 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-bold uppercase tracking-wide transition-colors"
+                >
+                  Not now
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <ArixDesignerModal
+        isOpen={modalState.isOpen}
+        propertyId={modalState.propertyId}
+        propertyName={modalState.propertyName}
+        roomType={modalState.roomType}
+        onClose={closeModal}
+        onSave={closeModal}
+      />
+    </>
   );
 };
 
@@ -90,7 +165,7 @@ function App() {
               <BrowserRouter>
                 <ScrollToTop />
                 <ModalOrchestrator />
-                <ArixOrchestrator />
+                {ARIX_ENABLED && <ArixOrchestrator />}
 
                 <ErrorBoundary>
                   <Routes>

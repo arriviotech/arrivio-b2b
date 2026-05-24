@@ -13,12 +13,12 @@ const ArixDesignerModal = ({ propertyId, propertyName, roomType, isOpen, onClose
 
   useEffect(() => {
     const current = getDesignForProperty(propertyId);
-    if (!current.selectedItems || current.selectedItems.length === 0) {
-      setLocalSelected(FURNITURE_ITEMS);
-    } else {
-      setLocalSelected(current.selectedItems);
-    }
-    setShowDecorated(true);
+    const items = current.selectedItems || [];
+    // Start with whatever the user has saved — empty by default (unit price only).
+    // Adding/removing furniture in the panel changes the +/mo add-on from there.
+    setLocalSelected(items);
+    // Show the empty room when nothing is picked yet so the canvas reflects current state.
+    setShowDecorated(items.length > 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyId, isOpen]);
 
