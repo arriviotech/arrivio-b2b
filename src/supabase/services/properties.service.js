@@ -1,4 +1,46 @@
 import { supabase } from "../client";
+import img1 from "../../data/properties/1.jpg";
+import img2 from "../../data/properties/2.jpg";
+import img3 from "../../data/properties/3.jpg";
+import img4 from "../../data/properties/4.jpg";
+import img5 from "../../data/properties/5.jpg";
+import img6 from "../../data/properties/6.jpg";
+import img7 from "../../data/properties/7.jpg";
+import img8 from "../../data/properties/8.jpg";
+import img9 from "../../data/properties/9.jpg";
+import img10 from "../../data/properties/10.jpg";
+import img11 from "../../data/properties/11.jpg";
+import img12 from "../../data/properties/12.jpg";
+import img13 from "../../data/properties/13.jpg";
+import img14 from "../../data/properties/14.jpg";
+import img15 from "../../data/properties/15.jpg";
+import img16 from "../../data/properties/16.jpg";
+import img17 from "../../data/properties/17.jpg";
+import img18 from "../../data/properties/18.jpg";
+import img19 from "../../data/properties/19.jpg";
+import img20 from "../../data/properties/20.jpg";
+import img21 from "../../data/properties/21.jpg";
+import img22 from "../../data/properties/22.jpg";
+import img23 from "../../data/properties/23.jpg";
+import img24 from "../../data/properties/24.jpg";
+
+const PREMIUM_IMAGES = [
+  img1, img2, img3, img4, img5, img6, img7, img8, img9, img10,
+  img11, img12, img13, img14, img15, img16, img17, img18, img19, img20,
+  img21, img22, img23, img24
+];
+
+function getNumericId(id) {
+  if (typeof id === 'number') return id;
+  if (typeof id === 'string') {
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+      hash = id.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return Math.abs(hash);
+  }
+  return 0;
+}
 
 /**
  * Normalize DB response → B2B frontend shape
@@ -8,7 +50,10 @@ import { supabase } from "../client";
  * - Replaces rating/reviews with available unit count
  */
 export function normalizeProperty(data) {
-  const units = data.units || [];
+  // Only keep 'shared_room' and 'one_bedroom' units
+  const units = (data.units || []).filter(
+    (u) => u.unit_type === 'shared_room' || u.unit_type === 'one_bedroom'
+  );
   const photos = data.property_photos || [];
 
   // Find cheapest monthly rent — prefer b2b pricing, fallback to any
@@ -24,17 +69,20 @@ export function normalizeProperty(data) {
     ? Math.min(...pricingPool.map((p) => p.cents))
     : 0;
 
-  // Cover image = primary photo, or first photo
-  const sortedPhotos = [...photos].sort((a, b) => a.display_order - b.display_order);
-  const primaryPhoto = sortedPhotos.find((p) => p.is_primary) || sortedPhotos[0];
-  const coverImage = primaryPhoto?.storage_path || null;
-
-  // All gallery images
-  const gallery = sortedPhotos.map((p) => ({
-    url: p.storage_path,
-    alt: p.alt_text,
-    caption: p.caption,
-    isPrimary: p.is_primary,
+  // Dynamically map premium images based on property ID
+  const baseIndex = getNumericId(data.id);
+  const numGalleryImages = 5;
+  const assignedImages = [];
+  for (let i = 0; i < numGalleryImages; i++) {
+    const imgIndex = (baseIndex + i) % PREMIUM_IMAGES.length;
+    assignedImages.push(PREMIUM_IMAGES[imgIndex]);
+  }
+  const coverImage = assignedImages[0];
+  const gallery = assignedImages.map((img, idx) => ({
+    url: img,
+    alt: `${data.name || 'Property'} Photo ${idx + 1}`,
+    caption: idx === 0 ? "Primary Photo" : `Gallery Photo ${idx}`,
+    isPrimary: idx === 0,
   }));
 
   // Unit breakdown by type (for B2B property cards)
@@ -70,6 +118,7 @@ export function normalizeProperty(data) {
   return {
     // Pass through all raw DB fields
     ...data,
+    units,
 
     // Mapped fields for B2B components
     title: data.name,

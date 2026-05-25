@@ -16,7 +16,7 @@ import { ARIX_ENABLED } from '../App';
 // Used to look up availability for cart items added before unitTypeKey was stored.
 const UNIT_TYPE_KEY_BY_LABEL = {
   'Private Studio': 'studio',
-  '1-Bedroom Apartment': 'one_bedroom',
+  'Single Room': 'one_bedroom',
   '2-Bedroom Apartment': 'two_bedroom',
   'Shared Room': 'shared_room',
 };

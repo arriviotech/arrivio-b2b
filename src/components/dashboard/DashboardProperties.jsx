@@ -98,7 +98,7 @@ const DashboardProperties = () => {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {filteredAndSortedProperties.map(property => {
-                        const typeLabels = { studio: 'Studio', one_bedroom: '1-Bedroom', two_bedroom: '2-Bedroom', shared_room: 'Shared Room' };
+                        const typeLabels = { studio: 'Studio', one_bedroom: 'Single Room', two_bedroom: '2-Bedroom', shared_room: 'Shared Room' };
                         const reservedBreakdown = Object.entries(property.breakdown || {})
                             .filter(([, count]) => count > 0)
                             .map(([type, count]) => ({
