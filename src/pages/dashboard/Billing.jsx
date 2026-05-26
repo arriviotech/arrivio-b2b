@@ -1,191 +1,198 @@
-import React from 'react';
-import { CreditCard, Package, Clock, CheckCircle2, AlertCircle, ArrowUpRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { 
+  CreditCard, Clock, CheckCircle2, ArrowUpRight, Calendar, 
+  FileText, Download, ShieldCheck, ChevronRight, ToggleLeft, ToggleRight, Sparkles 
+} from 'lucide-react';
 
 const Billing = () => {
-    const activePlan = {
-        name: 'Enterprise Plus',
-        price: '€2,499',
-        period: 'Monthly',
-        nextBilling: 'April 10, 2026',
-        usage: {
-            residents: { current: 142, limit: 500 },
-            properties: { current: 12, limit: 25 }
-        }
-    };
+  const [autoRefill, setAutoRefill] = useState(true);
+  
+  const activePlan = {
+    name: 'Enterprise Dashboard SaaS',
+    yearlyStandardPrice: 3000,
+    yearlyPromoPrice: 1499,
+    nextBilling: 'October 12, 2026',
+    seatsUsed: 48,
+    seatsLimit: 100,
+    propertiesUsed: 3,
+    propertiesLimit: 10,
+  };
 
-    const ProgressBar = ({ current, limit, label }) => {
-        const percentage = (current / limit) * 100;
-        return (
-            <div className="space-y-2">
-                <div className="flex justify-between items-end">
-                    <span className="text-sm font-bold text-gray-700">{label}</span>
-                    <span className="text-xs font-medium text-gray-500">{current} / {limit} Units</span>
-                </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                        className="h-full bg-[#1e6f50] rounded-full transition-all duration-1000"
-                        style={{ width: `${percentage}%` }}
-                    ></div>
-                </div>
-            </div>
-        );
-    };    return (
-        <div className="max-w-[1100px] mx-auto animate-in fade-in duration-500 space-y-6">
-            <div className="flex justify-between items-center mb-2">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Billing & Subscription</h1>
-                    <p className="text-sm text-gray-500 font-medium">Manage your plan, usage limits and billing preferences</p>
-                </div>
-                <button className="px-5 py-2.5 bg-[#0a2e1f] text-white rounded-xl font-bold hover:bg-[#1e6f50] transition-all shadow-lg shadow-[#0a2e1f]/10 active:scale-95 flex items-center gap-2 text-sm">
-                    Upgrade Plan
-                    <ArrowUpRight size={16} />
-                </button>
-            </div>
+  // Mock corporate transaction invoices
+  const [invoices] = useState([
+    { id: '#INV-9820', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€1,499.00', status: 'Paid' },
+    { id: '#INV-9411', date: 'Feb 18, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,000.00', status: 'Paid' },
+    { id: '#INV-8950', date: 'Jan 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€2,500.00', status: 'Paid' }
+  ]);
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Plan Card */}
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-48 h-48 bg-[#1e6f50]/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-700"></div>
-                        
-                        <div className="relative z-10">
-                            <div className="flex items-center justify-between mb-8">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-[#1e6f50]/10 flex items-center justify-center text-[#1e6f50]">
-                                        <Package size={24} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] font-black text-[#1e6f50] uppercase tracking-[0.2em] mb-0.5">Current Plan</p>
-                                        <h3 className="text-xl font-bold text-gray-900">{activePlan.name}</h3>
-                                        <div className="mt-3 space-y-1">
-                                            <p className="text-xs text-gray-400 line-through font-medium">Annual dashboard subscription: €3,000 per year</p>
-                                            <p className="text-[13px] font-bold text-[#1e6f50] leading-snug max-w-lg">
-                                                The dashboard subscription is complimentary for the first 6 months, followed by a charge of €1,500 for the remaining 6 months.
-                                            </p>
-                                            <div className="flex items-center gap-2 mt-2">
-                                                <span className="px-2 py-0.5 rounded-md bg-amber-50 text-[10px] font-bold text-amber-600 border border-amber-100 uppercase tracking-wider">
-                                                    Special SaaS Offer: 50% Off
-                                                </span>
-                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                                    Valid till 2027
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Pricing</p>
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-2xl font-black text-gray-900">{activePlan.price}</span>
-                                        <span className="text-xs text-gray-500 font-medium">/{activePlan.period.toLowerCase()}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 p-6 bg-gray-50/50 rounded-2xl border border-gray-50">
-                                <div>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Usage Statistics</p>
-                                    <div className="space-y-4">
-                                        <ProgressBar label="Resident Capacity" current={activePlan.usage.residents.current} limit={activePlan.usage.residents.limit} />
-                                        <ProgressBar label="Property Count" current={activePlan.usage.properties.current} limit={activePlan.usage.properties.limit} />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col justify-center border-l border-gray-100 md:pl-8">
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Next Renewal</p>
-                                    <div className="flex items-center gap-2 text-gray-900">
-                                        <Clock size={18} className="text-amber-500" />
-                                        <span className="text-base font-bold">{activePlan.nextBilling}</span>
-                                    </div>
-                                    <p className="text-[10px] text-gray-400 mt-2">Auto-renewal is enabled for this account</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Payment Methods */}
-                    <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-bold text-gray-900">Payment Methods</h3>
-                            <button className="text-xs font-bold text-[#1e6f50] hover:text-[#15543c] transition-colors flex items-center gap-1.5">
-                                <Plus size={14} />
-                                Add New Card
-                            </button>
-                        </div>
-                        
-                        <div className="flex items-center justify-between p-5 bg-gray-50 rounded-2xl border border-gray-100 group hover:border-[#1e6f50]/20 hover:bg-white transition-all">
-                            <div className="flex items-center gap-4">
-                                <div className="w-10 h-8 bg-black rounded-lg flex items-center justify-center text-white font-black text-[10px]">
-                                    VISA
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <p className="text-sm font-bold text-gray-900 leading-none">•••• 4242</p>
-                                    <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-[9px] font-black text-emerald-600 uppercase tracking-wider">Default</span>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <p className="text-[10px] text-gray-500 font-medium hidden sm:block">Expires 12/28</p>
-                                <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                                    <ArrowUpRight size={16} />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Account Summary Sidebar */}
-                <div className="space-y-6">
-                    <div className="bg-[#0a2e1f] rounded-3xl p-8 text-white shadow-xl shadow-[#0a2e1f]/20 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -mr-12 -mt-12"></div>
-                        <h4 className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4">Account Balance</h4>
-                        <div className="mb-6">
-                            <p className="text-3xl font-black">€0.00</p>
-                            <p className="text-white/60 text-[10px] mt-1 font-medium italic">No outstanding payments</p>
-                        </div>
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-2.5 text-xs font-medium p-3 rounded-xl bg-white/5 border border-white/10">
-                                <CheckCircle2 className="text-[#4ade80]" size={16} />
-                                Automatic billing is ON
-                            </div>
-                            <button className="w-full py-3 bg-white text-[#0a2e1f] rounded-xl font-bold hover:bg-gray-100 transition-all active:scale-[0.98] text-sm">
-                                Pay Now
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-                        <h4 className="text-[11px] font-bold text-gray-900 mb-5 uppercase tracking-wider">Quick Actions</h4>
-                        <div className="space-y-2">
-                            <button className="w-full p-3.5 rounded-xl border border-gray-50 hover:border-[#1e6f50]/20 hover:bg-gray-50 transition-all text-left flex items-center justify-between group">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                                        <AlertCircle size={14} />
-                                    </div>
-                                    <span className="text-xs font-bold">Update Tax ID</span>
-                                </div>
-                                <ArrowUpRight size={12} className="text-gray-300 group-hover:text-gray-900 transition-colors" />
-                            </button>
-                            <button className="w-full p-3.5 rounded-xl border border-gray-50 hover:border-[#1e6f50]/20 hover:bg-gray-50 transition-all text-left flex items-center justify-between group">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                                        <CreditCard size={14} />
-                                    </div>
-                                    <span className="text-xs font-bold">Billing Address</span>
-                                </div>
-                                <ArrowUpRight size={12} className="text-gray-300 group-hover:text-gray-900 transition-colors" />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="max-w-[1100px] mx-auto animate-in fade-in duration-500 space-y-6 select-none pb-20">
+      
+      {/* Sleek Minimal Header */}
+      <div className="flex justify-between items-center mb-2 pb-6 border-b border-gray-150">
+        <div>
+          <h1 className="text-3xl font-serif font-semibold text-gray-900 tracking-tight">Billing & Subscription</h1>
+          <p className="text-sm text-gray-500 font-medium mt-2">Manage your premium SaaS plan, active licenses, and billing history.</p>
         </div>
-    );
-};
+      </div>
 
-const Plus = ({ size }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-    </svg>
-);
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        {/* Left Column: Plan, Licenses & History */}
+        <div className="md:col-span-2 space-y-6">
+          
+          {/* Subscription Plan details */}
+          <div className="bg-white rounded-2xl border border-[#e5e7eb] p-6 sm:p-8 shadow-sm space-y-6 relative overflow-hidden">
+            
+            {/* Header / Pricing Row */}
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-6 border-b border-gray-100">
+              <div className="space-y-1">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Subscription Plan</p>
+                <h2 className="text-xl font-serif font-semibold text-gray-900 leading-snug">{activePlan.name}</h2>
+                <div className="flex items-center gap-2 pt-1">
+                  <span className="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-md uppercase tracking-wider">
+                    SaaS Launch Offer
+                  </span>
+                  <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                    <Calendar size={10} />
+                    Active till 2027
+                  </span>
+                </div>
+              </div>
+              
+              <div className="text-left sm:text-right shrink-0">
+                <span className="text-xs text-gray-400 line-through font-bold block">€{activePlan.yearlyStandardPrice} / year</span>
+                <div className="flex items-baseline justify-start sm:justify-end gap-1 mt-0.5">
+                  <span className="text-3xl font-serif font-semibold text-gray-900">€{activePlan.yearlyPromoPrice}</span>
+                  <span className="text-xs text-gray-500 font-bold">/ first year</span>
+                </div>
+                <span className="text-[9px] font-extrabold text-[#0f4c3a] block mt-1">First 6 Months Complimentary</span>
+              </div>
+            </div>
+
+            {/* Clean Deal Breakdown Text */}
+            <div className="bg-gray-50/80 border border-gray-150 rounded-2xl p-4.5 text-xs text-gray-655 font-medium leading-relaxed shadow-inner">
+              Your annual subscription starts with <span className="text-[#0f4c3a] font-extrabold">six complimentary months</span>. Billed once as €1,499 for the remaining six months of the first year (standard rate is €3,000/year thereafter).
+            </div>
+
+          </div>
+
+          {/* Recent Invoices & Billing History */}
+          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#e5e7eb] shadow-sm space-y-5">
+            <div>
+              <h3 className="font-serif font-semibold text-gray-955 text-sm uppercase tracking-wider">Billing History</h3>
+              <p className="text-xs text-gray-500 font-medium mt-0.5">Review past B2B platform renewals and pre-paid balance receipts.</p>
+            </div>
+
+            <div className="divide-y divide-gray-50">
+              {invoices.map((inv) => (
+                <div key={inv.id} className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-8 h-8 rounded-lg bg-gray-50 text-gray-400 border border-gray-150 flex items-center justify-center shrink-0">
+                      <FileText size={16} />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-gray-900">{inv.type}</span>
+                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{inv.id}</span>
+                      </div>
+                      <span className="text-gray-400 font-medium mt-0.5 block">{inv.date}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between sm:justify-end gap-6">
+                    <div className="text-left sm:text-right">
+                      <span className="font-extrabold text-gray-900 block">{inv.amount}</span>
+                      <span className="text-[9px] font-black text-emerald-705 uppercase tracking-widest block mt-0.5">{inv.status}</span>
+                    </div>
+                    
+                    <button className="h-8 px-3.5 bg-white border border-gray-250 hover:bg-gray-50 text-gray-650 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition-all flex items-center gap-1 cursor-pointer active:scale-95">
+                      <Download size={11} className="stroke-[2.5]" />
+                      PDF
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* Right Sidebar: Account Balance & Auto-refill Settings */}
+        <div className="md:col-span-1 space-y-6">
+          
+          {/* Account Balance Card */}
+          <div className="bg-[#0f4c3a] rounded-2xl p-6 sm:p-7 text-white shadow-sm hover:shadow-lg transition-all duration-300 relative overflow-hidden border border-[#0f4c3a]/25">
+            <div className="absolute -right-10 -top-10 w-28 h-28 bg-white/5 rounded-full blur-xl pointer-events-none" />
+            
+            <span className="text-[9px] font-black text-emerald-300 uppercase tracking-[0.25em] mb-3 block">
+              Pre-paid Services Balance
+            </span>
+            <div className="mb-6">
+              <p className="text-3xl font-serif font-semibold tracking-tight">€3,500.00</p>
+              <p className="text-emerald-350 text-[10px] mt-1.5 font-bold flex items-center gap-1">
+                <CheckCircle2 size={12} className="shrink-0" />
+                Automatic billing is active
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="text-[10px] text-gray-250 font-medium leading-relaxed p-3.5 bg-white/5 border border-white/10 rounded-2xl shadow-inner">
+                Arrivio Credits are used to procure relocation services like Airport Pickups, Anmeldung, and Tax Setups for your employees.
+              </div>
+              <button className="w-full py-3 bg-white text-[#0f4c3a] hover:bg-gray-50 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all active:scale-[0.98] cursor-pointer shadow-sm">
+                Top Up Balance
+              </button>
+            </div>
+          </div>
+
+          {/* Auto-Refill/Refill Config card */}
+          <div className="bg-white rounded-2xl p-6 border border-[#e5e7eb] shadow-sm space-y-5">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                  Auto-Refill Settings
+                </h4>
+                <p className="text-[10px] text-gray-400 font-medium mt-0.5">Top-up credit balances automatically</p>
+              </div>
+              
+              <button 
+                type="button" 
+                onClick={() => setAutoRefill(!autoRefill)}
+                className="text-gray-400 hover:text-gray-950 transition-all cursor-pointer"
+              >
+                {autoRefill ? (
+                  <ToggleRight size={32} className="text-[#0f4c3a]" />
+                ) : (
+                  <ToggleLeft size={32} className="text-gray-300" />
+                )}
+              </button>
+            </div>
+
+            <div className="p-4 bg-gray-50 rounded-2xl border border-gray-150 text-xs font-bold text-gray-700 space-y-2.5">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 font-medium text-[10px] uppercase">Threshold</span>
+                <span>When balance falls below €500</span>
+              </div>
+              <div className="border-t border-gray-200/50 my-2" />
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 font-medium text-[10px] uppercase">Top-up Amount</span>
+                <span className="text-[#0f4c3a]">Automatically add €1,000</span>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2.5 text-[10px] text-gray-450 leading-relaxed bg-emerald-50/30 border border-emerald-100/20 p-3 rounded-xl">
+              <ShieldCheck size={14} className="text-[#0f4c3a] shrink-0 mt-0.5" />
+              <span>Protects B2B relocation service pipelines from getting stuck due to insufficient credit reserves.</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+};
 
 export default Billing;

@@ -4,18 +4,15 @@ import { Package } from "lucide-react";
 import { useServices } from "../../supabase/hooks/useServices";
 import { useServiceOrders } from "../../supabase/hooks/useServiceOrders";
 
+const BADGE_CLASSES = {
+  active: "bg-blue-50 text-blue-700 border-blue-100",
+  delivered: "bg-emerald-50 text-emerald-700 border-emerald-100",
+  cancelled: "bg-gray-50 text-gray-600 border-gray-100",
+  pending: "bg-amber-50 text-amber-700 border-amber-100"
+};
+
 function badgeClass(status) {
-  switch (status) {
-    case "active":
-      return "bg-blue-50 text-blue-700 border-blue-100";
-    case "delivered":
-      return "bg-green-50 text-green-700 border-green-100";
-    case "cancelled":
-      return "bg-gray-50 text-gray-600 border-gray-100";
-    case "pending":
-    default:
-      return "bg-amber-50 text-amber-700 border-amber-100";
-  }
+  return BADGE_CLASSES[status] || BADGE_CLASSES.pending;
 }
 
 function formatDate(iso) {
@@ -46,43 +43,43 @@ export default function RecentServiceOrders() {
   }, [orders, servicesById]);
 
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm overflow-hidden flex flex-col h-full">
       <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
         <div>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Recent Service Orders</p>
+          <h2 className="text-base font-bold text-gray-900 leading-none">Recent Services</h2>
         </div>
         <NavLink
           to="/dashboard/services"
-          className="text-xs font-bold text-[#1e6f50] hover:text-[#134a35] transition-colors"
+          className="text-xs font-bold text-[#0f4c3a] hover:text-[#0a3a2b] transition-colors"
         >
           View all →
         </NavLink>
       </div>
 
       {loading ? (
-        <div className="p-6 text-sm text-gray-500">Loading...</div>
+        <div className="p-6 text-sm text-gray-550 font-medium">Loading...</div>
       ) : recent.length === 0 ? (
-        <div className="p-6 text-sm text-gray-500">No service orders yet.</div>
+        <div className="p-6 text-sm text-gray-550 font-medium flex-1 flex items-center justify-center">No service orders yet.</div>
       ) : (
-        <div className="divide-y divide-gray-50">
+        <div className="divide-y divide-gray-50 flex-1">
           {recent.map((o) => (
-            <div key={o.id} className="px-6 py-5 flex items-center justify-between gap-4">
+            <div key={o.id} className="px-6 py-4.5 flex items-center justify-between gap-4 hover:bg-gray-50/30 transition-colors">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 shrink-0">
-                  <Package className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 shrink-0">
+                  <Package className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-gray-900 truncate">{o.serviceName}</p>
-                  <p className="text-xs text-gray-500 mt-1">{formatDate(o.orderedAt)}</p>
+                  <p className="text-xs font-bold text-gray-900 truncate">{o.serviceName}</p>
+                  <p className="text-[10px] text-gray-500 mt-1">{formatDate(o.orderedAt)}</p>
                 </div>
               </div>
 
               <div className="shrink-0 text-right">
-                <span className={`inline-flex px-2.5 py-1 rounded-full text-[10px] font-extrabold border ${badgeClass(o.status)}`}>
-                  {String(o.status || "pending").toUpperCase()}
+                <span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-extrabold border uppercase tracking-wider ${badgeClass(o.status)}`}>
+                  {o.status || "pending"}
                 </span>
                 {typeof o.priceEur === "number" ? (
-                  <p className="text-sm font-bold text-gray-900 mt-1">€{o.priceEur.toFixed(0)}</p>
+                  <p className="text-xs font-bold text-gray-900 mt-1">€{o.priceEur.toFixed(0)}</p>
                 ) : null}
               </div>
             </div>
@@ -92,4 +89,3 @@ export default function RecentServiceOrders() {
     </div>
   );
 }
-

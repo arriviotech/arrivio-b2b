@@ -177,8 +177,8 @@ export default function Services() {
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#0f4c3a] bg-emerald-50 border border-emerald-100/50 px-2.5 py-1 rounded-full mb-2.5 inline-block shadow-sm">
             ✦ Relocation Solutions
           </span>
-          <h1 className="text-3xl font-black tracking-tight text-gray-900 leading-none mt-1">Services</h1>
-          <p className="text-gray-500 mt-2 font-medium text-sm">Everything you need to settle your employees into life in Germany.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 leading-none mt-1.5">Services</h1>
+          <p className="text-gray-505 mt-2 font-medium text-sm">Everything you need to settle your employees into life in Germany.</p>
         </div>
 
         <div className="bg-gray-100/80 border border-gray-200/50 p-1 rounded-2xl flex items-center shrink-0 shadow-sm">
@@ -218,9 +218,9 @@ export default function Services() {
                 <button
                   key={c.key}
                   onClick={() => setCategory(c.key)}
-                  className={`h-10 px-4 rounded-full text-sm font-bold border transition-colors ${active
-                    ? "bg-[#0a1a12] text-white border-[#0a1a12]"
-                    : "bg-white text-gray-700 border-gray-200 hover:border-[#1e6f50] hover:text-[#1e6f50]"
+                  className={`h-10 px-4 rounded-full text-xs font-bold border uppercase tracking-wider transition-colors ${active
+                    ? "bg-[#0f4c3a] text-white border-[#0f4c3a] shadow-sm"
+                    : "bg-white text-gray-700 border-gray-200 hover:border-[#0f4c3a] hover:text-[#0f4c3a]"
                     }`}
                 >
                   {c.label} ({count})

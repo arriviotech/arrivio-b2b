@@ -10,9 +10,9 @@ const DashboardHome = () => {
 
     // Mock data for booked properties
     const propertiesData = [
-        { id: 1, name: 'Frankfurt Sachsenhausen', onboardingStep: 0, moveInDate: 'Oct 12, 2025' },
-        { id: 2, name: 'Frankfurt Single Living', onboardingStep: 0, moveInDate: 'Nov 01, 2025' },
-        { id: 3, name: 'Berlin Central Hub', onboardingStep: 0, moveInDate: 'Dec 15, 2025' },
+        { id: 1, name: 'Frankfurt Sachsenhausen', onboardingStep: 8, moveInDate: 'Oct 12, 2026' },
+        { id: 2, name: 'Frankfurt Single Living', onboardingStep: 4, moveInDate: 'Nov 01, 2026' },
+        { id: 3, name: 'Berlin Central Hub', onboardingStep: 0, moveInDate: 'Dec 15, 2026' },
     ];
 
     const filteredAndSortedProperties = useMemo(() => {
@@ -30,10 +30,10 @@ const DashboardHome = () => {
 
     return (
         <div className="max-w-6xl mx-auto">
-            <header className="flex justify-between items-center mb-10">
+            <header className="flex justify-between items-center mb-10 pb-6 border-b border-gray-150">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
-                    <p className="text-gray-500 mt-1">Here is what's happening today.</p>
+                    <p className="text-gray-505 mt-2 font-medium text-sm">Here is what's happening today.</p>
                 </div>
             </header>
 
@@ -83,24 +83,27 @@ const DashboardHome = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                    <h3 className="text-gray-500 font-bold tracking-wide text-xs uppercase mb-2">Active Properties</h3>
-                    <p className="text-4xl font-bold tracking-tight text-gray-900">3</p>
-                    <div className="mt-4 text-sm font-medium text-emerald-600 flex items-center gap-1">
+                <div className="bg-white p-6 rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300">
+                    <h3 className="text-gray-400 font-black tracking-wide text-[9px] uppercase mb-2">Active Properties</h3>
+                    <p className="text-3xl font-bold text-gray-900 leading-tight">3</p>
+                    <div className="mt-4 text-xs font-bold text-[#0f4c3a] flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>+2 from last month</span>
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                    <h3 className="text-gray-500 font-bold tracking-wide text-xs uppercase mb-2">Total Employees</h3>
-                    <p className="text-4xl font-bold tracking-tight text-gray-900">48</p>
-                    <div className="mt-4 text-sm font-medium text-emerald-600 flex items-center gap-1">
+                <div className="bg-white p-6 rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300">
+                    <h3 className="text-gray-400 font-black tracking-wide text-[9px] uppercase mb-2">Total Employees</h3>
+                    <p className="text-3xl font-bold text-gray-900 leading-tight">48</p>
+                    <div className="mt-4 text-xs font-bold text-[#0f4c3a] flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>+5 new arrivals</span>
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                    <h3 className="text-gray-500 font-bold tracking-wide text-xs uppercase mb-2">Monthly Spend</h3>
-                    <p className="text-4xl font-bold tracking-tight text-gray-900">€28,000</p>
-                    <div className="mt-4 text-sm font-medium text-gray-400 flex items-center gap-1">
+                <div className="bg-white p-6 rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300">
+                    <h3 className="text-gray-400 font-black tracking-wide text-[9px] uppercase mb-2">Monthly Spend</h3>
+                    <p className="text-3xl font-bold text-gray-900 leading-tight">€28,000</p>
+                    <div className="mt-4 text-xs font-bold text-gray-500 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
                         <span>Projected for March</span>
                     </div>
                 </div>
@@ -109,9 +112,9 @@ const DashboardHome = () => {
             <ServicesStrip />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-gray-100 min-h-[320px]">
+                <div className="lg:col-span-2 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-[#e5e7eb] min-h-[320px]">
                     <div className="flex justify-between items-center mb-8">
-                        <h2 className="text-xl font-bold tracking-tight">Recent Activity</h2>
+                        <h2 className="text-lg font-bold text-gray-900 leading-none">Recent Activity</h2>
                     </div>
                     <div className="flex flex-col items-center justify-center h-48 text-gray-400">
                         <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">

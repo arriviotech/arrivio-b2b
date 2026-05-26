@@ -17,7 +17,7 @@ const Dashboard = () => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     return (
-        <div className="min-h-screen bg-[var(--color-background-neutral)] flex font-sans text-gray-900">
+        <div className="min-h-screen bg-[#f2f2f2] flex font-sans text-gray-900">
             <DashboardSidebar
                 isCollapsed={isSidebarCollapsed}
                 toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}

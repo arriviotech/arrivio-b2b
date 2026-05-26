@@ -40,7 +40,7 @@ function getServiceDetails(service) {
       ];
     case "seed-insurance":
       return [
-        { label: "Agent", value: "Lena, insurance expert" },
+        { label: "Agent", value: "Elena, insurance expert" }, // Elena/Lena
         { label: "Experience", value: "5 years helping clients choose German insurance" },
         { label: "Benefit", value: "Coverage review for health, liability, and rental protection" },
       ];
@@ -87,19 +87,19 @@ export default function ServiceCard({ service, onRequest, variant = "default" })
       }}
     >
       <div className="relative bg-white w-full max-w-[480px] rounded-2xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col max-h-[90vh]" onMouseDown={(e) => e.stopPropagation()}>
-        <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">{service.name}</h2>
-            <p className="text-sm text-gray-500 mt-0.5">€{Number(service.priceEur || 0).toFixed(0)}</p>
+            <h2 className="text-xl font-serif font-semibold text-gray-900 leading-snug">{service.name}</h2>
+            <p className="text-sm font-bold text-[#0f4c3a] mt-1">€{Number(service.priceEur || 0).toFixed(0)}</p>
             {service.detailedDescription || service.description ? (
-              <p className="text-sm text-gray-600 mt-2 max-w-[440px]">
+              <p className="text-xs text-gray-500 mt-2 max-w-[400px] leading-relaxed font-medium">
                 {service.detailedDescription || service.description}
               </p>
             ) : null}
           </div>
           <button
             onClick={() => setShowDetails(false)}
-            className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-xl transition-colors cursor-pointer"
             aria-label="Close"
           >
             <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,12 +108,12 @@ export default function ServiceCard({ service, onRequest, variant = "default" })
           </button>
         </div>
 
-        <div className="p-5 space-y-4 flex-1 overflow-auto">
-          <div className="rounded-3xl border border-gray-200 bg-gray-50 p-4 space-y-3">
+        <div className="p-6 space-y-4 flex-1 overflow-auto">
+          <div className="rounded-2xl border border-gray-150 bg-gray-50 p-4 space-y-3 shadow-inner">
             {details.map((detail) => (
-              <div key={detail.label} className="flex items-start justify-between gap-4">
-                <span className="text-sm font-semibold text-gray-900">{detail.label}</span>
-                <span className="text-sm text-gray-600">{detail.value}</span>
+              <div key={detail.label} className="flex items-start justify-between gap-4 text-xs font-semibold">
+                <span className="text-gray-400 uppercase tracking-wider text-[10px]">{detail.label}</span>
+                <span className="text-gray-800 text-right">{detail.value}</span>
               </div>
             ))}
           </div>
@@ -123,7 +123,7 @@ export default function ServiceCard({ service, onRequest, variant = "default" })
               setShowDetails(false);
               onRequest?.(service);
             }}
-            className="w-full h-12 rounded-2xl bg-[#0a1a12] text-white text-sm font-bold hover:bg-black transition-colors"
+            className="w-full h-12 rounded-xl bg-[#0f4c3a] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#0a3a2b] transition-all shadow-sm active:scale-98 cursor-pointer"
           >
             Proceed with service
           </button>
@@ -132,182 +132,63 @@ export default function ServiceCard({ service, onRequest, variant = "default" })
     </div>
   ) : null;
 
-  // Dashboard variant
-  if (variant === "dashboard") {
-    return (
-      <>
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow w-full">
-          <div className="p-5 flex items-start justify-between gap-4">
-            <div className="flex items-start gap-3 min-w-0">
-              <div className="flex flex-col items-center gap-3 shrink-0">
-                <div className="w-10 h-10 rounded-xl bg-[#1e6f50]/10 border border-[#1e6f50]/10 flex items-center justify-center text-[#1e6f50]">
-                  <Icon className="w-5 h-5" />
-                </div>
-              </div>
-              <div className="min-w-0">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{service.category}</p>
-                <h3 className="text-base font-bold text-gray-900 truncate">{service.name}</h3>
-                {service.description ? (
-                  <p className="text-sm text-gray-500 mt-1 leading-snug line-clamp-2 min-h-[40px]">{service.description}</p>
-                ) : null}
-                <p className="text-sm font-bold text-gray-900 mt-3">€{Number(service.priceEur || 0).toFixed(0)}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="px-5 pb-5 flex items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={() => setShowDetails(true)}
-              className="h-10 px-4 rounded-2xl border border-gray-200 text-sm font-bold uppercase text-[#1e6f50] bg-white hover:bg-[#f6fbf6] transition-colors"
-            >
-              Details
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onRequest?.(service);
-              }}
-              className="h-10 px-4 rounded-2xl bg-[#0a1a12] text-white text-sm font-bold hover:bg-black transition-colors"
-            >
-              Add
-            </button>
-          </div>
-        </div>
-        {detailsModal}
-      </>
-    );
-  }
-
-  // Compact variant
-  if (variant === "compact") {
-    return (
-      <>
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-          <div className="p-5 flex items-start justify-between gap-4">
-            <div className="flex items-start gap-3 min-w-0">
-              <div className="flex flex-col items-center gap-3 shrink-0">
-                <div className="w-10 h-10 rounded-xl bg-[#1e6f50]/10 border border-[#1e6f50]/10 flex items-center justify-center text-[#1e6f50]">
-                  <Icon className="w-5 h-5" />
-                </div>
-              </div>
-              <div className="min-w-0">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{service.category}</p>
-                <h3 className="text-base font-bold text-gray-900 truncate">{service.name}</h3>
-                {service.description ? (
-                  <p className="text-sm text-gray-500 mt-1 leading-snug line-clamp-2 min-h-[40px]">{service.description}</p>
-                ) : null}
-              </div>
-            </div>
-
-            <div className="text-right shrink-0 flex flex-col items-end gap-3">
-              <p className="text-sm font-bold text-gray-900">€{Number(service.priceEur || 0).toFixed(0)}</p>
-            </div>
-          </div>
-
-          <div className="px-5 pb-5 flex items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={() => setShowDetails(true)}
-              className="h-10 px-4 rounded-2xl border border-gray-200 text-sm font-bold uppercase text-[#1e6f50] bg-white hover:bg-[#f6fbf6] transition-colors"
-            >
-              Details
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onRequest?.(service);
-              }}
-              className="h-10 px-4 rounded-2xl bg-[#0a1a12] text-white text-sm font-bold hover:bg-black transition-colors"
-            >
-              Add
-            </button>
-          </div>
-        </div>
-        {detailsModal}
-      </>
-    );
-  }
-
-  // Popular variant - smaller card, no buttons, opens details on click
+  // Popular variant (smaller version of stacked card, e.g. for popular strip)
   if (variant === "popular") {
     return (
       <>
-        <button
-          type="button"
-          onClick={() => setShowDetails(true)}
-          className="w-full bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all overflow-hidden text-left hover:border-[#1e6f50]/30"
+        <div
+          onClick={(e) => {
+            e.preventDefault();
+            onRequest?.(service);
+          }}
+          className="bg-white rounded-2xl border border-gray-200/80 hover:border-[#0f4c3a]/30 shadow-sm hover:shadow-md transition-all duration-300 p-5 flex flex-col items-start text-left cursor-pointer group h-full min-h-[170px]"
         >
-          <div className="p-4 flex items-start gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#1e6f50]/10 border border-[#1e6f50]/10 flex items-center justify-center text-[#1e6f50] shrink-0">
-              <Icon className="w-5 h-5" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">{service.category}</p>
-              <h3 className="text-sm font-bold text-gray-900 truncate">{service.name}</h3>
-              {service.description ? (
-                <p className="text-xs text-gray-500 mt-1 leading-snug line-clamp-2">{service.description}</p>
-              ) : null}
-            </div>
+          {/* Icon Box */}
+          <div className="w-10 h-10 rounded-xl bg-[#0f4c3a]/5 border border-[#0f4c3a]/10 flex items-center justify-center text-[#0f4c3a] transition-colors group-hover:bg-[#0f4c3a]/10">
+            <Icon className="w-5 h-5 stroke-[2]" />
           </div>
-          <div className="px-4 pb-3 text-right">
-            <p className="text-sm font-bold text-gray-900">€{Number(service.priceEur || 0).toFixed(0)}</p>
-          </div>
-        </button>
+          
+          {/* Content */}
+          <h3 className="text-sm font-bold text-gray-900 mt-3.5 mb-1.5 tracking-tight leading-snug">
+            {service.name}
+          </h3>
+          
+          {service.description ? (
+            <p className="text-[11px] text-gray-500 font-medium leading-relaxed line-clamp-2">
+              {service.description}
+            </p>
+          ) : null}
+        </div>
         {detailsModal}
       </>
     );
   }
 
-  // Default / standard card
+  // Dashboard, Compact, and Default variants: Standard stacked minimalist card
   return (
     <>
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-        <div className="p-5 flex items-start justify-between gap-4">
-          <div className="flex items-start gap-3 min-w-0">
-            <div className="flex flex-col items-center gap-3 shrink-0">
-              <div className="w-10 h-10 rounded-xl bg-[#1e6f50]/10 border border-[#1e6f50]/10 flex items-center justify-center text-[#1e6f50]">
-                <Icon className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="min-w-0">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{service.category}</p>
-              <h3 className="text-base font-bold text-gray-900 truncate">{service.name}</h3>
-              {service.description ? (
-                <p className="text-sm text-gray-500 mt-1 leading-snug line-clamp-2 min-h-[40px]">{service.description}</p>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="text-right shrink-0 flex flex-col items-end gap-3">
-            <p className="text-sm font-bold text-gray-900">€{Number(service.priceEur || 0).toFixed(0)}</p>
-          </div>
+      <div
+        onClick={(e) => {
+          e.preventDefault();
+          onRequest?.(service);
+        }}
+        className="bg-white rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col items-start text-left cursor-pointer group h-full min-h-[180px] w-full"
+      >
+        {/* Icon Box */}
+        <div className="w-12 h-12 rounded-[14px] bg-[#0f4c3a]/5 border border-[#0f4c3a]/10 flex items-center justify-center text-[#0f4c3a] transition-colors group-hover:bg-[#0f4c3a]/10">
+          <Icon className="w-6 h-6 stroke-[1.75]" />
         </div>
-
-        <div className="px-5 pb-5 flex items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={() => setShowDetails(true)}
-            className="h-10 px-4 rounded-2xl border border-gray-200 text-sm font-bold uppercase text-[#1e6f50] bg-white hover:bg-[#f6fbf6] transition-colors"
-          >
-            Details
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onRequest?.(service);
-            }}
-            className="h-10 px-4 rounded-2xl bg-[#0a1a12] text-white text-sm font-bold hover:bg-black transition-colors"
-          >
-            Add
-          </button>
-        </div>
+        
+        {/* Content */}
+        <h3 className="text-[16px] font-bold text-gray-900 mt-4 mb-2 tracking-tight leading-snug">
+          {service.name}
+        </h3>
+        
+        {service.description ? (
+          <p className="text-xs text-gray-500 font-medium leading-relaxed">
+            {service.description}
+          </p>
+        ) : null}
       </div>
       {detailsModal}
     </>
