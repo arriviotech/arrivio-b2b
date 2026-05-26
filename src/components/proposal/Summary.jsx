@@ -9,6 +9,7 @@ const Summary = ({
   isGeneratingPDF,
   isProcessingCheckout,
   servicesCount = 0,
+  servicesTotal = 0,
   estimatedMonthlyCost = 0,
   furnitureAddOnTotal = 0,
   furnitureCount = 0,
@@ -89,12 +90,6 @@ const Summary = ({
                 </span>
               </div>
             )}
-            {servicesCount > 0 && (
-              <div className="flex justify-between text-gray-500">
-                <span>Relocation services</span>
-                <span className="text-[11px] italic">{servicesCount} added · priced on call</span>
-              </div>
-            )}
           </div>
 
           {/* Total */}
@@ -109,9 +104,25 @@ const Summary = ({
               <span className="text-sm font-normal text-[#0f4c3a]/60">/mo</span>
             </div>
             <div className="text-[11px] text-gray-500 mt-1.5 leading-snug">
-              Housing + furniture. Services and final pricing confirmed on the call.
+              Housing + furniture. Final pricing confirmed on the call.
             </div>
           </div>
+
+          {/* One-time services — separate from monthly recurring */}
+          {servicesCount > 0 && (
+            <div className="mt-4">
+              <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">
+                One-time (at booking)
+              </div>
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>
+                  Relocation services
+                  <span className="text-[11px] text-gray-400 ml-1">({servicesCount})</span>
+                </span>
+                <span className="font-bold text-gray-900">{formatCurrency(servicesTotal)}</span>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

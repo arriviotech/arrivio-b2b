@@ -15,9 +15,8 @@ import { ARIX_ENABLED } from '../App';
 // Reverse map: formatted display label → raw DB unit_type
 // Used to look up availability for cart items added before unitTypeKey was stored.
 const UNIT_TYPE_KEY_BY_LABEL = {
-  'Private Studio': 'studio',
+  'Studio': 'studio',
   'Single Room': 'one_bedroom',
-  '2-Bedroom Apartment': 'two_bedroom',
   'Shared Room': 'shared_room',
 };
 
@@ -204,6 +203,13 @@ const Proposal = () => {
   };
 
   const selectedServiceCount = Object.keys(selectedServices).length;
+  // Services are one-time charges. For scalable services qty = employee count;
+  // for non-scalable qty is always 1.
+  const servicesTotal = Object.entries(selectedServices).reduce((sum, [id, qty]) => {
+    const svc = RELOCATION_SERVICES.find((s) => s.id === id);
+    if (!svc || !svc.priceEur) return sum;
+    return sum + svc.priceEur * (svc.scalable ? qty : 1);
+  }, 0);
 
   const propertiesData = reservations.reduce((acc, current) => {
     if (!acc[current.propertyId]) {
@@ -296,22 +302,47 @@ const Proposal = () => {
   }, [reservations]);
 
   const { getDesignForProperty, getSharedDesignForProperty } = useArixDesigner();
+
+  // Sum furniture designs across all unit-type slots a property has.
+  // Studio → state[`${id}_studio`], Single Room → state[`${id}_one_bedroom`],
+  // Shared Room → state[`${id}_shared`] (via getSharedDesignForProperty).
+  const slotForLabel = (label) => {
+    if (label === 'Studio') return { slot: 'regular', key: 'studio' };
+    if (label === 'Single Room') return { slot: 'regular', key: 'one_bedroom' };
+    if (label === 'Shared Room') return { slot: 'shared', key: 'shared' };
+    return null;
+  };
+  const designsForProperty = (prop) => {
+    const labels = [...new Set((prop.units || []).map((u) => u.unitType).filter(Boolean))];
+    return labels
+      .map((label) => {
+        const meta = slotForLabel(label);
+        if (!meta) return null;
+        const design =
+          meta.slot === 'shared'
+            ? getSharedDesignForProperty(prop.id)
+            : getDesignForProperty(`${prop.id}_${meta.key}`);
+        return { label, design };
+      })
+      .filter(Boolean);
+  };
+
   const furnitureAddOnTotal = useMemo(() => {
     if (!ARIX_ENABLED) return 0;
     return groupedProperties.reduce((acc, prop) => {
-      const isShared = prop.units?.[0]?.unitType?.toLowerCase().includes('shared');
-      const d = isShared ? getSharedDesignForProperty(prop.id) : getDesignForProperty(prop.id);
-      return acc + (d?.addOnTotal || 0);
+      const slotDesigns = designsForProperty(prop);
+      return acc + slotDesigns.reduce((s, sd) => s + (sd.design?.addOnTotal || 0), 0);
     }, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupedProperties, getDesignForProperty, getSharedDesignForProperty]);
 
   const furnitureCount = useMemo(() => {
     if (!ARIX_ENABLED) return 0;
     return groupedProperties.reduce((acc, prop) => {
-      const isShared = prop.units?.[0]?.unitType?.toLowerCase().includes('shared');
-      const d = isShared ? getSharedDesignForProperty(prop.id) : getDesignForProperty(prop.id);
-      return acc + (d?.selectedItems?.length || 0);
+      const slotDesigns = designsForProperty(prop);
+      return acc + slotDesigns.reduce((s, sd) => s + (sd.design?.selectedItems?.length || 0), 0);
     }, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupedProperties, getDesignForProperty, getSharedDesignForProperty]);
 
   const estimatedMonthlyTotalWithAddons = estimatedMonthlyCost + furnitureAddOnTotal;
@@ -321,22 +352,25 @@ const Proposal = () => {
     return { id, label: svc?.label || id, qty, scalable: !!svc?.scalable };
   });
 
-  // Furniture add-ons per property (from Arix Designer selections)
+  // Furniture add-ons per property (from Arix Designer selections).
+  // One entry per unit-type slot that actually has items selected.
   const resolvedFurniture = !ARIX_ENABLED
     ? []
-    : groupedProperties
-        .map((prop) => {
-          const isShared = prop.units?.[0]?.unitType?.toLowerCase().includes('shared');
-          const d = isShared ? getSharedDesignForProperty(prop.id) : getDesignForProperty(prop.id);
-          const items = d?.selectedItems || [];
-          return {
+    : groupedProperties.flatMap((prop) =>
+        designsForProperty(prop)
+          .map(({ label, design }) => ({
             propertyId: prop.id,
             propertyName: prop.name,
-            items: items.map((it) => ({ id: it.id, name: it.name, price: it.price || 0 })),
-            total: d?.addOnTotal || 0,
-          };
-        })
-        .filter((f) => f.items.length > 0);
+            unitLabel: label,
+            items: (design?.selectedItems || []).map((it) => ({
+              id: it.id,
+              name: it.name,
+              price: it.price || 0,
+            })),
+            total: design?.addOnTotal || 0,
+          }))
+          .filter((f) => f.items.length > 0),
+      );
 
   const pdfPayload = {
     groupedProperties,
@@ -369,7 +403,7 @@ const Proposal = () => {
           : '';
         const furnitureLine = resolvedFurniture.length > 0
           ? `Furniture add-on (Arix Designer):\n${resolvedFurniture.map(f =>
-              `• ${f.propertyName}: ${f.items.map(i => i.name).join(', ')} (+€${f.total}/mo)`
+              `• ${f.propertyName} · ${f.unitLabel}: ${f.items.map(i => i.name).join(', ')} (+€${f.total}/mo)`
             ).join('\n')}\n\n`
           : '';
         const notes = `${notesLine}${servicesLine}${furnitureLine}Here is my requested housing proposal:\n${fileUrl}\n(Note: Link expires in 60 minutes)`;
@@ -626,6 +660,7 @@ const Proposal = () => {
                   isGeneratingPDF={isGeneratingPDF}
                   isProcessingCheckout={isProcessingCheckout}
                   servicesCount={selectedServiceCount}
+                  servicesTotal={servicesTotal}
                   estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
                   furnitureAddOnTotal={furnitureAddOnTotal}
                   furnitureCount={furnitureCount}

@@ -15,12 +15,13 @@ import { useArixDesigner } from '../../context/ArixDesignerContext';
 import { ARIX_ENABLED } from '../../App';
 import ArixPropertyBlock from './ArixPropertyBlock';
 
-// Short label for each unit_type — used in list row chips.
+// Display label for each unit_type — used in list row chips.
+// Kept as a map (rather than passing the label through directly) so we can
+// override here later if any label needs trimming for the chip context.
 const SHORT_UNIT_LABEL = {
-  'Private Studio': 'Studio',
-  '1-Bedroom Apartment': '1BR',
-  '2-Bedroom Apartment': '2BR',
-  'Shared Room': 'Shared',
+  'Studio': 'Studio',
+  'Single Room': 'Single Room',
+  'Shared Room': 'Shared Room',
 };
 
 const PropertyListWithDrawer = ({
@@ -29,9 +30,38 @@ const PropertyListWithDrawer = ({
   updateQuantity,
   removeReservation,
 }) => {
-  const { getDesignForProperty } = useArixDesigner();
+  const { getDesignForProperty, getSharedDesignForProperty } = useArixDesigner();
   const [activeId, setActiveId] = useState(null);
   const active = properties.find((p) => p.id === activeId);
+
+  // Per-unit-type slot lookup for the Arix add-on chip on each row.
+  // Mirrors the same slot scheme used in ArixPropertyBlock + Proposal totals.
+  const SLOT_KEY_BY_LABEL = {
+    Studio: 'studio',
+    'Single Room': 'one_bedroom',
+  };
+  const arixTotalForProperty = (prop) => {
+    const labels = [...new Set((prop.units || []).map((u) => u.unitType).filter(Boolean))];
+    return labels.reduce((acc, label) => {
+      if (label === 'Shared Room') {
+        return acc + (getSharedDesignForProperty(prop.id)?.addOnTotal || 0);
+      }
+      const suffix = SLOT_KEY_BY_LABEL[label];
+      if (!suffix) return acc;
+      return acc + (getDesignForProperty(`${prop.id}_${suffix}`)?.addOnTotal || 0);
+    }, 0);
+  };
+  const arixItemsForProperty = (prop) => {
+    const labels = [...new Set((prop.units || []).map((u) => u.unitType).filter(Boolean))];
+    return labels.reduce((acc, label) => {
+      if (label === 'Shared Room') {
+        return acc + (getSharedDesignForProperty(prop.id)?.selectedItems?.length || 0);
+      }
+      const suffix = SLOT_KEY_BY_LABEL[label];
+      if (!suffix) return acc;
+      return acc + (getDesignForProperty(`${prop.id}_${suffix}`)?.selectedItems?.length || 0);
+    }, 0);
+  };
 
   useEffect(() => {
     if (activeId && !active) setActiveId(null);
@@ -86,9 +116,10 @@ const PropertyListWithDrawer = ({
             (sum, u) => sum + Math.round(u.unitPrice * u.quantity),
             0,
           );
-          const pDesign = ARIX_ENABLED ? getDesignForProperty(p.id) : null;
-          const pHasDesign = (pDesign?.selectedItems?.length || 0) > 0;
-          const pArixTotal = pDesign?.addOnTotal || 0;
+          // Sum Arix add-ons across all per-unit-type slots for this property
+          const pArixTotal = ARIX_ENABLED ? arixTotalForProperty(p) : 0;
+          const pArixItems = ARIX_ENABLED ? arixItemsForProperty(p) : 0;
+          const pHasDesign = pArixItems > 0;
           // (4) Maxed availability — every unit at its cap
           const pIsMaxed =
             pUnits.length > 0 &&
@@ -240,6 +271,7 @@ const PropertyListWithDrawer = ({
                 updateQuantity={updateQuantity}
                 removeReservation={removeReservation}
                 getDesignForProperty={getDesignForProperty}
+                getSharedDesignForProperty={getSharedDesignForProperty}
                 onClose={() => setActiveId(null)}
               />
             </motion.div>
@@ -256,15 +288,32 @@ const DrawerContent = ({
   updateQuantity,
   removeReservation,
   getDesignForProperty,
+  getSharedDesignForProperty,
   onClose,
 }) => {
   const [breakdownOpen, setBreakdownOpen] = useState(false);
   const housingUnits = property.units.filter((u) => u.unitPrice > 0);
-  // Pull design data for the footer breakdown only — the Arix block component
-  // fetches its own copy from context.
-  const design = ARIX_ENABLED ? getDesignForProperty(property.id) : null;
-  const addOnTotal = design?.addOnTotal || 0;
-  const hasDesign = (design?.selectedItems?.length || 0) > 0;
+  // Sum the furniture across all per-unit-type slots this property has in cart.
+  // Slot scheme matches ArixPropertyBlock + Proposal totals:
+  //   Studio → state[`${id}_studio`], Single Room → state[`${id}_one_bedroom`],
+  //   Shared Room → state[`${id}_shared`] (via getSharedDesignForProperty).
+  const SLOT_SUFFIX_BY_LABEL = { Studio: 'studio', 'Single Room': 'one_bedroom' };
+  const slotDesigns = (() => {
+    if (!ARIX_ENABLED) return [];
+    const labels = [...new Set((property.units || []).map((u) => u.unitType).filter(Boolean))];
+    return labels
+      .map((label) => {
+        if (label === 'Shared Room') {
+          return { label, design: getSharedDesignForProperty(property.id) };
+        }
+        const suffix = SLOT_SUFFIX_BY_LABEL[label];
+        if (!suffix) return null;
+        return { label, design: getDesignForProperty(`${property.id}_${suffix}`) };
+      })
+      .filter(Boolean);
+  })();
+  const addOnTotal = slotDesigns.reduce((s, sd) => s + (sd.design?.addOnTotal || 0), 0);
+  const hasDesign = slotDesigns.some((sd) => (sd.design?.selectedItems?.length || 0) > 0);
   const totalUnits = housingUnits.reduce((sum, u) => sum + u.quantity, 0);
   const totalMonthly = housingUnits.reduce(
     (sum, u) => sum + Math.round(u.unitPrice * u.quantity),

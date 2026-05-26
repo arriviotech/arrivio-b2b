@@ -46,15 +46,17 @@ const FeesAndInclusions = ({ estimatedMonthlyCost = 0, furnitureAddOnTotal = 0 }
           <li className="flex gap-1.5">
             <span className="text-[#0f4c3a] font-bold">•</span>
             <span>
-              <span className="font-bold text-gray-900">1 month</span> of rent — if your
-              organization is billed for monthly rent
+              <span className="font-bold text-gray-900">1 month</span> of rent
+              <span className="text-[#0f4c3a] font-bold mx-1">→</span>
+              if your organization is billed for monthly rent
             </span>
           </li>
           <li className="flex gap-1.5">
             <span className="text-[#0f4c3a] font-bold">•</span>
             <span>
-              <span className="font-bold text-gray-900">3 months</span> of rent — if the resident
-              is billed for monthly rent
+              <span className="font-bold text-gray-900">3 months</span> of rent
+              <span className="text-[#0f4c3a] font-bold mx-1">→</span>
+              if the resident is billed for monthly rent
             </span>
           </li>
         </ul>

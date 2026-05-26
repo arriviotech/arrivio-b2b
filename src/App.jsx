@@ -85,7 +85,22 @@ const ArixOrchestrator = () => {
 
   const handleCustomize = () => {
     if (!toast) return;
-    openModal(toast);
+    // Resolve the storage slot ID per unit type so the regular modal reads/writes
+    // the correct slot. Shared keeps using the raw property ID (its helpers
+    // append "_shared" internally).
+    const slotSuffix =
+      toast.roomType === 'Studio'
+        ? '_studio'
+        : toast.roomType === 'Single Room'
+          ? '_one_bedroom'
+          : '';
+    const isShared = (toast.roomType || '').toLowerCase().includes('shared');
+    const propertyIdForModal = isShared ? toast.propertyId : `${toast.propertyId}${slotSuffix}`;
+    openModal({
+      propertyId: propertyIdForModal,
+      propertyName: toast.propertyName,
+      roomType: toast.roomType,
+    });
     setToast(null);
   };
   const handleDismiss = () => {
@@ -113,9 +128,12 @@ const ArixOrchestrator = () => {
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-bold uppercase tracking-widest text-[#0f4c3a]/70 mb-1">✦ Arix Magic Designer</p>
                   <p className="text-sm font-bold text-gray-900 leading-snug truncate">
-                    Customize furniture for {toast.propertyName}?
+                    Customize {toast.roomType || 'this room'}?
                   </p>
-                  <p className="text-xs text-gray-500 mt-0.5">Optional — see your room come alive.</p>
+                  <p className="text-[11px] text-gray-500 mt-0.5 truncate">
+                    {toast.propertyName}
+                    {toast.roomType ? ` · ${toast.roomType}` : ''}
+                  </p>
                 </div>
                 <button
                   onClick={handleDismiss}

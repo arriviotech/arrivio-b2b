@@ -42,6 +42,15 @@ function getNumericId(id) {
   return 0;
 }
 
+// Studio units are surfaced on ~50% of properties (deterministic by property
+// hash so the same property always shows/hides studios consistently).
+// With a typical dataset of ~24 properties, this yields ~12 properties with
+// studios visible. Adjust STUDIO_VISIBILITY_MOD to widen/narrow the set.
+const STUDIO_VISIBILITY_MOD = 2;
+function propertyAllowsStudio(propertyId) {
+  return getNumericId(propertyId) % STUDIO_VISIBILITY_MOD === 0;
+}
+
 /**
  * Normalize DB response → B2B frontend shape
  * Adapted from B2C normalizer with B2B-specific adjustments:
@@ -63,11 +72,22 @@ export function normalizeProperty(data) {
     'table'
   ]);
 
-  // Keep only 'shared_room' and 'one_bedroom' units, and filter out furniture from unit_amenities
+  // B2B surfaces three unit types: Studio, Single Room, Shared.
+  // `two_bedroom` rows are remapped to `shared_room` so the rest of the app
+  // sees a single unified type (avoids double-counting in cart / grouping).
+  // Studios are only shown on ~50% of properties (deterministic by hash).
+  const showStudios = propertyAllowsStudio(data.id);
   let units = (data.units || [])
-    .filter((u) => u.unit_type === 'shared_room' || u.unit_type === 'one_bedroom')
+    .filter((u) => {
+      if (!['studio', 'one_bedroom', 'two_bedroom', 'shared_room'].includes(u.unit_type)) {
+        return false;
+      }
+      if (u.unit_type === 'studio' && !showStudios) return false;
+      return true;
+    })
     .map((u) => ({
       ...u,
+      unit_type: u.unit_type === 'two_bedroom' ? 'shared_room' : u.unit_type,
       unit_amenities: (u.unit_amenities || []).filter(
         (ua) => !ua.amenity_catalogue || !EXCLUDED_AMENITIES.has(ua.amenity_catalogue.name.toLowerCase())
       )
@@ -158,10 +178,10 @@ export function normalizeProperty(data) {
   }));
 
   // Unit breakdown by type (for B2B property cards)
+  // two_bedroom rows already remapped to shared_room above.
   const breakdown = {
     studio: units.filter((u) => u.unit_type === 'studio').length,
     one_bedroom: units.filter((u) => u.unit_type === 'one_bedroom').length,
-    two_bedroom: units.filter((u) => u.unit_type === 'two_bedroom').length,
     shared_room: units.filter((u) => u.unit_type === 'shared_room').length,
   };
 

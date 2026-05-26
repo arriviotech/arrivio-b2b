@@ -21,9 +21,8 @@ const UnitDetails = () => {
 
   // Unit type labels
   const unitTypeLabels = {
-    studio: 'Private Studio',
+    studio: 'Studio',
     one_bedroom: 'Single Room',
-    two_bedroom: '2-Bedroom Apartment',
     shared_room: 'Shared Room',
   };
   const formattedTitle = unit ? (unitTypeLabels[unit.unit_type] || unit.unit_type?.replace(/_/g, ' ')) : '';
