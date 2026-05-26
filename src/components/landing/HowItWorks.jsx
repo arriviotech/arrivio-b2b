@@ -22,12 +22,12 @@ const steps = [
   {
     icon: <LayoutDashboard className="w-6 h-6" />,
     title: "Allocate & Manage",
-    description: "Assign employees to units and manage their stay through a centralized hub."
+    description: "Assign employees to units and coordinate essential relocation services through a centralized hub."
   },
   {
     icon: <BarChart3 className="w-6 h-6" />,
     title: "Track & Report",
-    description: "Monitor occupancy rate, employee satisfaction, and total spend in real-time."
+    description: "Monitor occupancy rate, service status, and total relocation spend in real-time."
   }
 ];
 
