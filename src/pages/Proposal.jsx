@@ -10,6 +10,7 @@ import FeesAndInclusions from '../components/proposal/FeesAndInclusions';
 import { useArixDesigner } from '../context/ArixDesignerContext';
 import PropertyListWithDrawer from '../components/proposal/PropertyListWithDrawer';
 import { supabase } from '../supabase/client';
+import { toB2BUnitType } from '../utils/unitType';
 import { ARIX_ENABLED } from '../App';
 
 // Reverse map: formatted display label → raw DB unit_type
@@ -173,7 +174,7 @@ const StepIndicator = ({ current }) => {
 
 const Proposal = () => {
   const navigate = useNavigate();
-  const { reservations, removeReservation, updateQuantity, clearReservations } = useReservation();
+  const { reservations, removeReservation, updateQuantity } = useReservation();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
   const [additionalNotes, setAdditionalNotes] = useState('');
@@ -255,7 +256,7 @@ const Proposal = () => {
 
       const aMap = {};
       (unitsRes.data || []).forEach(u => {
-        const key = `${u.property_id}:${u.unit_type}`;
+        const key = `${u.property_id}:${toB2BUnitType(u.unit_type)}`;
         aMap[key] = (aMap[key] || 0) + 1;
       });
       setAvailabilityMap(aMap);
@@ -407,7 +408,9 @@ const Proposal = () => {
             ).join('\n')}\n\n`
           : '';
         const notes = `${notesLine}${servicesLine}${furnitureLine}Here is my requested housing proposal:\n${fileUrl}\n(Note: Link expires in 60 minutes)`;
-        clearReservations();
+        // Keep the reservation cart populated so the Schedule page sidebar can
+        // surface the proposal context. User can clear the cart manually after
+        // booking confirms.
         navigate('/schedule', { state: { bookingNotes: notes } });
       } else {
         throw new Error('Upload failed');
@@ -451,32 +454,35 @@ const Proposal = () => {
 
           {/* Header */}
           <div className="mb-10">
-            <StepIndicator current={2} />
+            {hasItems && <StepIndicator current={2} />}
             <h1 className="text-4xl md:text-5xl font-serif text-[#111827] font-medium mb-2">Your Proposal</h1>
             <p className="text-gray-500 text-base max-w-2xl">
               Review what you've selected. We'll bundle this into a quote and walk you through it on the call.
             </p>
           </div>
 
+          {!hasItems ? (
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-200">
+                <div className="w-20 h-20 bg-[#f4f4f4] rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Building2 className="w-10 h-10 text-gray-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">No units selected yet</h2>
+                <p className="text-gray-500 mb-8 max-w-md mx-auto">Browse our available properties to find the perfect accommodation for your team's needs.</p>
+                <button
+                  onClick={() => navigate('/properties')}
+                  className="bg-[#0f4c3a] hover:bg-[#1A2E22] text-white px-8 py-3 rounded-xl font-bold transition-colors inline-block"
+                >
+                  Browse Properties
+                </button>
+              </div>
+            </div>
+          ) : (
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="w-full lg:w-2/3 space-y-12 lg:pt-6">
 
               {/* Section 1: Properties */}
-              {!hasItems ? (
-                <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-200">
-                  <div className="w-20 h-20 bg-[#f4f4f4] rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Building2 className="w-10 h-10 text-gray-400" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">No units selected yet</h2>
-                  <p className="text-gray-500 mb-8 max-w-md mx-auto">Browse our available properties to find the perfect accommodation for your team's needs.</p>
-                  <button
-                    onClick={() => navigate('/properties')}
-                    className="bg-[#0f4c3a] hover:bg-[#1A2E22] text-white px-8 py-3 rounded-xl font-bold transition-colors inline-block"
-                  >
-                    Browse Properties
-                  </button>
-                </div>
-              ) : (
+              {hasItems && (
                 <section>
                   <SectionHeader
                     number="1"
@@ -675,6 +681,7 @@ const Proposal = () => {
               </div>
             </div>
           </div>
+          )}
         </div>
       </main>
       <Footer />

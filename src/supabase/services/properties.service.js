@@ -1,4 +1,5 @@
 import { supabase } from "../client";
+import { toB2BUnitType, B2B_DB_UNIT_TYPES } from "../../utils/unitType";
 import img1 from "../../data/properties/1.jpg";
 import img2 from "../../data/properties/2.jpg";
 import img3 from "../../data/properties/3.jpg";
@@ -73,13 +74,14 @@ export function normalizeProperty(data) {
   ]);
 
   // B2B surfaces three unit types: Studio, Single Room, Shared.
-  // `two_bedroom` rows are remapped to `shared_room` so the rest of the app
-  // sees a single unified type (avoids double-counting in cart / grouping).
+  // DB unit_type values (studio / single_room / shared_room, plus legacy
+  // one_bedroom / two_bedroom) are normalized onto B2B's internal scheme via
+  // toB2BUnitType(): single_room -> one_bedroom, two_bedroom -> shared_room.
   // Studios are only shown on ~50% of properties (deterministic by hash).
   const showStudios = propertyAllowsStudio(data.id);
   let units = (data.units || [])
     .filter((u) => {
-      if (!['studio', 'one_bedroom', 'two_bedroom', 'shared_room'].includes(u.unit_type)) {
+      if (!B2B_DB_UNIT_TYPES.includes(u.unit_type)) {
         return false;
       }
       if (u.unit_type === 'studio' && !showStudios) return false;
@@ -87,7 +89,7 @@ export function normalizeProperty(data) {
     })
     .map((u) => ({
       ...u,
-      unit_type: u.unit_type === 'two_bedroom' ? 'shared_room' : u.unit_type,
+      unit_type: toB2BUnitType(u.unit_type),
       unit_amenities: (u.unit_amenities || []).filter(
         (ua) => !ua.amenity_catalogue || !EXCLUDED_AMENITIES.has(ua.amenity_catalogue.name.toLowerCase())
       )

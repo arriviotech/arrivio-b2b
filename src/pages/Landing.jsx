@@ -6,7 +6,7 @@ import TargetAudience from '../components/landing/TargetAudience';
 import RelocationServices from '../components/landing/RelocationServices';
 import Capabilities from '../components/landing/Capabilities';
 import CitiesGrid from '../components/landing/CitiesGrid';
-import Schedule from '../components/landing/Schedule';
+import ScheduleTeaser from '../components/landing/ScheduleTeaser';
 import Footer from '../components/layout/Footer';
 
 const Landing = () => {
@@ -21,7 +21,7 @@ const Landing = () => {
         <RelocationServices />
         <Capabilities />
         <CitiesGrid />
-        <Schedule />
+        <ScheduleTeaser />
       </main>
       <Footer />
     </div>

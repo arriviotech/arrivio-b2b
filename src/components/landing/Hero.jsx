@@ -30,11 +30,8 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-slide-up stagger-3 justify-center">
-            <button 
-              onClick={() => {
-                const element = document.getElementById('schedule');
-                element?.scrollIntoView({ behavior: 'smooth' });
-              }} 
+            <button
+              onClick={() => navigate('/schedule')}
               className="flex items-center justify-center gap-2 bg-[#0f4c3a] hover:bg-[#186b53] text-white px-8 py-4 rounded-xl font-medium transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >
               <Handshake size={22} />
