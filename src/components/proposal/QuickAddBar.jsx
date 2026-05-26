@@ -4,7 +4,7 @@ import { useReservation } from '../../context/ReservationContext';
 
 const UNIT_TYPE_LABELS = {
   studio: 'Private Studio',
-  one_bedroom: '1-Bedroom Apartment',
+  one_bedroom: 'Single Room',
   two_bedroom: '2-Bedroom Apartment',
   shared_room: 'Shared Room',
 };

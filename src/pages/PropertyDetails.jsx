@@ -77,7 +77,7 @@ const PropertyDetails = () => {
   if (oneBedUnits.length > 0) {
     const cheapest = Math.min(...oneBedUnits.flatMap(u => (u.unit_pricing_rules || []).map(p => p.monthly_rent_cents)));
     sharedOptions.push({
-      title: "1-Bedroom Apartment",
+      title: "Single Room",
       description: "Full apartment with one private bedroom",
       price: cheapest > 0 ? cheapest / 100 : property.price,
       units: oneBedUnits,

@@ -1,19 +1,18 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import roomEmpty from '../../assets/furniture/room_empty.png';
+import roomEmptyShared from '../../assets/furniture/shared_empty.png';
 
-const ArixRoomCanvas = ({ design, className, backgroundImage }) => {
+const ArixSharedRoomCanvas = ({ design, className, backgroundImage }) => {
   const selected = design?.selectedItems || [];
-  const previewImage = backgroundImage || roomEmpty;
+  const previewImage = backgroundImage || roomEmptyShared;
 
-  // Explicit stacking order to ensure correct 3D perspective layering in the single room
+  // Explicit stacking order to ensure correct 3D perspective layering
   const LAYERING_ORDER = {
-    bookshelf: 10,
-    wardrobe: 20,
-    bed: 30,
-    desk: 40,
-    dining_table: 50,
-    sofa: 60
+    wardrobe: 10,
+    desk: 20,
+    beds: 30,
+    dining_table: 40,
+    sofa: 50
   };
 
   const sortedSelected = [...selected].sort((a, b) => {
@@ -27,7 +26,7 @@ const ArixRoomCanvas = ({ design, className, backgroundImage }) => {
       <div className="relative inline-block max-w-full">
         <img
           src={previewImage}
-          alt="Room preview"
+          alt="Shared Room preview"
           className="max-w-full h-auto max-h-[360px] md:max-h-[420px] object-contain rounded-xl bg-white shadow-sm block"
         />
 
@@ -57,4 +56,4 @@ const ArixRoomCanvas = ({ design, className, backgroundImage }) => {
   );
 };
 
-export default ArixRoomCanvas;
+export default ArixSharedRoomCanvas;

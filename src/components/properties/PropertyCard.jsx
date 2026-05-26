@@ -38,7 +38,7 @@ const PropertyCard = ({ property }) => {
   const isAvailable = availableCount > 0;
   const breakdown = property.breakdown || {};
   const unitTypes = Object.entries(breakdown).filter(([, count]) => count > 0);
-  const typeLabels = { studio: 'Studio', one_bedroom: 'One Bed', two_bedroom: 'Two Bed', shared_room: 'Shared' };
+  const typeLabels = { studio: 'Studio', one_bedroom: 'Single Room', two_bedroom: 'Two Bed', shared_room: 'Shared' };
 
   return (
     <div

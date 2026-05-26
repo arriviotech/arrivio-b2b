@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PropertiesNavbar from '../components/layout/PropertiesNavbar';
 import Footer from '../components/layout/Footer';
 import { useReservation } from '../context/ReservationContext';
-import { ArrowLeft, Building2, Plane, Search, Landmark, ShieldCheck, Smartphone, FileText, Receipt, Check, Minus, Plus, X, Compass, Home, BadgeInfo } from 'lucide-react';
+import { ArrowLeft, Building2, Plane, Search, Landmark, ShieldCheck, Smartphone, FileText, Receipt, Check, Minus, Plus, X, Compass, Home, BadgeInfo, ChevronDown } from 'lucide-react';
 import { generateNativePDF } from '../components/proposal/Pdf';
 import Summary from '../components/proposal/Summary';
 import FeesAndInclusions from '../components/proposal/FeesAndInclusions';
@@ -16,21 +16,116 @@ import { ARIX_ENABLED } from '../App';
 // Used to look up availability for cart items added before unitTypeKey was stored.
 const UNIT_TYPE_KEY_BY_LABEL = {
   'Private Studio': 'studio',
-  '1-Bedroom Apartment': 'one_bedroom',
+  'Single Room': 'one_bedroom',
   '2-Bedroom Apartment': 'two_bedroom',
   'Shared Room': 'shared_room',
 };
 
 const RELOCATION_SERVICES = [
-  { id: 'airport_pickup', icon: Plane, label: 'Airport Pickup', desc: 'Private transfer from the airport to the new home.', scalable: true },
-  { id: 'airport_dropoff', icon: Plane, label: 'Airport Drop-off', desc: 'Private transfer from home to the airport.', scalable: true },
-  { id: 'housing', icon: Home, label: 'Housing Support', desc: 'Support finding and securing corporate accommodation.', scalable: false },
-  { id: 'bank_account', icon: Landmark, label: 'Bank Account Setup', desc: 'Guided setup for expat-friendly bank accounts.', scalable: true },
-  { id: 'insurance', icon: ShieldCheck, label: 'Insurance Setup', desc: 'Consultation for mandatory health and liability insurance.', scalable: true },
-  { id: 'sim_card', icon: Smartphone, label: 'SIM Card Setup', desc: 'Pre-activated local SIM loaded with high-speed data.', scalable: true },
-  { id: 'anmeldung', icon: FileText, label: 'Anmeldung Support', desc: 'Accompanied translator and appointment assistance.', scalable: false },
-  { id: 'tax_id', icon: BadgeInfo, label: 'Tax ID Support', desc: 'Steuer-ID tracking and tax class optimization.', scalable: false },
-  { id: 'city_guide', icon: Compass, label: 'City Integration Guide', desc: 'Neighborhood tour and settling-in welcome call.', scalable: false },
+  {
+    id: 'airport_pickup',
+    icon: Plane,
+    label: 'Airport Pickup',
+    desc: 'Private transfer from the airport to the new home.',
+    scalable: true,
+    priceEur: 95,
+    details: [
+      { label: "Vehicle", value: "Sedan or similar with luggage space" },
+      { label: "Pricing", value: "Distance-based fare + fixed pickup fee" },
+      { label: "Support", value: "Driver meets you at arrivals and assists with luggage" }
+    ]
+  },
+  {
+    id: 'airport_dropoff',
+    icon: Plane,
+    label: 'Airport Drop-off',
+    desc: 'Private transfer from home to the airport.',
+    scalable: true,
+    priceEur: 95,
+    details: [
+      { label: "Vehicle", value: "Private sedan with luggage space" },
+      { label: "Pricing", value: "Distance-based fare + airport surcharge" },
+      { label: "Support", value: "Real-time flight coordination and drop-off planning" }
+    ]
+  },
+  {
+    id: 'bank_account',
+    icon: Landmark,
+    label: 'Bank Account Setup',
+    desc: 'Guided setup for expat-friendly bank accounts.',
+    scalable: true,
+    priceEur: 49,
+    details: [
+      { label: "Agent", value: "Jonas, banking advisor" },
+      { label: "Experience", value: "Local bank onboarding for expats" },
+      { label: "Benefit", value: "Document preparation and branch appointment support" }
+    ]
+  },
+  {
+    id: 'insurance',
+    icon: ShieldCheck,
+    label: 'Insurance Setup',
+    desc: 'Consultation for mandatory health and liability insurance.',
+    scalable: true,
+    priceEur: 49,
+    details: [
+      { label: "Agent", value: "Lena, insurance expert" },
+      { label: "Experience", value: "5 years helping clients choose German insurance" },
+      { label: "Benefit", value: "Coverage review for health, liability, and rental protection" }
+    ]
+  },
+  {
+    id: 'sim_card',
+    icon: Smartphone,
+    label: 'SIM Card Setup',
+    desc: 'Pre-activated local SIM loaded with high-speed data.',
+    scalable: true,
+    priceEur: 25,
+    details: [
+      { label: "Plan", value: "Pre-activated local SIM" },
+      { label: "Support", value: "Activation and plan setup included" },
+      { label: "Benefit", value: "Data-ready on arrival with trusted local provider" }
+    ]
+  },
+  {
+    id: 'anmeldung',
+    icon: FileText,
+    label: 'Anmeldung Support',
+    desc: 'Accompanied translator and appointment assistance.',
+    scalable: false,
+    priceEur: 149,
+    details: [
+      { label: "Specialist", value: "Nina, registration consultant" },
+      { label: "Expertise", value: "Local Anmeldung support and government filing" },
+      { label: "Benefit", value: "Fast guidance through address registration steps" }
+    ]
+  },
+  {
+    id: 'tax_id',
+    icon: BadgeInfo,
+    label: 'Tax ID Support',
+    desc: 'Steuer-ID tracking and tax class optimization.',
+    scalable: false,
+    priceEur: 49,
+    details: [
+      { label: "Specialist", value: "Marcus, tax liaison" },
+      { label: "Expertise", value: "Tax ID and tax office guidance" },
+      { label: "Benefit", value: "Assistance with forms and local authority requirements" }
+    ]
+  },
+  {
+    id: 'city_guide',
+    icon: Compass,
+    label: 'City Integration Guide',
+    desc: 'Neighborhood tour and settling-in welcome call.',
+    scalable: false,
+    priceEur: 199,
+    details: [
+      { label: "Specialist", value: "Sarah, integration expert" },
+      { label: "Tour Duration", value: "Half-day neighborhood orientation" },
+      { label: "Benefit", value: "1-on-1 welcome consultation call and local integration guide" }
+    ]
+  }
 ];
 
 const SectionHeader = ({ number, title, subtitle }) => (
@@ -85,6 +180,7 @@ const Proposal = () => {
   const [additionalNotes, setAdditionalNotes] = useState('');
   // { [serviceId]: quantity } — scalable services use the qty, toggle ones use 1.
   const [selectedServices, setSelectedServices] = useState({});
+  const [hoveredServiceId, setHoveredServiceId] = useState(null);
 
   const toggleService = (id) => {
     setSelectedServices((prev) => {
@@ -199,22 +295,24 @@ const Proposal = () => {
     }, 0);
   }, [reservations]);
 
-  const { getDesignForProperty } = useArixDesigner();
+  const { getDesignForProperty, getSharedDesignForProperty } = useArixDesigner();
   const furnitureAddOnTotal = useMemo(() => {
     if (!ARIX_ENABLED) return 0;
     return groupedProperties.reduce((acc, prop) => {
-      const d = getDesignForProperty(prop.id);
+      const isShared = prop.units?.[0]?.unitType?.toLowerCase().includes('shared');
+      const d = isShared ? getSharedDesignForProperty(prop.id) : getDesignForProperty(prop.id);
       return acc + (d?.addOnTotal || 0);
     }, 0);
-  }, [groupedProperties, getDesignForProperty]);
+  }, [groupedProperties, getDesignForProperty, getSharedDesignForProperty]);
 
   const furnitureCount = useMemo(() => {
     if (!ARIX_ENABLED) return 0;
     return groupedProperties.reduce((acc, prop) => {
-      const d = getDesignForProperty(prop.id);
+      const isShared = prop.units?.[0]?.unitType?.toLowerCase().includes('shared');
+      const d = isShared ? getSharedDesignForProperty(prop.id) : getDesignForProperty(prop.id);
       return acc + (d?.selectedItems?.length || 0);
     }, 0);
-  }, [groupedProperties, getDesignForProperty]);
+  }, [groupedProperties, getDesignForProperty, getSharedDesignForProperty]);
 
   const estimatedMonthlyTotalWithAddons = estimatedMonthlyCost + furnitureAddOnTotal;
 
@@ -228,7 +326,8 @@ const Proposal = () => {
     ? []
     : groupedProperties
         .map((prop) => {
-          const d = getDesignForProperty(prop.id);
+          const isShared = prop.units?.[0]?.unitType?.toLowerCase().includes('shared');
+          const d = isShared ? getSharedDesignForProperty(prop.id) : getDesignForProperty(prop.id);
           const items = d?.selectedItems || [];
           return {
             propertyId: prop.id,
@@ -381,9 +480,8 @@ const Proposal = () => {
                       </button>
                     </div>
                   )}
-
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {RELOCATION_SERVICES.map(({ id, icon: Icon, label, desc, scalable }) => {
+                    {RELOCATION_SERVICES.map(({ id, icon: Icon, label, desc, scalable, priceEur, details }) => {
                       const qty = selectedServices[id] || 0;
                       const isSelected = qty > 0;
 
@@ -414,7 +512,46 @@ const Proposal = () => {
                           }`}>
                             <Icon className="w-5 h-5" />
                           </div>
-                          <div className="text-sm font-bold text-gray-900 mb-0.5">{label}</div>
+                          
+                          <div className="flex items-start justify-between gap-2 mb-1.5">
+                            <div className="text-sm font-bold text-gray-900 leading-tight">{label}</div>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              <div className="text-xs font-extrabold text-[#0f4c3a] bg-[#0f4c3a]/5 px-2 py-0.5 rounded-md whitespace-nowrap">
+                                €{priceEur}
+                              </div>
+                              {details && details.length > 0 && (
+                                <div
+                                  className="relative inline-block"
+                                  onMouseEnter={() => setHoveredServiceId(id)}
+                                  onMouseLeave={() => setHoveredServiceId(null)}
+                                >
+                                  <BadgeInfo
+                                    size={14}
+                                    className="text-gray-400 hover:text-[#0f4c3a] transition-colors cursor-help shrink-0"
+                                  />
+                                  
+                                  {hoveredServiceId === id && (
+                                    <div className="absolute right-0 bottom-full mb-2.5 w-64 bg-white border border-gray-100 p-3.5 rounded-xl shadow-xl z-[60] pointer-events-none text-left animate-in fade-in slide-in-from-bottom-1 duration-200">
+                                      <div className="text-[10px] font-bold text-gray-400 mb-2 pb-1 border-b border-gray-100 uppercase tracking-widest">
+                                        Specifications
+                                      </div>
+                                      <div className="space-y-2">
+                                        {details.map((detail, idx) => (
+                                          <div key={idx} className="flex flex-col gap-0.5 text-[10px] leading-snug">
+                                            <span className="font-extrabold text-[#0f4c3a] uppercase tracking-wider">{detail.label}</span>
+                                            <span className="text-gray-600 font-medium">{detail.value}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                      {/* Popover Arrow */}
+                                      <div className="absolute top-full right-1 -translate-y-1 w-2.5 h-2.5 bg-white border-r border-b border-gray-100 rotate-45" />
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
                           <div className="text-xs text-gray-500 leading-snug">{desc}</div>
 
                           {isSelected && scalable && (
@@ -451,14 +588,13 @@ const Proposal = () => {
                       );
                     })}
                   </div>
-
                 </section>
               )}
 
               {/* Section 3: Notes */}
               {hasItems && (
                 <section>
-                  <SectionHeader number="4" title="Notes for our team" subtitle="(Optional)" />
+                  <SectionHeader number="4" title="Notes for the Arrivio Team" subtitle="(Optional)" />
                   <div className="bg-white rounded-2xl p-6 md:p-7 shadow-sm border border-gray-100">
                     <p className="text-sm text-gray-500 mb-4">
                       Headcount waves, timing, special requirements anything our team should know before the call.
