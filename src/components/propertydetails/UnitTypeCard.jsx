@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ArrowRight, Maximize, Calendar, Home as HomeIcon } from 'lucide-react';
 import QuickAddBar from '../proposal/QuickAddBar';
 import roomFull from '../../assets/furniture/room_full.png';
+import sharedFull from '../../assets/furniture/shared_full.png';
 
 const UnitTypeCard = ({
   property,
@@ -13,7 +14,7 @@ const UnitTypeCard = ({
   icon: Icon,
   image,
 }) => {
-  const finalImage = roomFull;
+  const finalImage = unitTypeKey === 'shared_room' ? sharedFull : roomFull;
   const navigate = useNavigate();
   const [showUnits, setShowUnits] = useState(false);
   const slug = property.slug || property.id;

@@ -64,7 +64,7 @@ export function normalizeProperty(data) {
   ]);
 
   // Keep only 'shared_room' and 'one_bedroom' units, and filter out furniture from unit_amenities
-  const units = (data.units || [])
+  let units = (data.units || [])
     .filter((u) => u.unit_type === 'shared_room' || u.unit_type === 'one_bedroom')
     .map((u) => ({
       ...u,
@@ -72,6 +72,60 @@ export function normalizeProperty(data) {
         (ua) => !ua.amenity_catalogue || !EXCLUDED_AMENITIES.has(ua.amenity_catalogue.name.toLowerCase())
       )
     }));
+
+  if (units.length === 0) {
+    const mockSharedUnitId = `mock-${data.id}-shared`;
+    const mockSingleUnitId = `mock-${data.id}-single`;
+    
+    units = [
+      {
+        id: mockSharedUnitId,
+        slug: `${data.slug || data.id}-shared`,
+        unit_number: '101A',
+        unit_type: 'shared_room',
+        tier: 'standard',
+        floor: 1,
+        size_sqm: 28,
+        max_occupants: 2,
+        is_furnished: true,
+        status: 'available',
+        available_for: 'B2B',
+        unit_pricing_rules: [
+          {
+            tenant_type: 'b2b',
+            monthly_rent_cents: 65000,
+            security_deposit_cents: 130000,
+            min_stay_months: 3,
+            max_stay_months: 12
+          }
+        ],
+        unit_amenities: []
+      },
+      {
+        id: mockSingleUnitId,
+        slug: `${data.slug || data.id}-single`,
+        unit_number: '102',
+        unit_type: 'one_bedroom',
+        tier: 'premium',
+        floor: 2,
+        size_sqm: 22,
+        max_occupants: 1,
+        is_furnished: true,
+        status: 'available',
+        available_for: 'B2B',
+        unit_pricing_rules: [
+          {
+            tenant_type: 'b2b',
+            monthly_rent_cents: 95000,
+            security_deposit_cents: 190000,
+            min_stay_months: 3,
+            max_stay_months: 12
+          }
+        ],
+        unit_amenities: []
+      }
+    ];
+  }
   const photos = data.property_photos || [];
 
   // Find cheapest monthly rent — prefer b2b pricing, fallback to any
