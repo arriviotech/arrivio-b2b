@@ -6,9 +6,9 @@ import { useReservation } from '../context/ReservationContext';
 import { ArrowLeft, Building2, Plane, Search, Landmark, ShieldCheck, Smartphone, FileText, Receipt, Check, Minus, Plus, X, Compass, Home, BadgeInfo } from 'lucide-react';
 import { generateNativePDF } from '../components/proposal/Pdf';
 import Summary from '../components/proposal/Summary';
+import FeesAndInclusions from '../components/proposal/FeesAndInclusions';
 import { useArixDesigner } from '../context/ArixDesignerContext';
-import ArixDesignerStep from '../components/arix/ArixDesignerStep';
-import PropertyCard from '../components/proposal/PropertyCard';
+import PropertyListWithDrawer from '../components/proposal/PropertyListWithDrawer';
 import { supabase } from '../supabase/client';
 import { ARIX_ENABLED } from '../App';
 
@@ -326,7 +326,7 @@ const Proposal = () => {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
-            <div className="w-full lg:w-2/3 space-y-12">
+            <div className="w-full lg:w-2/3 space-y-12 lg:pt-6">
 
               {/* Section 1: Properties */}
               {!hasItems ? (
@@ -350,31 +350,14 @@ const Proposal = () => {
                     title="Selected Properties"
                     subtitle={`${groupedProperties.length} ${groupedProperties.length === 1 ? 'property' : 'properties'}`}
                   />
-                  <div className="space-y-4">
-                    {hydratedProperties.map(property => (
-                      <PropertyCard
-                        key={property.id}
-                        property={property}
-                        navigate={navigate}
-                        updateQuantity={updateQuantity}
-                        removeReservation={removeReservation}
-                      />
-                    ))}
-                  </div>
+                  <PropertyListWithDrawer
+                    properties={hydratedProperties}
+                    navigate={navigate}
+                    updateQuantity={updateQuantity}
+                    removeReservation={removeReservation}
+                  />
                 </section>
               )}
-
-                {/* Section 2: Arix Magic Designer — gated by ARIX_ENABLED flag */}
-                {ARIX_ENABLED && hasItems && (
-                  <section>
-                    <SectionHeader number="2" title="✦ Arix Magic Designer" subtitle="Design furniture per property" />
-                    <div className="space-y-4">
-                      {hydratedProperties.map(property => (
-                        <ArixDesignerStep key={property.id} property={property} />
-                      ))}
-                    </div>
-                  </section>
-                )}
 
               {/* Section 2: Relocation Services */}
               {hasItems && (
@@ -496,21 +479,29 @@ const Proposal = () => {
 
             </div>
 
-            {/* Right column: Summary only, sticky */}
-            <div className="w-full lg:w-1/3">
-              <Summary
-                reservations={reservations}
-                groupedProperties={groupedProperties}
-                handleCheckout={handleCheckout}
-                handleDownloadPDF={handleDownloadPDF}
-                isGeneratingPDF={isGeneratingPDF}
-                isProcessingCheckout={isProcessingCheckout}
-                servicesCount={selectedServiceCount}
-                estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
-                furnitureAddOnTotal={furnitureAddOnTotal}
-                furnitureCount={furnitureCount}
-                cityCounts={cityCounts}
-              />
+            {/* Right column: Summary + Fees act as ONE unit, fixed to the right, no inner scroller */}
+            <div className="w-full lg:w-1/3 lg:pt-[76px]">
+              <div className="lg:sticky lg:top-28 space-y-4">
+                <Summary
+                  reservations={reservations}
+                  groupedProperties={groupedProperties}
+                  handleCheckout={handleCheckout}
+                  handleDownloadPDF={handleDownloadPDF}
+                  isGeneratingPDF={isGeneratingPDF}
+                  isProcessingCheckout={isProcessingCheckout}
+                  servicesCount={selectedServiceCount}
+                  estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
+                  furnitureAddOnTotal={furnitureAddOnTotal}
+                  furnitureCount={furnitureCount}
+                  cityCounts={cityCounts}
+                />
+                {hasItems && (
+                  <FeesAndInclusions
+                    estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
+                    furnitureAddOnTotal={furnitureAddOnTotal}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
