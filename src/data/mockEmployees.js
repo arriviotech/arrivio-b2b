@@ -1,33 +1,37 @@
-const BASE_EMPLOYEES = [
-  { id: "emp_anna", name: "Anna Müller", role: "Software Engineer", arrivingOn: "2026-06-01" },
-  { id: "emp_james", name: "James Okafor", role: "Product Manager", arrivingOn: "2026-06-05" },
-  { id: "emp_priya", name: "Priya Sharma", role: "Data Analyst", arrivingOn: "2026-06-10" },
-  { id: "emp_lucas", name: "Lucas Weber", role: "UX Designer", arrivingOn: "2026-06-12" },
-  { id: "emp_sara", name: "Sara Ibrahim", role: "HR Specialist", arrivingOn: "2026-06-15" },
-  { id: "emp_mateo", name: "Mateo García", role: "DevOps Engineer", arrivingOn: "2026-06-18" },
-  { id: "emp_zoe", name: "Zoë Dubois", role: "QA Engineer", arrivingOn: "2026-06-20" },
-  { id: "emp_chen", name: "Michael Chen", role: "Backend Engineer", arrivingOn: "2026-06-22" },
-];
-
 function pad2(n) {
   return String(n).padStart(2, "0");
 }
 
+const ROLES = [
+  "Software Engineer",
+  "Product Manager",
+  "Data Analyst",
+  "UX Designer",
+  "HR Specialist",
+  "DevOps Engineer",
+  "QA Engineer",
+  "Backend Engineer",
+  "Frontend Developer",
+  "Marketing Manager"
+];
+
 function buildMockEmployees(count = 48) {
-  const employees = [...BASE_EMPLOYEES];
-  let idx = employees.length + 1;
-  while (employees.length < count) {
-    const day = 1 + ((idx - 1) % 28);
+  const employees = [];
+  for (let i = 1; i <= count; i++) {
+    const day = 1 + ((i - 1) % 28);
+    const role = ROLES[(i - 1) % ROLES.length];
     employees.push({
-      id: `emp_${idx}`,
-      name: `Employee ${idx}`,
-      role: "Relocating Employee",
+      id: `emp_${i}`,
+      name: `Employee ${i}`,
+      role: role,
       arrivingOn: `2026-06-${pad2(day)}`,
+      email: `employee${i}@company.com`,
+      property: i % 2 === 0 ? "Schubert Residences" : "Garden Heights",
+      unit: `${i % 2 === 0 ? 'A' : 'B'}-${100 + i}`,
+      status: i % 3 === 0 ? "Pending" : i % 5 === 0 ? "Inactive" : "Active"
     });
-    idx += 1;
   }
-  return employees.slice(0, count);
+  return employees;
 }
 
 export const MOCK_EMPLOYEES = buildMockEmployees(48);
-

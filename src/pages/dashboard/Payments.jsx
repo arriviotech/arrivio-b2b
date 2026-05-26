@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Wallet, Plus, CreditCard, ArrowDownLeft, ArrowUpRight, CheckCircle2, MoreHorizontal, History } from 'lucide-react';
 
 const Payments = () => {
-    const transactions = [
+    // Load credits and transactions from localStorage
+    const storedCredits = localStorage.getItem('arrivio_credits');
+    const creditsVal = storedCredits !== null ? parseFloat(storedCredits) : 3500.00;
+
+    const storedTx = localStorage.getItem('arrivio_transactions');
+    const transactions = storedTx ? JSON.parse(storedTx) : [
         { id: '#TRX-94812', date: 'Mar 10, 2026', type: 'Subscription', amount: '€2,499.00', status: 'Completed', logo: '✦' },
         { id: '#TRX-94755', date: 'Feb 10, 2026', type: 'Subscription', amount: '€2,499.00', status: 'Completed', logo: '✦' },
         { id: '#TRX-94621', date: 'Jan 22, 2026', type: 'Capacity Top-up', amount: '€450.00', status: 'Completed', logo: '↑' },
@@ -11,8 +16,31 @@ const Payments = () => {
 
     const balances = [
         { label: 'Next Payment', value: '€2,499.00', date: 'April 10', icon: CreditCard, color: 'indigo' },
-        { label: 'Unused Credits', value: '€120.50', date: 'Non-expiring', icon: Wallet, color: 'emerald' },
+        { label: 'Unused Credits', value: `€${creditsVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, date: 'Non-expiring', icon: Wallet, color: 'emerald' },
     ];
+
+    const handleAddCredits = () => {
+        const amountStr = prompt("Enter the amount of credits to purchase (€):", "1000");
+        if (amountStr) {
+            const amount = parseFloat(amountStr);
+            if (!isNaN(amount) && amount > 0) {
+                const nextBal = creditsVal + amount;
+                localStorage.setItem('arrivio_credits', nextBal.toString());
+                
+                const newTrx = {
+                    id: `#TRX-${Math.floor(10000 + Math.random() * 90000)}`,
+                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    type: 'Capacity Top-up',
+                    amount: `€${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                    status: 'Completed',
+                    logo: '↑'
+                };
+                const nextTx = [newTrx, ...transactions];
+                localStorage.setItem('arrivio_transactions', JSON.stringify(nextTx));
+                window.location.reload(); // Refresh to reflect changes
+            }
+        }
+    };
 
     return (
         <div className="max-w-[1100px] mx-auto animate-in fade-in duration-500 space-y-6">
@@ -21,7 +49,10 @@ const Payments = () => {
                     <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Payments & Transactions</h1>
                     <p className="text-sm text-gray-400 mt-1 font-medium">Manage your balance and track all financial activities</p>
                 </div>
-                <button className="px-5 py-2.5 bg-[#0a2e1f] text-white rounded-xl font-bold hover:bg-[#1e6f50] transition-all shadow-lg shadow-[#0a2e1f]/10 active:scale-95 flex items-center gap-2 text-sm">
+                <button 
+                    onClick={handleAddCredits}
+                    className="px-5 py-2.5 bg-[#0a2e1f] hover:bg-[#1e6f50] text-white rounded-xl font-bold transition-all shadow-lg shadow-[#0a2e1f]/10 active:scale-95 flex items-center gap-2 text-sm cursor-pointer"
+                >
                     <Plus size={16} />
                     Add Credits
                 </button>

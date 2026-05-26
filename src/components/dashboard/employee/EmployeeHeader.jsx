@@ -1,7 +1,7 @@
 import React from 'react';
 import { Search, UserPlus } from 'lucide-react';
 
-const EmployeeHeader = ({ onInviteClick }) => {
+const EmployeeHeader = ({ onInviteClick, searchTerm, onSearchChange }) => {
     return (
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
@@ -14,6 +14,8 @@ const EmployeeHeader = ({ onInviteClick }) => {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#1e6f50] transition-colors" />
                     <input 
                         type="text" 
+                        value={searchTerm || ''}
+                        onChange={(e) => onSearchChange?.(e.target.value)}
                         placeholder="Search employees..." 
                         className="pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1e6f50]/20 focus:border-[#1e6f50] transition-all w-64 shadow-sm"
                     />

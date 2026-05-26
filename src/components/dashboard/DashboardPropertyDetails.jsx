@@ -37,7 +37,7 @@ const DashboardPropertyDetails = () => {
     const [statusFilter, setStatusFilter] = useState('All');
 
     // Find the property from Supabase data
-    const { properties } = useProperties();
+    const { properties, loading } = useProperties();
     const property = properties.find(p => p.id === id);
 
     // Generate mock unit data based on the property's breakdown
@@ -145,6 +145,32 @@ const DashboardPropertyDetails = () => {
         return mockUnits.find(u => u.id === selectedUnitId);
     }, [mockUnits, selectedUnitId]);
 
+    // Close modal on Escape key press
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        };
+
+        if (selectedUnitId !== null) {
+            window.addEventListener('keydown', handleKeyDown);
+        }
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [selectedUnitId]);
+
+    if (loading) {
+        return (
+            <div className="max-w-6xl mx-auto text-center py-20 flex flex-col items-center justify-center animate-in fade-in duration-300">
+                <div className="w-10 h-10 border-4 border-[#1e6f50]/20 border-t-[#1e6f50] rounded-full animate-spin mb-4" />
+                <p className="text-gray-500 font-bold text-xs tracking-wider uppercase">Loading property details...</p>
+            </div>
+        );
+    }
+
     if (!property) {
         return (
             <div className="max-w-6xl mx-auto text-center py-20">
@@ -197,23 +223,6 @@ const DashboardPropertyDetails = () => {
     const closeModal = () => {
         setSelectedUnitId(null);
     };
-
-    // Close modal on Escape key press
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        };
-
-        if (selectedUnitId !== null) {
-            window.addEventListener('keydown', handleKeyDown);
-        }
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [selectedUnitId]);
 
     const handleAllocate = (e) => {
         e.preventDefault();

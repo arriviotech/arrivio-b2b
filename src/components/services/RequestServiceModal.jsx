@@ -468,10 +468,12 @@ export default function RequestServiceModal({ isOpen, service, onClose, onConfir
           </button>
           <button
             onClick={handleConfirm}
-            className="h-11 px-4 rounded-xl bg-[#0a1a12] text-white font-bold hover:bg-black transition-colors w-full disabled:opacity-60"
+            className="h-11 px-4 rounded-xl bg-[#0a1a12] text-white font-bold hover:bg-black transition-colors w-full disabled:opacity-60 text-xs uppercase tracking-wide"
             disabled={submitting || (recipientType === "specific" && (employeeIds.length === 0 || !employeesConfirmed))}
           >
-            {submitting ? "Confirming..." : "Confirm"}
+            {submitting 
+              ? "Confirming..." 
+              : `Confirm & Order (€${(price * (recipientType === 'all' ? employeeCount : employeeIds.length)).toLocaleString()})`}
           </button>
         </div>
       </div>

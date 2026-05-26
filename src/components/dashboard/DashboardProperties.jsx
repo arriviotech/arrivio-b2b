@@ -77,7 +77,24 @@ const DashboardProperties = () => {
                 </div>
             </header>
 
-            {filteredAndSortedProperties.length === 0 ? (
+            {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {[1, 2, 3].map((n) => (
+                        <div key={n} className="bg-white rounded-[2rem] overflow-hidden shadow-[0_2px_20px_rgba(0,0,0,0.03)] border border-gray-100 p-3 animate-pulse">
+                            <div className="h-60 bg-gray-100 rounded-3xl mb-6"></div>
+                            <div className="p-4 space-y-4">
+                                <div className="h-6 bg-gray-200 rounded-full w-2/3"></div>
+                                <div className="h-4 bg-gray-100 rounded-full w-1/2"></div>
+                                <div className="border-t border-gray-50 pt-4 mt-4 flex justify-between">
+                                    <div className="h-8 bg-gray-100 rounded-lg w-20"></div>
+                                    <div className="h-8 bg-gray-100 rounded-lg w-24"></div>
+                                </div>
+                                <div className="h-10 bg-gray-150 rounded-2xl w-full mt-4"></div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : filteredAndSortedProperties.length === 0 ? (
                 <div className="bg-white rounded-[2rem] p-16 text-center shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-gray-100 flex flex-col items-center">
                     <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
                         <Building2 className="w-10 h-10 text-gray-300" />
