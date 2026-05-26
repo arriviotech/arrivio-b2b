@@ -57,6 +57,20 @@ const Billing = () => {
                                     <div>
                                         <p className="text-[10px] font-black text-[#1e6f50] uppercase tracking-[0.2em] mb-0.5">Current Plan</p>
                                         <h3 className="text-xl font-bold text-gray-900">{activePlan.name}</h3>
+                                        <div className="mt-3 space-y-1">
+                                            <p className="text-xs text-gray-400 line-through font-medium">Annual dashboard subscription: €3,000 per year</p>
+                                            <p className="text-[13px] font-bold text-[#1e6f50] leading-snug max-w-lg">
+                                                The dashboard subscription is complimentary for the first 6 months, followed by a charge of €1,500 for the remaining 6 months.
+                                            </p>
+                                            <div className="flex items-center gap-2 mt-2">
+                                                <span className="px-2 py-0.5 rounded-md bg-amber-50 text-[10px] font-bold text-amber-600 border border-amber-100 uppercase tracking-wider">
+                                                    Special SaaS Offer: 50% Off
+                                                </span>
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                                    Valid till 2027
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="text-right">

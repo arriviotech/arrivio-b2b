@@ -3,7 +3,7 @@ import {
   LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Cell
 } from 'recharts';
-import { Users, Building2, Globe2, TrendingUp } from 'lucide-react';
+import { Users, Building2, TrendingUp } from 'lucide-react';
 
 const occupancyData = [
   { name: 'Jan', value: 45 },
@@ -26,12 +26,11 @@ const HeroVisual = () => {
   return (
     <div className="w-full h-full bg-[#f8f9fa] p-4 md:p-8 flex flex-col gap-6 select-none">
       {/* Top Stats Rows */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
         {[
           { label: 'Active Residents', value: '1,280', icon: <Users size={24} />, trend: '+12%', color: 'text-emerald-600', glow: 'shadow-emerald-200/50', bg: 'bg-emerald-50/50' },
-          { label: 'Cities Covered', value: '12', icon: <Globe2 size={24} />, trend: '+2', color: 'text-[#0f4c3a]', glow: 'shadow-teal-100/50', bg: 'bg-[#0f4c3a]/5' },
           { label: 'Total Properties', value: '450', icon: <Building2 size={24} />, trend: '+24%', color: 'text-indigo-600', glow: 'shadow-indigo-100/50', bg: 'bg-indigo-50/50' },
-          { label: 'Avg. Occupancy', value: '92%', icon: <TrendingUp size={24} />, trend: '+5%', color: 'text-emerald-700', glow: 'shadow-emerald-200/50', bg: 'bg-emerald-50/50' },
+          { label: 'Avg. Occupancy', value: '96%', icon: <TrendingUp size={24} />, trend: '+5%', color: 'text-emerald-700', glow: 'shadow-emerald-200/50', bg: 'bg-emerald-50/50' },
         ].map((stat, i) => (
           <div key={i} className="bg-white p-5 rounded-2xl border border-gray-100/80 shadow-sm flex items-center gap-5 hover:shadow-2xl hover:shadow-[#0f4c3a]/5 transition-all duration-500 group hover:-translate-y-1 relative overflow-hidden">
             <div className={`w-14 h-14 rounded-xl ${stat.bg} ${stat.glow} shadow-lg flex items-center justify-center ${stat.color} transition-all duration-700 group-hover:scale-110`}>
@@ -104,14 +103,16 @@ const HeroVisual = () => {
           <h3 className="font-bold text-gray-800 mb-6">Top Cities</h3>
           <div className="flex-grow min-h-[180px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={cityData} layout="vertical" margin={{ left: -20, right: 20 }}>
+              <BarChart data={cityData} layout="vertical" margin={{ left: 10, right: 20 }}>
                 <XAxis type="number" hide />
                 <YAxis
                   dataKey="name"
                   type="category"
+                  width={80}
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 10, fill: '#4B5563', fontWeight: 600 }}
+                  tick={{ fontSize: 10, fill: '#4B5563', fontWeight: 600, textAnchor: 'start' }}
+                  dx={-80}
                 />
                 <Tooltip
                   cursor={{ fill: 'transparent' }}

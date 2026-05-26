@@ -10,9 +10,9 @@ const DashboardHome = () => {
 
     // Mock data for booked properties
     const propertiesData = [
-        { id: 1, name: 'Frankfurt Sachsenhausen', onboardingStep: 8, moveInDate: 'Oct 12, 2025' },
-        { id: 2, name: 'Frankfurt Single Living', onboardingStep: 4, moveInDate: 'Nov 01, 2025' },
-        { id: 3, name: 'Berlin Central Hub', onboardingStep: 1, moveInDate: 'Dec 15, 2025' },
+        { id: 1, name: 'Frankfurt Sachsenhausen', onboardingStep: 0, moveInDate: 'Oct 12, 2025' },
+        { id: 2, name: 'Frankfurt Single Living', onboardingStep: 0, moveInDate: 'Nov 01, 2025' },
+        { id: 3, name: 'Berlin Central Hub', onboardingStep: 0, moveInDate: 'Dec 15, 2025' },
     ];
 
     const filteredAndSortedProperties = useMemo(() => {
@@ -85,7 +85,7 @@ const DashboardHome = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                     <h3 className="text-gray-500 font-bold tracking-wide text-xs uppercase mb-2">Active Properties</h3>
-                    <p className="text-4xl font-bold tracking-tight text-gray-900">12</p>
+                    <p className="text-4xl font-bold tracking-tight text-gray-900">3</p>
                     <div className="mt-4 text-sm font-medium text-emerald-600 flex items-center gap-1">
                         <span>+2 from last month</span>
                     </div>
@@ -99,7 +99,7 @@ const DashboardHome = () => {
                 </div>
                 <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                     <h3 className="text-gray-500 font-bold tracking-wide text-xs uppercase mb-2">Monthly Spend</h3>
-                    <p className="text-4xl font-bold tracking-tight text-gray-900">€24,500</p>
+                    <p className="text-4xl font-bold tracking-tight text-gray-900">€28,000</p>
                     <div className="mt-4 text-sm font-medium text-gray-400 flex items-center gap-1">
                         <span>Projected for March</span>
                     </div>

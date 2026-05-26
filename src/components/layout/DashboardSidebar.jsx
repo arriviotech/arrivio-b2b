@@ -16,7 +16,8 @@ import {
     Folder,
     CheckCircle2,
     FileSignature,
-    UserCog
+    UserCog,
+    LifeBuoy
 } from 'lucide-react';
 import greenLogo from '../../assets/whitelogo.png';
 import singleGreen from '../../assets/singlewhite.png';
@@ -139,8 +140,14 @@ const DashboardSidebar = ({ isCollapsed, toggleSidebar }) => {
                 </div>
             </nav>
 
-            {/* Bottom Section: Collapse Control */}
-            <div className="mt-auto p-4 border-t border-white/5">
+            {/* Bottom Section: Support & Collapse Control */}
+            <div className="mt-auto p-4 border-t border-white/5 space-y-2">
+                <NavLink to="/dashboard/support" className={navLinkClass}>
+                    <LifeBuoy className="w-5 h-5 min-w-[20px]" />
+                    {!isCollapsed && <span>Support</span>}
+                    {isCollapsed && <Tooltip text="Support" />}
+                </NavLink>
+
                 <button
                     onClick={toggleSidebar}
                     className={`flex items-center gap-3 w-full px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all group relative ${isCollapsed ? 'justify-center px-0' : ''}`}

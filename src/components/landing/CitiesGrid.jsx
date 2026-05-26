@@ -92,7 +92,7 @@ const LocationsSection = () => {
               </h2>
 
               <p className="text-[#5C5C50] font-sans text-lg mb-8 leading-relaxed max-w-md">
-                Click on a city to preview the lifestyle. Find the vibe that fits your journey.
+                Secure high-quality housing for your expanding workforce.
               </p>
             </motion.div>
 

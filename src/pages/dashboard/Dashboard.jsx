@@ -11,6 +11,7 @@ import Payments from './Payments';
 import Contracts from './Contracts';
 import Team from './Team';
 import Services from './Services';
+import Support from './Support';
 
 const Dashboard = () => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -34,6 +35,7 @@ const Dashboard = () => {
                     <Route path="billing" element={<Billing />} />
                     <Route path="invoices" element={<Invoices />} />
                     <Route path="payments" element={<Payments />} />
+                    <Route path="support" element={<Support />} />
                 </Routes>
             </main>
         </div>
