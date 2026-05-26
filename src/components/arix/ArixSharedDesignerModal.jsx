@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import ArixRoomCanvas from './ArixRoomCanvas';
-import ArixFurniturePanel from './ArixFurniturePanel';
+import ArixSharedRoomCanvas from './ArixSharedRoomCanvas';
+import ArixSharedFurniturePanel from './ArixSharedFurniturePanel';
 import { useArixDesigner } from '../../context/ArixDesignerContext';
-import { FURNITURE_ITEMS } from './arixFurnitureData';
-import roomFull from '../../assets/furniture/room_full.png';
+import { SHARED_FURNITURE_ITEMS } from './arixSharedFurnitureData';
+import roomFullShared from '../../assets/furniture/shared_full.png';
 
-const ArixDesignerModal = ({ propertyId, propertyName, roomType, isOpen, onClose, onSave }) => {
-  const { getDesignForProperty, setDesign, touchDesign } = useArixDesigner();
-  const existing = getDesignForProperty(propertyId);
+const ArixSharedDesignerModal = ({ propertyId, propertyName, roomType, isOpen, onClose, onSave }) => {
+  const { getSharedDesignForProperty, setSharedDesign, touchSharedDesign } = useArixDesigner();
+  const existing = getSharedDesignForProperty(propertyId);
   const [localSelected, setLocalSelected] = useState(existing.selectedItems || []);
   const [showDecorated, setShowDecorated] = useState(true);
 
   useEffect(() => {
-    const current = getDesignForProperty(propertyId);
+    const current = getSharedDesignForProperty(propertyId);
     const items = current.selectedItems || [];
-    // Start with whatever the user has saved — empty by default (unit price only).
-    // Adding/removing furniture in the panel changes the +/mo add-on from there.
     setLocalSelected(items);
-    // Show the empty room when nothing is picked yet so the canvas reflects current state.
     setShowDecorated(items.length > 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyId, isOpen]);
@@ -48,13 +45,13 @@ const ArixDesignerModal = ({ propertyId, propertyName, roomType, isOpen, onClose
   };
 
   const handleSave = () => {
-    setDesign(propertyId, localSelected);
+    setSharedDesign(propertyId, localSelected);
     onSave && onSave();
     onClose && onClose();
   };
 
   const handleSkip = () => {
-    touchDesign(propertyId);
+    touchSharedDesign(propertyId);
     onClose && onClose();
   };
 
@@ -110,10 +107,10 @@ const ArixDesignerModal = ({ propertyId, propertyName, roomType, isOpen, onClose
           </div>
 
           <div className="flex-1 rounded-[28px] bg-gray-100 p-3 md:p-5 shadow-inner">
-            <ArixRoomCanvas
+            <ArixSharedRoomCanvas
               design={localDesign}
               className="h-full"
-              backgroundImage={showDecorated ? roomFull : undefined}
+              backgroundImage={showDecorated ? roomFullShared : undefined}
             />
           </div>
 
@@ -126,11 +123,11 @@ const ArixDesignerModal = ({ propertyId, propertyName, roomType, isOpen, onClose
 
         <div className="md:w-[38%] flex flex-col min-h-0 border-t border-gray-100 md:border-t-0 md:border-l md:border-gray-100 p-5 md:p-8 overflow-y-auto">
           <div className="text-sm text-gray-500 mb-5">Your property has all furniture pieces pre-added by default. Scroll down the cart below to customize your selections.</div>
-          <ArixFurniturePanel
+          <ArixSharedFurniturePanel
             design={localDesign}
             onToggle={handleToggle}
             onAddAll={() => {
-              setLocalSelected(FURNITURE_ITEMS);
+              setLocalSelected(SHARED_FURNITURE_ITEMS);
               setShowDecorated(true);
             }}
             onShowAll={() => setShowDecorated(true)}
@@ -167,4 +164,4 @@ const ArixDesignerModal = ({ propertyId, propertyName, roomType, isOpen, onClose
   );
 };
 
-export default ArixDesignerModal;
+export default ArixSharedDesignerModal;

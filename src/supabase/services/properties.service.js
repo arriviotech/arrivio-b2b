@@ -50,10 +50,28 @@ function getNumericId(id) {
  * - Replaces rating/reviews with available unit count
  */
 export function normalizeProperty(data) {
-  // Only keep 'shared_room' and 'one_bedroom' units
-  const units = (data.units || []).filter(
-    (u) => u.unit_type === 'shared_room' || u.unit_type === 'one_bedroom'
-  );
+  const EXCLUDED_AMENITIES = new Set([
+    'single bed',
+    'double bed',
+    'sofa',
+    'wardrobe',
+    'desk',
+    'dining table',
+    'bookshelf',
+    'bed',
+    'chair',
+    'table'
+  ]);
+
+  // Keep only 'shared_room' and 'one_bedroom' units, and filter out furniture from unit_amenities
+  const units = (data.units || [])
+    .filter((u) => u.unit_type === 'shared_room' || u.unit_type === 'one_bedroom')
+    .map((u) => ({
+      ...u,
+      unit_amenities: (u.unit_amenities || []).filter(
+        (ua) => !ua.amenity_catalogue || !EXCLUDED_AMENITIES.has(ua.amenity_catalogue.name.toLowerCase())
+      )
+    }));
   const photos = data.property_photos || [];
 
   // Find cheapest monthly rent — prefer b2b pricing, fallback to any

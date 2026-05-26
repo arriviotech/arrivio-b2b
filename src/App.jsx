@@ -17,6 +17,7 @@ import { WishlistProvider } from './context/WishlistContext';
 import { ModalProvider, useModal } from './context/ModalContext';
 import { ArixDesignerProvider, useArixDesigner } from './context/ArixDesignerContext';
 import ArixDesignerModal from './components/arix/ArixDesignerModal';
+import ArixSharedDesignerModal from './components/arix/ArixSharedDesignerModal';
 import { AuthProvider } from './context/AuthContext';
 import Signin from './pages/Signin';
 import Imprint from './pages/legal/Imprint';
@@ -143,14 +144,25 @@ const ArixOrchestrator = () => {
         )}
       </AnimatePresence>
 
-      <ArixDesignerModal
-        isOpen={modalState.isOpen}
-        propertyId={modalState.propertyId}
-        propertyName={modalState.propertyName}
-        roomType={modalState.roomType}
-        onClose={closeModal}
-        onSave={closeModal}
-      />
+      {modalState.roomType && modalState.roomType.toLowerCase().includes('shared') ? (
+        <ArixSharedDesignerModal
+          isOpen={modalState.isOpen}
+          propertyId={modalState.propertyId}
+          propertyName={modalState.propertyName}
+          roomType={modalState.roomType}
+          onClose={closeModal}
+          onSave={closeModal}
+        />
+      ) : (
+        <ArixDesignerModal
+          isOpen={modalState.isOpen}
+          propertyId={modalState.propertyId}
+          propertyName={modalState.propertyName}
+          roomType={modalState.roomType}
+          onClose={closeModal}
+          onSave={closeModal}
+        />
+      )}
     </>
   );
 };

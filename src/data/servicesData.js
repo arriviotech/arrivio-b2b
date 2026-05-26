@@ -17,7 +17,7 @@ export const SERVICES_SEED = [
     category: "housing",
     priceEur: 1499,
     iconKey: "Home",
-    isActive: true,
+    isActive: false,
   },
   {
     id: "seed-bank",

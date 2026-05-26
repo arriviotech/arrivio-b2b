@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { FURNITURE_ITEMS } from '../components/arix/arixFurnitureData';
+import { SHARED_FURNITURE_ITEMS } from '../components/arix/arixSharedFurnitureData';
 
 const ArixDesignerContext = createContext();
 
@@ -29,6 +30,10 @@ export const ArixDesignerProvider = ({ children }) => {
     } catch (e) {}
   }, [state]);
 
+  const recalcAddOn = (selectedItems) => {
+    return selectedItems.reduce((s, it) => s + (it.price || 0), 0);
+  };
+
   const getDesignForProperty = (propertyId) => {
     const saved = state[propertyId];
     if (saved && saved.hasInteracted) {
@@ -40,18 +45,41 @@ export const ArixDesignerProvider = ({ children }) => {
         });
       return { ...saved, selectedItems: freshItems };
     }
-    // Default is EMPTY — user must actively pick furniture. Previously defaulted to all items
-    // selected (silently adding €170/mo per property), which read as a hidden charge.
-    return { selectedItems: [], addOnTotal: 0, hasInteracted: false };
+    // Default is FULLY FURNISHED (all items pre-added in the cart)
+    return {
+      selectedItems: FURNITURE_ITEMS,
+      addOnTotal: recalcAddOn(FURNITURE_ITEMS),
+      hasInteracted: false
+    };
   };
 
-  const recalcAddOn = (selectedItems) => {
-    return selectedItems.reduce((s, it) => s + (it.price || 0), 0);
+  const getSharedDesignForProperty = (propertyId) => {
+    const savedKey = `${propertyId}_shared`;
+    const saved = state[savedKey];
+    if (saved && saved.hasInteracted) {
+      // Map saved items to their fresh definitions from SHARED_FURNITURE_ITEMS to clear any stale cache
+      const freshItems = (saved.selectedItems || [])
+        .map(savedItem => {
+          const fresh = SHARED_FURNITURE_ITEMS.find(fi => fi.id === savedItem.id);
+          return fresh ? fresh : savedItem;
+        });
+      return { ...saved, selectedItems: freshItems };
+    }
+    // Default is FULLY FURNISHED (all items pre-added in the cart)
+    return {
+      selectedItems: SHARED_FURNITURE_ITEMS,
+      addOnTotal: recalcAddOn(SHARED_FURNITURE_ITEMS),
+      hasInteracted: false
+    };
   };
 
   const toggleFurnitureItem = (propertyId, item) => {
     setState((prev) => {
-      const prevFor = prev[propertyId] || { selectedItems: [], addOnTotal: 0, hasInteracted: true };
+      const prevFor = prev[propertyId] || {
+        selectedItems: FURNITURE_ITEMS,
+        addOnTotal: recalcAddOn(FURNITURE_ITEMS),
+        hasInteracted: true
+      };
       const exists = prevFor.selectedItems.find(si => si.id === item.id);
       let nextSelected;
       if (exists) {
@@ -64,6 +92,26 @@ export const ArixDesignerProvider = ({ children }) => {
     });
   };
 
+  const toggleSharedFurnitureItem = (propertyId, item) => {
+    const savedKey = `${propertyId}_shared`;
+    setState((prev) => {
+      const prevFor = prev[savedKey] || {
+        selectedItems: SHARED_FURNITURE_ITEMS,
+        addOnTotal: recalcAddOn(SHARED_FURNITURE_ITEMS),
+        hasInteracted: true
+      };
+      const exists = prevFor.selectedItems.find(si => si.id === item.id);
+      let nextSelected;
+      if (exists) {
+        nextSelected = prevFor.selectedItems.filter(si => si.id !== item.id);
+      } else {
+        nextSelected = [...prevFor.selectedItems, item];
+      }
+      const addOnTotal = recalcAddOn(nextSelected);
+      return { ...prev, [savedKey]: { selectedItems: nextSelected, addOnTotal, hasInteracted: true } };
+    });
+  };
+
   const clearDesign = (propertyId) => {
     setState((prev) => ({ ...prev, [propertyId]: { selectedItems: [], addOnTotal: 0, hasInteracted: true } }));
   };
@@ -73,10 +121,32 @@ export const ArixDesignerProvider = ({ children }) => {
     setState((prev) => ({ ...prev, [propertyId]: { selectedItems: items, addOnTotal, hasInteracted: true } }));
   };
 
+  const setSharedDesign = (propertyId, items) => {
+    const savedKey = `${propertyId}_shared`;
+    const addOnTotal = recalcAddOn(items);
+    setState((prev) => ({ ...prev, [savedKey]: { selectedItems: items, addOnTotal, hasInteracted: true } }));
+  };
+
   const touchDesign = (propertyId) => {
     setState((prev) => {
-      const prevFor = prev[propertyId] || { selectedItems: [], addOnTotal: 0, hasInteracted: false };
+      const prevFor = prev[propertyId] || {
+        selectedItems: FURNITURE_ITEMS,
+        addOnTotal: recalcAddOn(FURNITURE_ITEMS),
+        hasInteracted: false
+      };
       return { ...prev, [propertyId]: { ...prevFor, hasInteracted: true } };
+    });
+  };
+
+  const touchSharedDesign = (propertyId) => {
+    const savedKey = `${propertyId}_shared`;
+    setState((prev) => {
+      const prevFor = prev[savedKey] || {
+        selectedItems: SHARED_FURNITURE_ITEMS,
+        addOnTotal: recalcAddOn(SHARED_FURNITURE_ITEMS),
+        hasInteracted: false
+      };
+      return { ...prev, [savedKey]: { ...prevFor, hasInteracted: true } };
     });
   };
 
@@ -92,10 +162,14 @@ export const ArixDesignerProvider = ({ children }) => {
     state,
     modalState,
     getDesignForProperty,
+    getSharedDesignForProperty,
     toggleFurnitureItem,
+    toggleSharedFurnitureItem,
     clearDesign,
     setDesign,
+    setSharedDesign,
     touchDesign,
+    touchSharedDesign,
     openModal,
     closeModal,
   };
@@ -108,3 +182,4 @@ export const ArixDesignerProvider = ({ children }) => {
 };
 
 export default ArixDesignerContext;
+
