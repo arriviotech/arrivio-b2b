@@ -7,11 +7,15 @@ import {
 const Billing = () => {
   const [autoRefill, setAutoRefill] = useState(true);
   
+  // Load credits from localStorage
+  const storedCredits = localStorage.getItem('arrivio_credits');
+  const creditsVal = storedCredits !== null ? parseFloat(storedCredits) : 3500.00;
+  
   const activePlan = {
     name: 'Enterprise Dashboard SaaS',
     yearlyStandardPrice: 3000,
-    yearlyPromoPrice: 1499,
-    nextBilling: 'October 12, 2026',
+    yearlyPromoPrice: 2499,
+    nextBilling: 'April 10, 2026',
     seatsUsed: 48,
     seatsLimit: 100,
     propertiesUsed: 3,
@@ -20,18 +24,19 @@ const Billing = () => {
 
   // Mock corporate transaction invoices
   const [invoices] = useState([
-    { id: '#INV-9820', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€1,499.00', status: 'Paid' },
-    { id: '#INV-9411', date: 'Feb 18, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,000.00', status: 'Paid' },
-    { id: '#INV-8950', date: 'Jan 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€2,500.00', status: 'Paid' }
+    { id: '#INV-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€2,499.00', status: 'Paid' },
+    { id: '#INV-2026-002', date: 'Feb 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€2,499.00', status: 'Paid' },
+    { id: '#INV-2026-001', date: 'Jan 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,850.00', status: 'Paid' },
+    { id: '#INV-2025-012', date: 'Dec 10, 2025', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Paid' }
   ]);
 
   return (
     <div className="max-w-[1100px] mx-auto animate-in fade-in duration-500 space-y-6 select-none pb-20">
       
       {/* Sleek Minimal Header */}
-      <div className="flex justify-between items-center mb-2 pb-6 border-b border-gray-150">
+      <div className="flex justify-between items-center mb-2 pb-2">
         <div>
-          <h1 className="text-3xl font-serif font-semibold text-gray-900 tracking-tight">Billing & Subscription</h1>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Billing & Subscription</h1>
           <p className="text-sm text-gray-500 font-medium mt-2">Manage your premium SaaS plan, active licenses, and billing history.</p>
         </div>
       </div>
@@ -48,7 +53,7 @@ const Billing = () => {
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-6 border-b border-gray-100">
               <div className="space-y-1">
                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Subscription Plan</p>
-                <h2 className="text-xl font-serif font-semibold text-gray-900 leading-snug">{activePlan.name}</h2>
+                <h2 className="text-xl font-bold text-gray-900 leading-snug">{activePlan.name}</h2>
                 <div className="flex items-center gap-2 pt-1">
                   <span className="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-md uppercase tracking-wider">
                     SaaS Launch Offer
@@ -80,7 +85,7 @@ const Billing = () => {
           {/* Recent Invoices & Billing History */}
           <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#e5e7eb] shadow-sm space-y-5">
             <div>
-              <h3 className="font-serif font-semibold text-gray-955 text-sm uppercase tracking-wider">Billing History</h3>
+              <h3 className="font-bold text-gray-955 text-sm uppercase tracking-wider">Billing History</h3>
               <p className="text-xs text-gray-500 font-medium mt-0.5">Review past B2B platform renewals and pre-paid balance receipts.</p>
             </div>
 
@@ -129,7 +134,9 @@ const Billing = () => {
               Pre-paid Services Balance
             </span>
             <div className="mb-6">
-              <p className="text-3xl font-serif font-semibold tracking-tight">€3,500.00</p>
+              <p className="text-3xl font-serif font-semibold tracking-tight">
+                €{creditsVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </p>
               <p className="text-emerald-350 text-[10px] mt-1.5 font-bold flex items-center gap-1">
                 <CheckCircle2 size={12} className="shrink-0" />
                 Automatic billing is active

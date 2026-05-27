@@ -157,32 +157,32 @@ export default function SecureChatDrawer({ isOpen, onClose, recipient }) {
   return (
     <>
       {/* ── MESSAGING SLIDE-OUT DRAWER ── */}
-      <div className="fixed inset-y-0 right-0 z-[9990] w-full sm:w-[420px] bg-white border-l border-gray-150 shadow-2xl flex flex-col transform transition-transform duration-300 ease-out translate-x-0 animate-in slide-in-from-right duration-300">
+      <div className="fixed inset-y-0 right-0 z-[9990] w-full sm:w-[420px] bg-white border-l border-gray-200 shadow-2xl flex flex-col transform transition-transform duration-300 ease-out translate-x-0 animate-in slide-in-from-right duration-300">
         
         {/* Header Section */}
-        <div className="p-4 border-b border-gray-100 bg-[#0f4c3a]/5 flex items-center justify-between">
+        <div className="p-4 border-b border-gray-200 bg-[#0f4c3a] text-white flex items-center justify-between shadow-md">
           <div className="flex items-center gap-3">
             {/* Safe avatar initials */}
-            <div className="w-10 h-10 rounded-full bg-[#0f4c3a] text-white flex items-center justify-center font-bold text-sm shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-white/10 text-white border border-white/20 flex items-center justify-center font-bold text-sm shadow-inner">
               {recipient.name ? recipient.name.split(" ").map(n => n[0]).join("") : "SP"}
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <h4 className="font-extrabold text-gray-900 text-sm">{recipient.name}</h4>
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <h4 className="font-extrabold text-white text-sm">{recipient.name}</h4>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               </div>
-              <p className="text-[10px] text-[#0f4c3a] font-bold uppercase tracking-wider mt-0.5">
+              <p className="text-[9px] text-emerald-100/80 font-bold uppercase tracking-wider mt-0.5">
                 {recipient.category === "transport" ? "Verified Arrivio Driver" : "Dedicated Relocation Expert"}
               </p>
             </div>
           </div>
           
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             {/* Secure Call Action */}
             <button 
               type="button"
               onClick={startCall}
-              className="p-2 text-gray-500 hover:text-[#0f4c3a] hover:bg-emerald-50 rounded-xl transition-all cursor-pointer"
+              className="p-2 text-emerald-100 hover:text-white hover:bg-white/10 rounded-xl transition-all cursor-pointer"
               title="Secure Call"
             >
               <Phone size={17} className="stroke-[2.5]" />
@@ -191,7 +191,7 @@ export default function SecureChatDrawer({ isOpen, onClose, recipient }) {
             <button 
               type="button"
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all cursor-pointer"
+              className="p-2 text-emerald-100 hover:text-white hover:bg-white/10 rounded-xl transition-all cursor-pointer"
               aria-label="Close"
             >
               <X size={18} />
@@ -200,13 +200,13 @@ export default function SecureChatDrawer({ isOpen, onClose, recipient }) {
         </div>
 
         {/* Security Shield Banner - Reassures user and details hidden rationale */}
-        <div className="bg-emerald-50/50 border-b border-emerald-100/30 px-4 py-2 flex items-center gap-2 text-emerald-800 text-[10px] font-bold">
-          <ShieldCheck size={14} className="shrink-0 text-emerald-600 stroke-[2.5]" />
-          <span className="uppercase tracking-wider">Secure Arrivio Proxy Channel • Logs Preserved</span>
+        <div className="bg-[#0f4c3a]/5 border-b border-gray-100 px-4 py-2.5 flex items-center gap-2 text-[#0f4c3a] text-[10px] font-extrabold">
+          <ShieldCheck size={14} className="shrink-0 text-[#0f4c3a] stroke-[2.5]" />
+          <span className="uppercase tracking-widest text-[9px]">Secure Arrivio Proxy Channel • Logs Preserved</span>
         </div>
 
         {/* Message History Block */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/40">
           {messages.map((m) => {
             const isMe = m.sender === "employer";
             return (
@@ -216,8 +216,8 @@ export default function SecureChatDrawer({ isOpen, onClose, recipient }) {
               >
                 <div className={`p-3.5 rounded-2xl text-xs font-medium leading-relaxed ${
                   isMe 
-                    ? "bg-[#0f4c3a] text-white rounded-br-none shadow-sm" 
-                    : "bg-white text-gray-800 border border-gray-150 rounded-bl-none shadow-[0_1px_3px_rgba(0,0,0,0.02)]"
+                    ? "bg-gradient-to-tr from-[#0f4c3a] to-[#186b53] text-white rounded-br-none shadow-md border border-[#0f4c3a]/15" 
+                    : "bg-white text-gray-800 border border-gray-100 rounded-bl-none shadow-[0_4px_12px_rgba(0,0,0,0.02)]"
                 }`}>
                   {m.text}
                 </div>
@@ -231,7 +231,7 @@ export default function SecureChatDrawer({ isOpen, onClose, recipient }) {
           {/* Typing Indicator */}
           {isTyping && (
             <div className="flex flex-col max-w-[82%] mr-auto items-start animate-pulse">
-              <div className="p-3 bg-white text-gray-400 border border-gray-150 rounded-2xl rounded-bl-none shadow-sm text-xs font-bold flex items-center gap-1.5">
+              <div className="p-3 bg-white text-gray-400 border border-gray-100 rounded-2xl rounded-bl-none shadow-sm text-xs font-bold flex items-center gap-1.5">
                 <span className="text-[10px] uppercase tracking-wider">{recipient.name.split(" ")[0]} is typing</span>
                 <span className="flex gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce duration-500" />
@@ -246,18 +246,18 @@ export default function SecureChatDrawer({ isOpen, onClose, recipient }) {
         </div>
 
         {/* Chat Input form */}
-        <form onSubmit={handleSendMessage} className="p-3 border-t border-gray-100 bg-white flex items-center gap-2">
+        <form onSubmit={handleSendMessage} className="p-3.5 border-t border-gray-100 bg-white flex items-center gap-2.5">
           <input
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder={`Ask ${recipient.name.split(" ")[0]} an update...`}
-            className="flex-1 h-10 px-4 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#0f4c3a] focus:bg-white transition-all"
+            className="flex-1 h-10 px-4 bg-gray-50/50 border border-gray-200 rounded-full text-xs font-medium focus:outline-none focus:border-[#0f4c3a] focus:bg-white focus:ring-2 focus:ring-[#0f4c3a]/10 transition-all outline-none"
           />
           <button
             type="submit"
             disabled={!inputText.trim()}
-            className="w-10 h-10 rounded-xl bg-[#0f4c3a] text-white hover:bg-[#0a3120] flex items-center justify-center transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer shadow-sm"
+            className="w-10 h-10 rounded-full bg-[#0f4c3a] text-white hover:bg-[#0a3120] flex items-center justify-center transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer shadow-md hover:shadow-emerald-950/20 active:scale-95 shrink-0"
           >
             <Send size={15} />
           </button>
@@ -266,15 +266,15 @@ export default function SecureChatDrawer({ isOpen, onClose, recipient }) {
 
       {/* ── SECURE DIALER PROXY OVERLAY ── */}
       {isCalling && (
-        <div className="fixed inset-0 z-[9999] bg-[#071911]/95 backdrop-blur-lg flex flex-col items-center justify-between p-8 text-white animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[9999] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#0f4c3a] via-[#051a14] to-[#020a08] backdrop-blur-md flex flex-col items-center justify-between p-8 text-white animate-in fade-in duration-300">
           
           {/* Dialer Header */}
           <div className="text-center pt-8">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-950/60 border border-emerald-900/60 rounded-full text-emerald-400 text-[9px] font-black uppercase tracking-widest shadow-inner mb-3">
-              <ShieldCheck size={12} className="stroke-[2.5]" />
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0f4c3a]/40 border border-emerald-500/25 rounded-full text-emerald-400 text-[10px] font-extrabold uppercase tracking-widest shadow-inner mb-3">
+              <ShieldCheck size={12} className="stroke-[2.5] text-emerald-400" />
               Secure Arrivio Proxy Call
             </div>
-            <p className="text-xs text-emerald-400/80 font-bold uppercase tracking-widest mt-1">
+            <p className="text-xs text-emerald-100/60 font-bold uppercase tracking-widest mt-1.5">
               Encrypted Proxy Active
             </p>
           </div>
@@ -283,29 +283,30 @@ export default function SecureChatDrawer({ isOpen, onClose, recipient }) {
           <div className="flex flex-col items-center justify-center my-auto gap-5">
             <div className="relative flex items-center justify-center">
               {/* Ripple circles */}
-              <div className="absolute w-32 h-32 rounded-full border border-emerald-500/20 animate-ping duration-1000" />
-              <div className="absolute w-44 h-44 rounded-full border border-emerald-500/10 animate-pulse duration-2000" />
+              <div className="absolute w-36 h-36 rounded-full border border-emerald-500/25 animate-ping duration-1500" />
+              <div className="absolute w-48 h-48 rounded-full border border-emerald-500/10 animate-pulse duration-2000" />
+              <div className="absolute w-28 h-28 rounded-full border border-emerald-400/20 animate-spin duration-10000" />
               
-              <div className="w-24 h-24 rounded-full bg-[#0f4c3a] border-4 border-emerald-500/30 flex items-center justify-center text-white text-3xl font-extrabold shadow-2xl relative z-10">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#165a45] to-[#0f4c3a] border-4 border-white/10 flex items-center justify-center text-white text-3xl font-bold shadow-2xl relative z-10">
                 {recipient.name ? recipient.name.split(" ").map(n => n[0]).join("") : <User size={35} />}
               </div>
             </div>
 
             <div className="text-center mt-3 z-10">
-              <h3 className="text-2xl font-black tracking-tight">{recipient.name}</h3>
-              <p className="text-xs text-gray-400 mt-1 font-semibold uppercase tracking-wider">
+              <h3 className="text-2xl font-black tracking-tight text-white">{recipient.name}</h3>
+              <p className="text-xs text-emerald-100/60 mt-1.5 font-bold uppercase tracking-wider">
                 {recipient.category === "transport" ? "Arrivio Airport Shuttle Driver" : "Relocation Coordinator"}
               </p>
               
               {/* Status or duration timer */}
-              <div className="mt-4 h-6 flex items-center justify-center">
+              <div className="mt-4 h-8 flex items-center justify-center">
                 {callStatus === "Connected" ? (
-                  <span className="text-emerald-400 font-extrabold font-mono text-sm flex items-center gap-2 px-4 py-1 rounded-full bg-emerald-950/30 border border-emerald-900/40">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="text-emerald-400 font-extrabold font-mono text-xs flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/40 border border-emerald-500/20 shadow-inner">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                     {formatTime(callDuration)}
                   </span>
                 ) : (
-                  <span className="text-sm font-bold text-gray-300 animate-pulse">
+                  <span className="text-xs font-black uppercase tracking-widest text-[#22c55e] animate-pulse bg-emerald-950/30 px-3.5 py-1.5 rounded-full border border-emerald-900/35">
                     {callStatus}
                   </span>
                 )}
@@ -316,23 +317,23 @@ export default function SecureChatDrawer({ isOpen, onClose, recipient }) {
           {/* Call controls UI & End button */}
           <div className="w-full max-w-xs flex flex-col items-center gap-8 pb-8">
             <div className="grid grid-cols-3 gap-8 w-full justify-items-center">
-              <button className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition-all flex items-center justify-center text-white cursor-pointer" title="Mute">
+              <button className="w-12 h-12 rounded-full bg-white/5 hover:bg-white/15 active:scale-95 transition-all flex items-center justify-center text-white border border-white/10 cursor-pointer shadow-lg backdrop-blur-md" title="Mute">
                 <Mic size={18} />
               </button>
-              <button className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition-all flex items-center justify-center text-white cursor-pointer" title="Keypad">
+              <button className="w-12 h-12 rounded-full bg-white/5 hover:bg-white/15 active:scale-95 transition-all flex items-center justify-center text-white border border-white/10 cursor-pointer shadow-lg backdrop-blur-md" title="Keypad">
                 <Grid size={18} />
               </button>
-              <button className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition-all flex items-center justify-center text-white cursor-pointer" title="Speaker">
+              <button className="w-12 h-12 rounded-full bg-white/5 hover:bg-white/15 active:scale-95 transition-all flex items-center justify-center text-white border border-white/10 cursor-pointer shadow-lg backdrop-blur-md" title="Speaker">
                 <Volume2 size={18} />
               </button>
             </div>
 
             <button
               onClick={endCall}
-              className="w-16 h-16 rounded-full bg-rose-600 hover:bg-rose-700 active:scale-90 transition-all flex items-center justify-center text-white cursor-pointer shadow-lg shadow-rose-950/40 hover:shadow-rose-900/50"
+              className="w-16 h-16 rounded-full bg-rose-500 hover:bg-rose-600 active:scale-90 transition-all flex items-center justify-center text-white cursor-pointer shadow-lg shadow-rose-950/40 border border-rose-400/20 hover:scale-105"
               title="Hang Up"
             >
-              <PhoneOff size={26} className="stroke-[2.5]" />
+              <PhoneOff size={24} className="stroke-[2.5]" />
             </button>
           </div>
 

@@ -45,34 +45,31 @@ const Status = ({ property }) => {
             {/* Header / Accordion Trigger */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-left hover:bg-gray-50/50 transition-colors"
+                className="w-full p-5 flex items-center justify-between gap-4 text-left hover:bg-gray-50/40 transition-colors group"
             >
-                <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 bg-[#0f4c3a]/5 rounded-xl flex items-center justify-center text-[#0f4c3a] shrink-0 border border-[#0f4c3a]/5">
-                        <Building2 size={20} />
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center text-[#0f4c3a] shrink-0 border border-gray-100">
+                        <Building2 size={20} className="stroke-[2]" />
                     </div>
-                    <div>
-                        <h3 className="text-base font-serif font-semibold text-gray-900 leading-tight">{property.name}</h3>
-                        <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
-                            <span className="flex items-center gap-1">
-                                <Calendar size={13} />
-                                Moved in: {property.moveInDate || 'TBD'}
-                            </span>
-                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                    <div className="min-w-0 flex-1">
+                        <h3 className="text-base font-sans font-bold text-gray-900 leading-tight truncate">{property.name}</h3>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-gray-450 font-medium">
+                            <span>Moved in: {property.moveInDate || 'TBD'}</span>
+                            <span className="text-gray-300 font-normal select-none">•</span>
                             <span className="font-bold text-[#0f4c3a]">{progress}% Ready</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-6 w-full sm:w-auto self-end sm:self-center">
-                    <div className="hidden lg:block w-48 h-2 bg-gray-100 rounded-full overflow-hidden border border-gray-200/20">
+                <div className="flex items-center gap-6 shrink-0">
+                    <div className="hidden sm:block w-44 md:w-56 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                         <div
                             className="h-full bg-[#0f4c3a] transition-all duration-1000 ease-out"
                             style={{ width: `${progress}%` }}
                         />
                     </div>
-                    <div className={`p-2 rounded-xl bg-gray-50 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#0f4c3a] bg-[#0f4c3a]/10' : ''}`}>
-                        <ChevronDown size={18} />
+                    <div className={`w-8 h-8 rounded-full border border-gray-200/50 flex items-center justify-center bg-gray-50/50 text-gray-400 transition-all duration-300 ${isOpen ? 'rotate-180 text-[#0f4c3a] bg-[#0f4c3a]/5 border-[#0f4c3a]/15 shadow-sm' : 'hover:bg-gray-100 hover:text-gray-600'}`}>
+                        <ChevronDown size={15} className="stroke-[2.5]" />
                     </div>
                 </div>
             </button>

@@ -89,7 +89,7 @@ export default function ServiceCard({ service, onRequest, variant = "default" })
       <div className="relative bg-white w-full max-w-[480px] rounded-2xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col max-h-[90vh]" onMouseDown={(e) => e.stopPropagation()}>
         <div className="p-6 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-serif font-semibold text-gray-900 leading-snug">{service.name}</h2>
+            <h2 className="text-xl font-bold text-gray-900 leading-snug">{service.name}</h2>
             <p className="text-sm font-bold text-[#0f4c3a] mt-1">€{Number(service.priceEur || 0).toFixed(0)}</p>
             {service.detailedDescription || service.description ? (
               <p className="text-xs text-gray-500 mt-2 max-w-[400px] leading-relaxed font-medium">
@@ -141,7 +141,7 @@ export default function ServiceCard({ service, onRequest, variant = "default" })
             e.preventDefault();
             onRequest?.(service);
           }}
-          className="bg-white rounded-2xl border border-gray-200/80 hover:border-[#0f4c3a]/30 shadow-sm hover:shadow-md transition-all duration-300 p-5 flex flex-col items-start text-left cursor-pointer group h-full min-h-[170px]"
+          className="bg-white rounded-2xl border border-gray-200/80 hover:border-[#0f4c3a]/30 shadow-sm hover:shadow-md transition-all duration-300 p-5 flex flex-col items-start text-left cursor-pointer group h-full min-h-[200px]"
         >
           {/* Icon Box */}
           <div className="w-10 h-10 rounded-xl bg-[#0f4c3a]/5 border border-[#0f4c3a]/10 flex items-center justify-center text-[#0f4c3a] transition-colors group-hover:bg-[#0f4c3a]/10">
@@ -154,10 +154,27 @@ export default function ServiceCard({ service, onRequest, variant = "default" })
           </h3>
           
           {service.description ? (
-            <p className="text-[11px] text-gray-500 font-medium leading-relaxed line-clamp-2">
+            <p className="text-[11px] text-gray-500 font-medium leading-relaxed line-clamp-2 mb-4">
               {service.description}
             </p>
           ) : null}
+
+          {/* Footer - Price and Details */}
+          <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between w-full">
+            <span className="text-xs font-bold text-gray-900">
+              €{Number(service.priceEur || 0).toFixed(0)}
+            </span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDetails(true);
+              }}
+              className="text-[10px] font-extrabold text-[#0f4c3a] hover:text-[#0a3a2b] transition-colors flex items-center gap-0.5 uppercase tracking-wider cursor-pointer"
+            >
+              Details
+            </button>
+          </div>
         </div>
         {detailsModal}
       </>
@@ -172,23 +189,40 @@ export default function ServiceCard({ service, onRequest, variant = "default" })
           e.preventDefault();
           onRequest?.(service);
         }}
-        className="bg-white rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col items-start text-left cursor-pointer group h-full min-h-[180px] w-full"
+        className="bg-white rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300 p-5 flex flex-col items-start text-left cursor-pointer group h-full min-h-[185px] w-full"
       >
         {/* Icon Box */}
-        <div className="w-12 h-12 rounded-[14px] bg-[#0f4c3a]/5 border border-[#0f4c3a]/10 flex items-center justify-center text-[#0f4c3a] transition-colors group-hover:bg-[#0f4c3a]/10">
-          <Icon className="w-6 h-6 stroke-[1.75]" />
+        <div className="w-10 h-10 rounded-xl bg-[#0f4c3a]/5 border border-[#0f4c3a]/10 flex items-center justify-center text-[#0f4c3a] transition-colors group-hover:bg-[#0f4c3a]/10">
+          <Icon className="w-5 h-5 stroke-[2]" />
         </div>
         
         {/* Content */}
-        <h3 className="text-[16px] font-bold text-gray-900 mt-4 mb-2 tracking-tight leading-snug">
+        <h3 className="text-sm font-bold text-gray-900 mt-3 mb-1 tracking-tight leading-snug">
           {service.name}
         </h3>
         
         {service.description ? (
-          <p className="text-xs text-gray-500 font-medium leading-relaxed">
+          <p className="text-xs text-gray-500 font-medium leading-relaxed mb-3">
             {service.description}
           </p>
         ) : null}
+
+        {/* Footer - Price and Details */}
+        <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between w-full">
+          <span className="text-xs font-bold text-gray-900">
+            €{Number(service.priceEur || 0).toFixed(0)}
+          </span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowDetails(true);
+            }}
+            className="text-[10px] font-extrabold text-[#0f4c3a] hover:text-[#0a3a2b] transition-colors flex items-center gap-0.5 uppercase tracking-wider cursor-pointer"
+          >
+            Details
+          </button>
+        </div>
       </div>
       {detailsModal}
     </>

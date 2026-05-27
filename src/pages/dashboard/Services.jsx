@@ -172,19 +172,19 @@ export default function Services() {
 
   return (
     <div className="max-w-[1400px] mx-auto animate-in fade-in duration-500">
-      <div className="flex items-center justify-between gap-6 mb-8 border-b border-gray-100 pb-6">
+      <div className="flex items-center justify-between gap-6 mb-8 pb-2">
         <div>
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#0f4c3a] bg-emerald-50 border border-emerald-100/50 px-2.5 py-1 rounded-full mb-2.5 inline-block shadow-sm">
             ✦ Relocation Solutions
           </span>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 leading-none mt-1.5">Services</h1>
-          <p className="text-gray-505 mt-2 font-medium text-sm">Everything you need to settle your employees into life in Germany.</p>
+          <p className="text-gray-550 mt-2 font-medium text-sm">Everything you need to settle your employees into life in Germany.</p>
         </div>
 
         <div className="bg-gray-100/80 border border-gray-200/50 p-1 rounded-2xl flex items-center shrink-0 shadow-sm">
           <button
             onClick={() => setMode("browse")}
-            className={`h-9 px-4.5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer ${mode === "browse"
+            className={`h-9 px-4.5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 ${mode === "browse"
               ? "bg-[#0f4c3a] text-white shadow-sm"
               : "text-gray-500 hover:text-gray-900"
               }`}
@@ -193,7 +193,7 @@ export default function Services() {
           </button>
           <button
             onClick={() => setMode("orders")}
-            className={`h-9 px-4.5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${mode === "orders"
+            className={`h-9 px-4.5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-1.5 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 ${mode === "orders"
               ? "bg-[#0f4c3a] text-white shadow-sm"
               : "text-gray-500 hover:text-gray-900"
               }`}
@@ -210,20 +210,19 @@ export default function Services() {
 
       {mode === "browse" ? (
         <>
-          <div className="flex flex-wrap items-center gap-2 mb-6">
+          <div className="flex flex-wrap items-center gap-1.5 bg-gray-100/40 border border-gray-200/50 p-1 rounded-2xl w-max max-w-full mb-8 shadow-inner">
             {SERVICE_CATEGORIES.map((c) => {
-              const count = c.key === "all" ? (services?.length || 0) : (countsByCategory[c.key] || 0);
               const active = category === c.key;
               return (
                 <button
                   key={c.key}
                   onClick={() => setCategory(c.key)}
-                  className={`h-10 px-4 rounded-full text-xs font-bold border uppercase tracking-wider transition-colors ${active
-                    ? "bg-[#0f4c3a] text-white border-[#0f4c3a] shadow-sm"
-                    : "bg-white text-gray-700 border-gray-200 hover:border-[#0f4c3a] hover:text-[#0f4c3a]"
+                  className={`h-8 px-4 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer select-none active:scale-95 ${active
+                    ? "bg-[#0f4c3a] text-white shadow-sm"
+                    : "text-gray-500 hover:text-[#0f4c3a] hover:bg-[#0f4c3a]/5"
                     }`}
                 >
-                  {c.label} ({count})
+                  {c.label}
                 </button>
               );
             })}
@@ -232,7 +231,7 @@ export default function Services() {
           {servicesLoading ? (
             <div className="bg-white rounded-2xl border border-gray-100 p-8 text-gray-500">Loading services...</div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
               {filtered.map((s) => (
                 <ServiceCard key={s.id} service={s} onRequest={(svc) => setSelectedService(svc)} />
               ))}
@@ -245,7 +244,7 @@ export default function Services() {
           <div className="flex flex-wrap items-center gap-1.5 bg-gray-100/50 border border-gray-200/40 p-1 rounded-2xl w-max mb-2 shadow-inner">
             <button
               onClick={() => setOrdersSubTab("cart")}
-              className={`h-9 px-5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 ${
+              className={`h-9 px-5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 ${
                 ordersSubTab === "cart"
                   ? "bg-[#0f4c3a] text-white shadow-sm"
                   : "text-gray-500 hover:text-gray-900"
@@ -263,7 +262,7 @@ export default function Services() {
 
             <button
               onClick={() => setOrdersSubTab("status")}
-              className={`h-9 px-5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 ${
+              className={`h-9 px-5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 ${
                 ordersSubTab === "status"
                   ? "bg-[#0f4c3a] text-white shadow-sm"
                   : "text-gray-500 hover:text-gray-900"
@@ -282,7 +281,7 @@ export default function Services() {
 
           {/* ── TAB VIEW CONDITIONAL RENDERING ── */}
           {ordersSubTab === "cart" ? (
-            <div className="bg-[#0f4c3a]/[0.02] border border-[#0f4c3a]/5 rounded-[28px] p-5 sm:p-6 shadow-[inset_0_2px_8px_rgba(15,76,58,0.015)] animate-in fade-in duration-300">
+            <div className="bg-white border border-gray-100 rounded-[28px] p-5 sm:p-6 shadow-sm animate-in fade-in duration-300 outline-none focus:outline-none">
               <OrdersList
                 orders={cartOrders}
                 loading={ordersLoading}
@@ -302,7 +301,7 @@ export default function Services() {
               />
             </div>
           ) : (
-            <div className="bg-white border border-gray-100 rounded-[28px] p-5 sm:p-6 shadow-sm animate-in fade-in duration-300">
+            <div className="bg-white border border-gray-100 rounded-[28px] p-5 sm:p-6 shadow-sm animate-in fade-in duration-300 outline-none focus:outline-none">
               <OrdersList
                 orders={statusOrders}
                 loading={ordersLoading}

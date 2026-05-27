@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import Status from './Status';
 import { Search, ArrowUpDown } from 'lucide-react';
 import ServicesStrip from '../services/ServicesStrip';
-import RecentServiceOrders from '../services/RecentServiceOrders';
 
 const DashboardHome = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -30,7 +29,7 @@ const DashboardHome = () => {
 
     return (
         <div className="max-w-6xl mx-auto">
-            <header className="flex justify-between items-center mb-10 pb-6 border-b border-gray-150">
+            <header className="flex justify-between items-center mb-10 pb-2">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
                     <p className="text-gray-505 mt-2 font-medium text-sm">Here is what's happening today.</p>
@@ -85,7 +84,7 @@ const DashboardHome = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-white p-6 rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300">
                     <h3 className="text-gray-400 font-black tracking-wide text-[9px] uppercase mb-2">Active Properties</h3>
-                    <p className="text-3xl font-bold text-gray-900 leading-tight">3</p>
+                    <p className="text-3xl font-serif font-bold text-gray-900 leading-tight">3</p>
                     <div className="mt-4 text-xs font-bold text-[#0f4c3a] flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>+2 from last month</span>
@@ -93,7 +92,7 @@ const DashboardHome = () => {
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300">
                     <h3 className="text-gray-400 font-black tracking-wide text-[9px] uppercase mb-2">Total Employees</h3>
-                    <p className="text-3xl font-bold text-gray-900 leading-tight">48</p>
+                    <p className="text-3xl font-serif font-bold text-gray-900 leading-tight">48</p>
                     <div className="mt-4 text-xs font-bold text-[#0f4c3a] flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>+5 new arrivals</span>
@@ -101,8 +100,8 @@ const DashboardHome = () => {
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300">
                     <h3 className="text-gray-400 font-black tracking-wide text-[9px] uppercase mb-2">Monthly Spend</h3>
-                    <p className="text-3xl font-bold text-gray-900 leading-tight">€28,000</p>
-                    <div className="mt-4 text-xs font-bold text-gray-500 flex items-center gap-1.5">
+                    <p className="text-3xl font-serif font-bold text-gray-900 leading-tight">€28,000</p>
+                    <div className="mt-4 text-xs font-bold text-gray-505 flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
                         <span>Projected for March</span>
                     </div>
@@ -110,25 +109,6 @@ const DashboardHome = () => {
             </div>
 
             <ServicesStrip />
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-[#e5e7eb] min-h-[320px]">
-                    <div className="flex justify-between items-center mb-8">
-                        <h2 className="text-lg font-bold text-gray-900 leading-none">Recent Activity</h2>
-                    </div>
-                    <div className="flex flex-col items-center justify-center h-48 text-gray-400">
-                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                            <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <p className="font-medium text-gray-500">No recent activity to display</p>
-                        <p className="text-sm mt-1">Activity will appear here as you manage reservations.</p>
-                    </div>
-                </div>
-
-                <RecentServiceOrders />
-            </div>
         </div>
     );
 };

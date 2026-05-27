@@ -8,7 +8,7 @@ function badgeClass(status) {
     case "delivered":
       return "bg-emerald-50 text-emerald-705 border-emerald-100/60";
     case "cancelled":
-      return "bg-gray-50 text-gray-500 border-gray-150";
+      return "bg-gray-50 text-gray-500 border-gray-200";
     case "pending":
     default:
       return "bg-amber-50 text-amber-705 border-amber-100/60";
@@ -187,7 +187,7 @@ export default function OrdersList({ orders, loading, canCancel, onCancel, onPay
                       {employees.map((name) => (
                         <div
                           key={name}
-                          className="px-3 py-1.5 bg-white border border-gray-150 rounded-xl text-xs font-bold text-gray-800 shadow-sm flex items-center gap-1.5 hover:border-emerald-100 transition-colors"
+                          className="px-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-800 shadow-sm flex items-center gap-1.5 hover:border-emerald-100 transition-colors"
                         >
                           <div className="w-1.5 h-1.5 rounded-full bg-[#0f4c3a]/60"></div>
                           {name}
@@ -199,16 +199,11 @@ export default function OrdersList({ orders, loading, canCancel, onCancel, onPay
                 
                 {/* ── REAL-TIME RELOCATION TRACKING TIMELINE ── */}
                 {o.paymentStatus === "paid" && (o.status === "active" || o.status === "pending") && (
-                  <div className="bg-gray-50/70 border border-gray-100 rounded-2xl p-4.5 animate-in fade-in duration-300">
+                  <div key={selectedEmp} className="bg-gray-50/70 border border-gray-100 rounded-2xl p-4.5 animate-in fade-in slide-in-from-top-2 duration-300">
                     <div className="flex items-center justify-between gap-3 mb-4">
                       <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
                         Real-Time Tracking: <span className="text-[#0f4c3a] font-extrabold">{selectedEmp}</span>
                       </p>
-                      {o.status !== "cancelled" && (
-                        <span className="text-[8px] text-[#0f4c3a] font-bold bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-md">
-                          Click steps to simulate updates for {selectedEmp?.split(" ")[0]}
-                        </span>
-                      )}
                     </div>
 
                     {o.status === "cancelled" ? (
@@ -238,11 +233,11 @@ export default function OrdersList({ orders, loading, canCancel, onCancel, onPay
                         }
 
                         return (
-                          <div className="relative flex items-center justify-between mt-6 mb-2 px-2">
+                          <div className="relative flex items-center justify-between mt-5 mb-2 px-3">
                             {/* Background connector line */}
-                            <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-gray-200 z-0">
+                            <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[3px] bg-gray-100 z-0 rounded-full">
                               <div 
-                                className="h-full bg-[#0f4c3a] transition-all duration-500" 
+                                className="h-full bg-[#0f4c3a] transition-all duration-500 rounded-full" 
                                 style={{ width: `${(currentStep / 3) * 100}%` }}
                               />
                             </div>
@@ -253,47 +248,25 @@ export default function OrdersList({ orders, loading, canCancel, onCancel, onPay
                               const isActive = idx === currentStep;
                               
                               return (
-                                <button
+                                <div
                                   key={label}
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    // Update steps interactively in local storage for selected employee
-                                    const STORAGE_KEY = "arrivio_service_orders_v1";
-                                    const raw = localStorage.getItem(STORAGE_KEY);
-                                    if (raw) {
-                                      const parsed = JSON.parse(raw);
-                                      const ids = o.orderIds || [o.id];
-                                      const set = new Set(ids);
-                                      const next = parsed.map(item => {
-                                        if (set.has(item.id)) {
-                                          const currentTracking = item.employeeTracking || {};
-                                          const nextTracking = { ...currentTracking, [selectedEmp]: idx };
-                                          return { ...item, employeeTracking: nextTracking };
-                                        }
-                                        return item;
-                                      });
-                                      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-                                      refresh?.();
-                                    }
-                                  }}
-                                  className="flex flex-col items-center gap-2 relative z-10 focus:outline-none group/step cursor-pointer"
+                                  className="flex flex-col items-center gap-1.5 relative z-10 select-none"
                                 >
-                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-all border ${
+                                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black transition-all border ${
                                     isDone 
-                                      ? "bg-[#0f4c3a] text-white border-[#0f4c3a]" 
+                                      ? "bg-[#0f4c3a] text-white border-[#0f4c3a] shadow-sm" 
                                       : isActive 
-                                      ? "bg-white text-[#0f4c3a] border-[#0f4c3a] ring-4 ring-emerald-50" 
-                                      : "bg-white text-gray-400 border-gray-200"
+                                      ? "bg-white text-[#0f4c3a] border-[#0f4c3a] ring-4 ring-[#0f4c3a]/15 shadow-sm" 
+                                      : "bg-white text-gray-400 border-gray-200 shadow-sm"
                                   }`}>
-                                    {idx + 1}
+                                    {isDone ? "✓" : idx + 1}
                                   </div>
-                                  <span className={`text-[10px] font-bold whitespace-nowrap ${
+                                  <span className={`text-[9px] font-extrabold uppercase tracking-wider whitespace-nowrap ${
                                     isActive ? "text-[#0f4c3a]" : "text-gray-400"
                                   }`}>
                                     {label}
                                   </span>
-                                </button>
+                                </div>
                               );
                             })}
                           </div>
@@ -310,7 +283,7 @@ export default function OrdersList({ orders, loading, canCancel, onCancel, onPay
                   const avatar = isTransport ? "TM" : "ER";
                   
                   return (
-                    <div className="bg-white border border-gray-150 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm hover:border-emerald-100/50 transition-colors animate-in fade-in duration-300">
+                    <div className="bg-white border border-gray-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm hover:border-emerald-100/50 transition-colors animate-in fade-in duration-300">
                       <div className="flex items-center gap-3.5 w-full sm:w-auto">
                         <div className="w-11 h-11 rounded-2xl bg-[#0f4c3a]/10 border border-[#0f4c3a]/15 text-[#0f4c3a] flex items-center justify-center font-extrabold text-sm shrink-0">
                           {avatar}
@@ -382,14 +355,9 @@ export default function OrdersList({ orders, loading, canCancel, onCancel, onPay
                           Select an employee to link and track their status on the live timeline above
                         </p>
                       </div>
-                      {o.status !== "cancelled" && (
-                        <span className="text-[8px] text-[#0f4c3a] font-bold bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">
-                          Click status badge to cycle
-                        </span>
-                      )}
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 max-h-64 overflow-y-auto pr-1.5 pt-1">
+                    <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto pr-1.5 pt-1.5 arrivio-scrollbar">
                       {employees.map((name) => {
                         const isTransport = o.serviceCategory === "transport" || o.isTransport;
                         const steps = isTransport
@@ -439,71 +407,28 @@ export default function OrdersList({ orders, loading, canCancel, onCancel, onPay
                               e.stopPropagation(); // Avoid card close
                               setSelectedEmployeeMap(prev => ({ ...prev, [o.id]: name }));
                             }}
-                            className={`border rounded-xl p-2.5 flex items-center justify-between gap-3 shadow-[0_1px_3px_rgba(0,0,0,0.01)] transition-all cursor-pointer ${
+                            className={`h-9 rounded-full px-4 flex items-center gap-2.5 transition-all cursor-pointer border select-none ${
                               isSelected 
-                                ? "bg-emerald-50/30 border-[#0f4c3a] ring-2 ring-emerald-50/50" 
-                                : "bg-white border-gray-150 hover:border-emerald-100/30"
+                                ? "bg-[#0f4c3a] text-white border-transparent shadow-md scale-102 font-bold" 
+                                : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 font-semibold"
                             }`}
                           >
-                            <div className="flex-1 min-w-0">
-                              <span className={`text-xs font-bold truncate block ${isSelected ? "text-[#0f4c3a]" : "text-gray-900"}`}>
-                                {name}
-                              </span>
-                              {/* If transport details has reference or pickup time */}
-                              {(() => {
-                                const detail = employeeDetails.find(d => d.name === name);
-                                if (detail && (detail.pickupTime || detail.reference || detail.notes)) {
-                                  return (
-                                    <span className="text-[10px] text-gray-400 block mt-0.5 truncate font-medium">
-                                      {detail.pickupTime ? `Time: ${detail.pickupTime}` : ""}{detail.reference ? ` • Ref: ${detail.reference}` : ""}
-                                    </span>
-                                  );
-                                }
-                                return null;
-                              })()}
-                            </div>
+                            <span className="text-xs truncate max-w-[120px]">
+                              {name}
+                            </span>
                             
-                            {/* Interactive Status Badge */}
-                            <button
-                              type="button"
-                              disabled={o.paymentStatus !== "paid" || o.status === "cancelled"}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                
-                                const STORAGE_KEY = "arrivio_service_orders_v1";
-                                const raw = localStorage.getItem(STORAGE_KEY);
-                                if (raw) {
-                                  const parsed = JSON.parse(raw);
-                                  const ids = o.orderIds || [o.id];
-                                  const set = new Set(ids);
-                                  const next = parsed.map(item => {
-                                    if (set.has(item.id)) {
-                                      const currentTracking = item.employeeTracking || {};
-                                      // Resolve current custom or default
-                                      let currentStep = currentTracking[name];
-                                      if (typeof currentStep !== "number") {
-                                        const charSum = name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-                                        currentStep = charSum % 3;
-                                      }
-                                      
-                                      const nextStep = (currentStep + 1) % 4;
-                                      const nextTracking = { ...currentTracking, [name]: nextStep };
-                                      return { ...item, employeeTracking: nextTracking };
-                                    }
-                                    return item;
-                                  });
-                                  localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-                                  refresh?.();
-                                }
-                              }}
-                              className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border transition-all cursor-pointer shrink-0 select-none ${
+                            {/* Static Status Badge inside pill */}
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider transition-all shrink-0 select-none ${
                                 o.paymentStatus !== "paid" 
-                                  ? "bg-gray-50 text-gray-400 border-gray-150 cursor-not-allowed" 
-                                  : getBadgeStyles(stepIdx)
-                              } ${o.paymentStatus === "paid" && o.status !== "cancelled" ? "hover:scale-105 active:scale-95" : ""}`}
+                                  ? "bg-gray-50 text-gray-400 border-gray-200" 
+                                  : isSelected
+                                  ? "bg-white/20 text-white border border-white/30"
+                                  : getBadgeStyles(stepIdx) + " border"
+                              }`}
                             >
                               {statusText}
-                            </button>
+                            </span>
                           </div>
                         );
                       })}

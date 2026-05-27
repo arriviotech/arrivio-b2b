@@ -20,9 +20,9 @@ const Invoices = () => {
 
     return (
         <div className="max-w-[1100px] mx-auto animate-in fade-in duration-500 space-y-6 pb-12">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2 border-b border-gray-150 pb-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2 pb-2">
                 <div>
-                    <h1 className="text-3xl font-serif font-semibold tracking-tight text-gray-900">Invoice History</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">Invoice History</h1>
                     <p className="text-sm text-gray-500 mt-2 font-medium">View and download your past subscription invoices.</p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -52,7 +52,7 @@ const Invoices = () => {
                     </div>
                     <div>
                         <p className="text-[10px] font-bold text-[#0f4c3a] uppercase tracking-widest mb-0.5">Upcoming Invoice</p>
-                        <p className="text-base font-serif font-semibold text-gray-900 leading-snug">Next payment of €2,499.00 due on April 10, 2026</p>
+                        <p className="text-base font-bold text-gray-900 leading-snug">Next payment of €2,499.00 due on April 10, 2026</p>
                     </div>
                 </div>
                 <button className="px-5 py-2.5 bg-white border border-gray-200 text-[#0f4c3a] rounded-xl font-bold hover:bg-gray-50 transition-all shadow-sm text-xs cursor-pointer">
@@ -128,7 +128,7 @@ const Invoices = () => {
                 <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 mb-4 border border-indigo-100">
                     <AlertCircle size={22} />
                 </div>
-                <h3 className="text-lg font-serif font-semibold text-gray-900 mb-1">Need help with your billing?</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-1">Need help with your billing?</h3>
                 <p className="text-xs text-gray-500 max-w-sm mx-auto mb-6 font-medium">
                     If you have questions about specific charges, our finance team is here to help.
                 </p>

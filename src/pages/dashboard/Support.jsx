@@ -102,12 +102,12 @@ const Support = () => {
     <div className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500 pb-20 select-none">
       
       {/* Premium Header */}
-      <div className="border-b border-gray-150 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2 pb-2">
         <div>
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#0f4c3a] bg-emerald-50 border border-emerald-100/50 px-2.5 py-1 rounded-full mb-2.5 inline-block shadow-sm">
             ✦ Client Concierge
           </span>
-          <h1 className="text-3xl font-serif font-semibold tracking-tight text-gray-900 leading-none mt-1">Help & Support</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 leading-none mt-1">Help & Support</h1>
           <p className="text-gray-500 mt-2 font-medium text-sm">
             Access priority 24/7 corporate support, raise tickets, or coordinate with your concierge.
           </p>
@@ -132,7 +132,7 @@ const Support = () => {
                   <MessageSquare className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-serif font-semibold text-gray-900 tracking-tight leading-none">Raise a Support Ticket</h2>
+                  <h2 className="text-lg font-bold text-gray-900 tracking-tight leading-none">Raise a Support Ticket</h2>
                   <p className="text-xs text-gray-400 font-medium mt-1">Direct pipeline to our technical relocation operations team.</p>
                 </div>
               </div>
@@ -143,7 +143,7 @@ const Support = () => {
                 <div className="w-16 h-16 bg-emerald-50 text-[#0f4c3a] border border-emerald-100/50 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50/30 shadow-inner">
                   <CheckCircle2 className="w-8 h-8 text-[#0f4c3a]" />
                 </div>
-                <h3 className="text-xl font-serif font-semibold text-gray-900 tracking-tight">Ticket Submitted Successfully!</h3>
+                <h3 className="text-xl font-bold text-gray-900 tracking-tight">Ticket Submitted Successfully!</h3>
                 <p className="text-sm text-gray-505 max-w-sm mx-auto leading-relaxed font-medium">
                   We have registered your ticket and flagged your account priority. A dedicated relocation coordinator will reach out via email or phone within 15 minutes.
                 </p>
@@ -244,7 +244,7 @@ const Support = () => {
           <div className="bg-white rounded-2xl border border-[#e5e7eb] overflow-hidden shadow-sm">
             <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center gap-4">
               <div>
-                <h3 className="font-serif font-semibold text-gray-900 text-sm">Previous Support Tickets</h3>
+                <h3 className="font-bold text-gray-900 text-sm">Previous Support Tickets</h3>
                 <p className="text-[10px] text-gray-400 font-medium mt-0.5">Tracking status of recent corporate support submissions</p>
               </div>
               <span className="px-2.5 py-0.5 rounded-full bg-gray-150 text-gray-600 text-[9px] font-black uppercase tracking-wider border border-gray-200">
@@ -304,7 +304,7 @@ const Support = () => {
               </div>
               <div>
                 <span className="text-[9px] font-extrabold text-emerald-350 uppercase tracking-widest">Arrivio Elite</span>
-                <h3 className="text-base font-serif font-semibold text-white leading-none mt-0.5">Your Concierge</h3>
+                <h3 className="text-base font-bold text-white leading-none mt-0.5">Your Concierge</h3>
               </div>
             </div>
 
@@ -353,7 +353,7 @@ const Support = () => {
                 <HelpCircle className="w-5 h-5 text-gray-500" />
               </div>
               <div>
-                <h3 className="font-serif font-semibold text-gray-900 text-sm leading-tight">Instant FAQs</h3>
+                <h3 className="font-bold text-gray-900 text-sm leading-tight">Instant FAQs</h3>
                 <p className="text-[10px] text-gray-400 font-medium">Search quick answers immediately</p>
               </div>
             </div>

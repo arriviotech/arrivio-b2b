@@ -14,9 +14,9 @@ const Team = () => {
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-20">
-            <div className="flex items-start justify-between border-b border-gray-150 pb-6">
+            <div className="flex items-start justify-between mb-2 pb-2">
                 <div>
-                    <h1 className="text-3xl font-serif font-semibold tracking-tight text-gray-900">Team</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">Team</h1>
                     <p className="text-gray-550 text-sm mt-2 font-medium">People from your company who can access this dashboard.</p>
                 </div>
                 <button className="flex items-center gap-2 bg-[#0f4c3a] hover:bg-[#0a3a2b] text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm active:scale-95 cursor-pointer">

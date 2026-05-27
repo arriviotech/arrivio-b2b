@@ -8,14 +8,14 @@ const Payments = () => {
 
     const storedTx = localStorage.getItem('arrivio_transactions');
     const transactions = storedTx ? JSON.parse(storedTx) : [
-        { id: '#TRX-94812', date: 'Mar 10, 2026', type: 'Subscription', amount: '€2,499.00', status: 'Completed', logo: '✦' },
-        { id: '#TRX-94755', date: 'Feb 10, 2026', type: 'Subscription', amount: '€2,499.00', status: 'Completed', logo: '✦' },
-        { id: '#TRX-94621', date: 'Jan 22, 2026', type: 'Capacity Top-up', amount: '€450.00', status: 'Completed', logo: '↑' },
-        { id: '#TRX-94590', date: 'Jan 10, 2026', type: 'Subscription', amount: '€1,850.00', status: 'Completed', logo: '✦' },
+        { id: '#TRX-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€2,499.00', status: 'Completed', logo: '✦' },
+        { id: '#TRX-2026-002', date: 'Feb 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€2,499.00', status: 'Completed', logo: '↑' },
+        { id: '#TRX-2026-001', date: 'Jan 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,850.00', status: 'Completed', logo: '↑' },
+        { id: '#TRX-2025-012', date: 'Dec 10, 2025', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Completed', logo: '✦' },
     ];
 
     const balances = [
-        { label: 'Next Payment', value: '€2,499.00', date: 'April 10', icon: CreditCard, color: 'indigo' },
+        { label: 'Next Payment', value: '€2,499.00', date: 'April 10, 2026', icon: CreditCard, color: 'indigo' },
         { label: 'Unused Credits', value: `€${creditsVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, date: 'Non-expiring', icon: Wallet, color: 'emerald' },
     ];
 
@@ -44,9 +44,9 @@ const Payments = () => {
 
     return (
         <div className="max-w-[1100px] mx-auto animate-in fade-in duration-500 space-y-6 pb-12">
-            <div className="flex items-center justify-between mb-2 border-b border-gray-150 pb-6">
+            <div className="flex items-center justify-between mb-2 pb-2">
                 <div>
-                    <h1 className="text-3xl font-serif font-semibold tracking-tight text-gray-900">Payments & Transactions</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">Payments & Transactions</h1>
                     <p className="text-sm text-gray-500 mt-2 font-medium">Manage your balance and track all financial activities.</p>
                 </div>
                 <button 
@@ -85,7 +85,7 @@ const Payments = () => {
                         <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400">
                             <History size={16} />
                         </div>
-                        <h3 className="text-lg font-serif font-semibold text-gray-900 tracking-tight">Recent Transactions</h3>
+                        <h3 className="text-lg font-bold text-gray-900 tracking-tight">Recent Transactions</h3>
                     </div>
                     <button className="text-[10px] font-black text-[#0f4c3a] uppercase tracking-widest hover:text-[#0a3a2b] transition-all cursor-pointer">View All</button>
                 </div>
