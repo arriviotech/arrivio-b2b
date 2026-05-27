@@ -90,7 +90,7 @@ function EmployeeMultiSelect({
     <div className="relative">
       <div
         ref={anchorRef}
-        className={`w-full h-12 px-3 bg-white border rounded-xl flex items-center gap-2 transition-colors ${open ? "border-[#1e6f50]" : "border-gray-200 hover:border-[#1e6f50]"}`}
+        className={`w-full h-12 px-3 bg-white border rounded-xl flex items-center gap-2 transition-colors ${open ? "border-[#0f4c3a]" : "border-gray-200 hover:border-[#0f4c3a]"}`}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <Search className="w-4 h-4 text-gray-400 shrink-0" />
@@ -120,7 +120,7 @@ function EmployeeMultiSelect({
           }}
           className={`shrink-0 w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${selectedIds.length === 0
             ? "border-gray-200 text-gray-300 cursor-not-allowed"
-            : "border-[#0a1a12] bg-[#0a1a12] text-white hover:bg-black"
+            : "border-[#0f4c3a] bg-[#0f4c3a] text-white hover:bg-[#0a3a2b]"
             }`}
           aria-label="Confirm selected employees"
           disabled={selectedIds.length === 0}
@@ -151,7 +151,7 @@ function EmployeeMultiSelect({
                       {emp.role} · Arriving {formatArriving(emp.arrivingOn)}
                     </p>
                   </div>
-                  <div className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 ${checked ? "bg-[#0a1a12] border-[#0a1a12] text-white" : "border-gray-200 text-transparent"}`}>
+                  <div className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 ${checked ? "bg-[#0f4c3a] border-[#0f4c3a] text-white" : "border-gray-200 text-transparent"}`}>
                     <Check className="w-4 h-4" />
                   </div>
                 </button>
@@ -178,7 +178,7 @@ function EmployeeMultiSelect({
                       {emp.role} Â· Arriving {formatArriving(emp.arrivingOn)}
                     </p>
                   </div>
-                  <div className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 ${checked ? "bg-[#0a1a12] border-[#0a1a12] text-white" : "border-gray-200 text-transparent"}`}>
+                  <div className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 ${checked ? "bg-[#0f4c3a] border-[#0f4c3a] text-white" : "border-gray-200 text-transparent"}`}>
                     <Check className="w-4 h-4" />
                   </div>
                 </button>
@@ -307,8 +307,8 @@ export default function RequestServiceModal({ isOpen, service, onClose, onConfir
                 type="button"
                 onClick={() => setRecipientType("all")}
                 className={`p-4 rounded-2xl border text-left transition-colors ${recipientType === "all"
-                  ? "border-[#0a1a12] bg-[#0a1a12]/5"
-                  : "border-gray-200 hover:border-[#1e6f50]"
+                  ? "border-[#0f4c3a] bg-[#0f4c3a]/5"
+                  : "border-gray-200 hover:border-[#0f4c3a]"
                   }`}
               >
                 <p className="text-sm font-bold text-gray-900">All Employees</p>
@@ -321,8 +321,8 @@ export default function RequestServiceModal({ isOpen, service, onClose, onConfir
                 type="button"
                 onClick={() => setRecipientType("specific")}
                 className={`p-4 rounded-2xl border text-left transition-colors ${recipientType === "specific"
-                  ? "border-[#0a1a12] bg-[#0a1a12]/5"
-                  : "border-gray-200 hover:border-[#1e6f50]"
+                  ? "border-[#0f4c3a] bg-[#0f4c3a]/5"
+                  : "border-gray-200 hover:border-[#0f4c3a]"
                   }`}
               >
                 <p className="text-sm font-bold text-gray-900">Select Specific Employees</p>
@@ -365,7 +365,7 @@ export default function RequestServiceModal({ isOpen, service, onClose, onConfir
               value={specialRequests}
               onChange={(e) => setSpecialRequests(e.target.value)}
               placeholder="Any special requests? (optional)"
-              className="w-full min-h-[96px] px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1e6f50]/20 focus:border-[#1e6f50] transition-all placeholder:text-gray-300 font-medium resize-none"
+              className="w-full min-h-[96px] px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c3a]/20 focus:border-[#0f4c3a] transition-all placeholder:text-gray-300 font-medium resize-none"
               disabled={submitting}
             />
           </div>
@@ -414,7 +414,7 @@ export default function RequestServiceModal({ isOpen, service, onClose, onConfir
                                       [emp.id]: { ...entry, pickupTime: e.target.value },
                                     }))
                                   }
-                                  className="w-full h-11 px-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1e6f50]/20 focus:border-[#1e6f50] transition-all font-medium"
+                                  className="w-full h-11 px-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c3a]/20 focus:border-[#0f4c3a] transition-all font-medium"
                                 />
                               </div>
                               <div>
@@ -428,7 +428,7 @@ export default function RequestServiceModal({ isOpen, service, onClose, onConfir
                                     }))
                                   }
                                   placeholder="e.g. LH1234"
-                                  className="w-full h-11 px-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1e6f50]/20 focus:border-[#1e6f50] transition-all placeholder:text-gray-300 font-medium"
+                                  className="w-full h-11 px-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c3a]/20 focus:border-[#0f4c3a] transition-all placeholder:text-gray-300 font-medium"
                                 />
                               </div>
                             </div>
@@ -445,7 +445,7 @@ export default function RequestServiceModal({ isOpen, service, onClose, onConfir
                                 }))
                               }
                               placeholder="Any per-employee details..."
-                              className="w-full min-h-[84px] px-3 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1e6f50]/20 focus:border-[#1e6f50] transition-all placeholder:text-gray-300 font-medium resize-none"
+                              className="w-full min-h-[84px] px-3 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c3a]/20 focus:border-[#0f4c3a] transition-all placeholder:text-gray-300 font-medium resize-none"
                             />
                           </div>
                         </div>
@@ -468,10 +468,12 @@ export default function RequestServiceModal({ isOpen, service, onClose, onConfir
           </button>
           <button
             onClick={handleConfirm}
-            className="h-11 px-4 rounded-xl bg-[#0a1a12] text-white font-bold hover:bg-black transition-colors w-full disabled:opacity-60"
+            className="h-11 px-4 rounded-xl bg-[#0f4c3a] text-white font-bold hover:bg-[#0a3a2b] transition-colors w-full disabled:opacity-60 text-xs uppercase tracking-wide"
             disabled={submitting || (recipientType === "specific" && (employeeIds.length === 0 || !employeesConfirmed))}
           >
-            {submitting ? "Confirming..." : "Confirm"}
+            {submitting 
+              ? "Confirming..." 
+              : `Confirm & Order (€${(price * (recipientType === 'all' ? employeeCount : employeeIds.length)).toLocaleString()})`}
           </button>
         </div>
       </div>
