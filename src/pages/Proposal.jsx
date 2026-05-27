@@ -3,34 +3,129 @@ import { useNavigate } from 'react-router-dom';
 import PropertiesNavbar from '../components/layout/PropertiesNavbar';
 import Footer from '../components/layout/Footer';
 import { useReservation } from '../context/ReservationContext';
-import { ArrowLeft, Building2, Plane, Search, Landmark, ShieldCheck, Smartphone, FileText, Receipt, Check, Minus, Plus, X, Compass, Home, BadgeInfo } from 'lucide-react';
+import { ArrowLeft, Building2, Plane, Search, Landmark, ShieldCheck, Smartphone, FileText, Receipt, Check, Minus, Plus, X, Compass, Home, BadgeInfo, ChevronDown } from 'lucide-react';
 import { generateNativePDF } from '../components/proposal/Pdf';
 import Summary from '../components/proposal/Summary';
+import FeesAndInclusions from '../components/proposal/FeesAndInclusions';
 import { useArixDesigner } from '../context/ArixDesignerContext';
-import ArixDesignerStep from '../components/arix/ArixDesignerStep';
-import PropertyCard from '../components/proposal/PropertyCard';
+import PropertyListWithDrawer from '../components/proposal/PropertyListWithDrawer';
 import { supabase } from '../supabase/client';
+import { toB2BUnitType } from '../utils/unitType';
 import { ARIX_ENABLED } from '../App';
 
 // Reverse map: formatted display label → raw DB unit_type
 // Used to look up availability for cart items added before unitTypeKey was stored.
 const UNIT_TYPE_KEY_BY_LABEL = {
-  'Private Studio': 'studio',
-  '1-Bedroom Apartment': 'one_bedroom',
-  '2-Bedroom Apartment': 'two_bedroom',
+  'Studio': 'studio',
+  'Single Room': 'one_bedroom',
   'Shared Room': 'shared_room',
 };
 
 const RELOCATION_SERVICES = [
-  { id: 'airport_pickup', icon: Plane, label: 'Airport Pickup', desc: 'Private transfer from the airport to the new home.', scalable: true },
-  { id: 'airport_dropoff', icon: Plane, label: 'Airport Drop-off', desc: 'Private transfer from home to the airport.', scalable: true },
-  { id: 'housing', icon: Home, label: 'Housing Support', desc: 'Support finding and securing corporate accommodation.', scalable: false },
-  { id: 'bank_account', icon: Landmark, label: 'Bank Account Setup', desc: 'Guided setup for expat-friendly bank accounts.', scalable: true },
-  { id: 'insurance', icon: ShieldCheck, label: 'Insurance Setup', desc: 'Consultation for mandatory health and liability insurance.', scalable: true },
-  { id: 'sim_card', icon: Smartphone, label: 'SIM Card Setup', desc: 'Pre-activated local SIM loaded with high-speed data.', scalable: true },
-  { id: 'anmeldung', icon: FileText, label: 'Anmeldung Support', desc: 'Accompanied translator and appointment assistance.', scalable: false },
-  { id: 'tax_id', icon: BadgeInfo, label: 'Tax ID Support', desc: 'Steuer-ID tracking and tax class optimization.', scalable: false },
-  { id: 'city_guide', icon: Compass, label: 'City Integration Guide', desc: 'Neighborhood tour and settling-in welcome call.', scalable: false },
+  {
+    id: 'airport_pickup',
+    icon: Plane,
+    label: 'Airport Pickup',
+    desc: 'Private transfer from the airport to the new home.',
+    scalable: true,
+    priceEur: 95,
+    details: [
+      { label: "Vehicle", value: "Sedan or similar with luggage space" },
+      { label: "Pricing", value: "Distance-based fare + fixed pickup fee" },
+      { label: "Support", value: "Driver meets you at arrivals and assists with luggage" }
+    ]
+  },
+  {
+    id: 'airport_dropoff',
+    icon: Plane,
+    label: 'Airport Drop-off',
+    desc: 'Private transfer from home to the airport.',
+    scalable: true,
+    priceEur: 95,
+    details: [
+      { label: "Vehicle", value: "Private sedan with luggage space" },
+      { label: "Pricing", value: "Distance-based fare + airport surcharge" },
+      { label: "Support", value: "Real-time flight coordination and drop-off planning" }
+    ]
+  },
+  {
+    id: 'bank_account',
+    icon: Landmark,
+    label: 'Bank Account Setup',
+    desc: 'Guided setup for expat-friendly bank accounts.',
+    scalable: true,
+    priceEur: 49,
+    details: [
+      { label: "Agent", value: "Jonas, banking advisor" },
+      { label: "Experience", value: "Local bank onboarding for expats" },
+      { label: "Benefit", value: "Document preparation and branch appointment support" }
+    ]
+  },
+  {
+    id: 'insurance',
+    icon: ShieldCheck,
+    label: 'Insurance Setup',
+    desc: 'Consultation for mandatory health and liability insurance.',
+    scalable: true,
+    priceEur: 49,
+    details: [
+      { label: "Agent", value: "Lena, insurance expert" },
+      { label: "Experience", value: "5 years helping clients choose German insurance" },
+      { label: "Benefit", value: "Coverage review for health, liability, and rental protection" }
+    ]
+  },
+  {
+    id: 'sim_card',
+    icon: Smartphone,
+    label: 'SIM Card Setup',
+    desc: 'Pre-activated local SIM loaded with high-speed data.',
+    scalable: true,
+    priceEur: 25,
+    details: [
+      { label: "Plan", value: "Pre-activated local SIM" },
+      { label: "Support", value: "Activation and plan setup included" },
+      { label: "Benefit", value: "Data-ready on arrival with trusted local provider" }
+    ]
+  },
+  {
+    id: 'anmeldung',
+    icon: FileText,
+    label: 'Anmeldung Support',
+    desc: 'Accompanied translator and appointment assistance.',
+    scalable: false,
+    priceEur: 149,
+    details: [
+      { label: "Specialist", value: "Nina, registration consultant" },
+      { label: "Expertise", value: "Local Anmeldung support and government filing" },
+      { label: "Benefit", value: "Fast guidance through address registration steps" }
+    ]
+  },
+  {
+    id: 'tax_id',
+    icon: BadgeInfo,
+    label: 'Tax ID Support',
+    desc: 'Steuer-ID tracking and tax class optimization.',
+    scalable: false,
+    priceEur: 49,
+    details: [
+      { label: "Specialist", value: "Marcus, tax liaison" },
+      { label: "Expertise", value: "Tax ID and tax office guidance" },
+      { label: "Benefit", value: "Assistance with forms and local authority requirements" }
+    ]
+  },
+  {
+    id: 'city_guide',
+    icon: Compass,
+    label: 'City Integration Guide',
+    desc: 'Neighborhood tour and settling-in welcome call.',
+    scalable: false,
+    priceEur: 199,
+    details: [
+      { label: "Specialist", value: "Sarah, integration expert" },
+      { label: "Tour Duration", value: "Half-day neighborhood orientation" },
+      { label: "Benefit", value: "1-on-1 welcome consultation call and local integration guide" }
+    ]
+  }
 ];
 
 const SectionHeader = ({ number, title, subtitle }) => (
@@ -79,12 +174,13 @@ const StepIndicator = ({ current }) => {
 
 const Proposal = () => {
   const navigate = useNavigate();
-  const { reservations, removeReservation, updateQuantity, clearReservations } = useReservation();
+  const { reservations, removeReservation, updateQuantity } = useReservation();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
   const [additionalNotes, setAdditionalNotes] = useState('');
   // { [serviceId]: quantity } — scalable services use the qty, toggle ones use 1.
   const [selectedServices, setSelectedServices] = useState({});
+  const [hoveredServiceId, setHoveredServiceId] = useState(null);
 
   const toggleService = (id) => {
     setSelectedServices((prev) => {
@@ -108,6 +204,13 @@ const Proposal = () => {
   };
 
   const selectedServiceCount = Object.keys(selectedServices).length;
+  // Services are one-time charges. For scalable services qty = employee count;
+  // for non-scalable qty is always 1.
+  const servicesTotal = Object.entries(selectedServices).reduce((sum, [id, qty]) => {
+    const svc = RELOCATION_SERVICES.find((s) => s.id === id);
+    if (!svc || !svc.priceEur) return sum;
+    return sum + svc.priceEur * (svc.scalable ? qty : 1);
+  }, 0);
 
   const propertiesData = reservations.reduce((acc, current) => {
     if (!acc[current.propertyId]) {
@@ -153,7 +256,7 @@ const Proposal = () => {
 
       const aMap = {};
       (unitsRes.data || []).forEach(u => {
-        const key = `${u.property_id}:${u.unit_type}`;
+        const key = `${u.property_id}:${toB2BUnitType(u.unit_type)}`;
         aMap[key] = (aMap[key] || 0) + 1;
       });
       setAvailabilityMap(aMap);
@@ -199,22 +302,49 @@ const Proposal = () => {
     }, 0);
   }, [reservations]);
 
-  const { getDesignForProperty } = useArixDesigner();
+  const { getDesignForProperty, getSharedDesignForProperty } = useArixDesigner();
+
+  // Sum furniture designs across all unit-type slots a property has.
+  // Studio → state[`${id}_studio`], Single Room → state[`${id}_one_bedroom`],
+  // Shared Room → state[`${id}_shared`] (via getSharedDesignForProperty).
+  const slotForLabel = (label) => {
+    if (label === 'Studio') return { slot: 'regular', key: 'studio' };
+    if (label === 'Single Room') return { slot: 'regular', key: 'one_bedroom' };
+    if (label === 'Shared Room') return { slot: 'shared', key: 'shared' };
+    return null;
+  };
+  const designsForProperty = (prop) => {
+    const labels = [...new Set((prop.units || []).map((u) => u.unitType).filter(Boolean))];
+    return labels
+      .map((label) => {
+        const meta = slotForLabel(label);
+        if (!meta) return null;
+        const design =
+          meta.slot === 'shared'
+            ? getSharedDesignForProperty(prop.id)
+            : getDesignForProperty(`${prop.id}_${meta.key}`);
+        return { label, design };
+      })
+      .filter(Boolean);
+  };
+
   const furnitureAddOnTotal = useMemo(() => {
     if (!ARIX_ENABLED) return 0;
     return groupedProperties.reduce((acc, prop) => {
-      const d = getDesignForProperty(prop.id);
-      return acc + (d?.addOnTotal || 0);
+      const slotDesigns = designsForProperty(prop);
+      return acc + slotDesigns.reduce((s, sd) => s + (sd.design?.addOnTotal || 0), 0);
     }, 0);
-  }, [groupedProperties, getDesignForProperty]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupedProperties, getDesignForProperty, getSharedDesignForProperty]);
 
   const furnitureCount = useMemo(() => {
     if (!ARIX_ENABLED) return 0;
     return groupedProperties.reduce((acc, prop) => {
-      const d = getDesignForProperty(prop.id);
-      return acc + (d?.selectedItems?.length || 0);
+      const slotDesigns = designsForProperty(prop);
+      return acc + slotDesigns.reduce((s, sd) => s + (sd.design?.selectedItems?.length || 0), 0);
     }, 0);
-  }, [groupedProperties, getDesignForProperty]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupedProperties, getDesignForProperty, getSharedDesignForProperty]);
 
   const estimatedMonthlyTotalWithAddons = estimatedMonthlyCost + furnitureAddOnTotal;
 
@@ -223,21 +353,25 @@ const Proposal = () => {
     return { id, label: svc?.label || id, qty, scalable: !!svc?.scalable };
   });
 
-  // Furniture add-ons per property (from Arix Designer selections)
+  // Furniture add-ons per property (from Arix Designer selections).
+  // One entry per unit-type slot that actually has items selected.
   const resolvedFurniture = !ARIX_ENABLED
     ? []
-    : groupedProperties
-        .map((prop) => {
-          const d = getDesignForProperty(prop.id);
-          const items = d?.selectedItems || [];
-          return {
+    : groupedProperties.flatMap((prop) =>
+        designsForProperty(prop)
+          .map(({ label, design }) => ({
             propertyId: prop.id,
             propertyName: prop.name,
-            items: items.map((it) => ({ id: it.id, name: it.name, price: it.price || 0 })),
-            total: d?.addOnTotal || 0,
-          };
-        })
-        .filter((f) => f.items.length > 0);
+            unitLabel: label,
+            items: (design?.selectedItems || []).map((it) => ({
+              id: it.id,
+              name: it.name,
+              price: it.price || 0,
+            })),
+            total: design?.addOnTotal || 0,
+          }))
+          .filter((f) => f.items.length > 0),
+      );
 
   const pdfPayload = {
     groupedProperties,
@@ -270,11 +404,13 @@ const Proposal = () => {
           : '';
         const furnitureLine = resolvedFurniture.length > 0
           ? `Furniture add-on (Arix Designer):\n${resolvedFurniture.map(f =>
-              `• ${f.propertyName}: ${f.items.map(i => i.name).join(', ')} (+€${f.total}/mo)`
+              `• ${f.propertyName} · ${f.unitLabel}: ${f.items.map(i => i.name).join(', ')} (+€${f.total}/mo)`
             ).join('\n')}\n\n`
           : '';
         const notes = `${notesLine}${servicesLine}${furnitureLine}Here is my requested housing proposal:\n${fileUrl}\n(Note: Link expires in 60 minutes)`;
-        clearReservations();
+        // Keep the reservation cart populated so the Schedule page sidebar can
+        // surface the proposal context. User can clear the cart manually after
+        // booking confirms.
         navigate('/schedule', { state: { bookingNotes: notes } });
       } else {
         throw new Error('Upload failed');
@@ -318,63 +454,49 @@ const Proposal = () => {
 
           {/* Header */}
           <div className="mb-10">
-            <StepIndicator current={2} />
+            {hasItems && <StepIndicator current={2} />}
             <h1 className="text-4xl md:text-5xl font-serif text-[#111827] font-medium mb-2">Your Proposal</h1>
             <p className="text-gray-500 text-base max-w-2xl">
               Review what you've selected. We'll bundle this into a quote and walk you through it on the call.
             </p>
           </div>
 
+          {!hasItems ? (
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-200">
+                <div className="w-20 h-20 bg-[#f4f4f4] rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Building2 className="w-10 h-10 text-gray-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">No units selected yet</h2>
+                <p className="text-gray-500 mb-8 max-w-md mx-auto">Browse our available properties to find the perfect accommodation for your team's needs.</p>
+                <button
+                  onClick={() => navigate('/properties')}
+                  className="bg-[#0f4c3a] hover:bg-[#1A2E22] text-white px-8 py-3 rounded-xl font-bold transition-colors inline-block"
+                >
+                  Browse Properties
+                </button>
+              </div>
+            </div>
+          ) : (
           <div className="flex flex-col lg:flex-row gap-8">
-            <div className="w-full lg:w-2/3 space-y-12">
+            <div className="w-full lg:w-2/3 space-y-12 lg:pt-6">
 
               {/* Section 1: Properties */}
-              {!hasItems ? (
-                <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-200">
-                  <div className="w-20 h-20 bg-[#f4f4f4] rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Building2 className="w-10 h-10 text-gray-400" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">No units selected yet</h2>
-                  <p className="text-gray-500 mb-8 max-w-md mx-auto">Browse our available properties to find the perfect accommodation for your team's needs.</p>
-                  <button
-                    onClick={() => navigate('/properties')}
-                    className="bg-[#0f4c3a] hover:bg-[#1A2E22] text-white px-8 py-3 rounded-xl font-bold transition-colors inline-block"
-                  >
-                    Browse Properties
-                  </button>
-                </div>
-              ) : (
+              {hasItems && (
                 <section>
                   <SectionHeader
                     number="1"
                     title="Selected Properties"
                     subtitle={`${groupedProperties.length} ${groupedProperties.length === 1 ? 'property' : 'properties'}`}
                   />
-                  <div className="space-y-4">
-                    {hydratedProperties.map(property => (
-                      <PropertyCard
-                        key={property.id}
-                        property={property}
-                        navigate={navigate}
-                        updateQuantity={updateQuantity}
-                        removeReservation={removeReservation}
-                      />
-                    ))}
-                  </div>
+                  <PropertyListWithDrawer
+                    properties={hydratedProperties}
+                    navigate={navigate}
+                    updateQuantity={updateQuantity}
+                    removeReservation={removeReservation}
+                  />
                 </section>
               )}
-
-                {/* Section 2: Arix Magic Designer — gated by ARIX_ENABLED flag */}
-                {ARIX_ENABLED && hasItems && (
-                  <section>
-                    <SectionHeader number="2" title="✦ Arix Magic Designer" subtitle="Design furniture per property" />
-                    <div className="space-y-4">
-                      {hydratedProperties.map(property => (
-                        <ArixDesignerStep key={property.id} property={property} />
-                      ))}
-                    </div>
-                  </section>
-                )}
 
               {/* Section 2: Relocation Services */}
               {hasItems && (
@@ -398,9 +520,8 @@ const Proposal = () => {
                       </button>
                     </div>
                   )}
-
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {RELOCATION_SERVICES.map(({ id, icon: Icon, label, desc, scalable }) => {
+                    {RELOCATION_SERVICES.map(({ id, icon: Icon, label, desc, scalable, priceEur, details }) => {
                       const qty = selectedServices[id] || 0;
                       const isSelected = qty > 0;
 
@@ -431,7 +552,46 @@ const Proposal = () => {
                           }`}>
                             <Icon className="w-5 h-5" />
                           </div>
-                          <div className="text-sm font-bold text-gray-900 mb-0.5">{label}</div>
+                          
+                          <div className="flex items-start justify-between gap-2 mb-1.5">
+                            <div className="text-sm font-bold text-gray-900 leading-tight">{label}</div>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              <div className="text-xs font-extrabold text-[#0f4c3a] bg-[#0f4c3a]/5 px-2 py-0.5 rounded-md whitespace-nowrap">
+                                €{priceEur}
+                              </div>
+                              {details && details.length > 0 && (
+                                <div
+                                  className="relative inline-block"
+                                  onMouseEnter={() => setHoveredServiceId(id)}
+                                  onMouseLeave={() => setHoveredServiceId(null)}
+                                >
+                                  <BadgeInfo
+                                    size={14}
+                                    className="text-gray-400 hover:text-[#0f4c3a] transition-colors cursor-help shrink-0"
+                                  />
+                                  
+                                  {hoveredServiceId === id && (
+                                    <div className="absolute right-0 bottom-full mb-2.5 w-64 bg-white border border-gray-100 p-3.5 rounded-xl shadow-xl z-[60] pointer-events-none text-left animate-in fade-in slide-in-from-bottom-1 duration-200">
+                                      <div className="text-[10px] font-bold text-gray-400 mb-2 pb-1 border-b border-gray-100 uppercase tracking-widest">
+                                        Specifications
+                                      </div>
+                                      <div className="space-y-2">
+                                        {details.map((detail, idx) => (
+                                          <div key={idx} className="flex flex-col gap-0.5 text-[10px] leading-snug">
+                                            <span className="font-extrabold text-[#0f4c3a] uppercase tracking-wider">{detail.label}</span>
+                                            <span className="text-gray-600 font-medium">{detail.value}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                      {/* Popover Arrow */}
+                                      <div className="absolute top-full right-1 -translate-y-1 w-2.5 h-2.5 bg-white border-r border-b border-gray-100 rotate-45" />
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
                           <div className="text-xs text-gray-500 leading-snug">{desc}</div>
 
                           {isSelected && scalable && (
@@ -468,14 +628,13 @@ const Proposal = () => {
                       );
                     })}
                   </div>
-
                 </section>
               )}
 
               {/* Section 3: Notes */}
               {hasItems && (
                 <section>
-                  <SectionHeader number="4" title="Notes for our team" subtitle="(Optional)" />
+                  <SectionHeader number="4" title="Notes for the Arrivio Team" subtitle="(Optional)" />
                   <div className="bg-white rounded-2xl p-6 md:p-7 shadow-sm border border-gray-100">
                     <p className="text-sm text-gray-500 mb-4">
                       Headcount waves, timing, special requirements anything our team should know before the call.
@@ -496,23 +655,33 @@ const Proposal = () => {
 
             </div>
 
-            {/* Right column: Summary only, sticky */}
-            <div className="w-full lg:w-1/3">
-              <Summary
-                reservations={reservations}
-                groupedProperties={groupedProperties}
-                handleCheckout={handleCheckout}
-                handleDownloadPDF={handleDownloadPDF}
-                isGeneratingPDF={isGeneratingPDF}
-                isProcessingCheckout={isProcessingCheckout}
-                servicesCount={selectedServiceCount}
-                estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
-                furnitureAddOnTotal={furnitureAddOnTotal}
-                furnitureCount={furnitureCount}
-                cityCounts={cityCounts}
-              />
+            {/* Right column: Summary + Fees act as ONE unit, fixed to the right, no inner scroller */}
+            <div className="w-full lg:w-1/3 lg:pt-[76px]">
+              <div className="lg:sticky lg:top-28 space-y-4">
+                <Summary
+                  reservations={reservations}
+                  groupedProperties={groupedProperties}
+                  handleCheckout={handleCheckout}
+                  handleDownloadPDF={handleDownloadPDF}
+                  isGeneratingPDF={isGeneratingPDF}
+                  isProcessingCheckout={isProcessingCheckout}
+                  servicesCount={selectedServiceCount}
+                  servicesTotal={servicesTotal}
+                  estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
+                  furnitureAddOnTotal={furnitureAddOnTotal}
+                  furnitureCount={furnitureCount}
+                  cityCounts={cityCounts}
+                />
+                {hasItems && (
+                  <FeesAndInclusions
+                    estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
+                    furnitureAddOnTotal={furnitureAddOnTotal}
+                  />
+                )}
+              </div>
             </div>
           </div>
+          )}
         </div>
       </main>
       <Footer />

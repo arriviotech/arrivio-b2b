@@ -3,9 +3,8 @@ import { Minus, Plus, Check, Trash2 } from 'lucide-react';
 import { useReservation } from '../../context/ReservationContext';
 
 const UNIT_TYPE_LABELS = {
-  studio: 'Private Studio',
-  one_bedroom: '1-Bedroom Apartment',
-  two_bedroom: '2-Bedroom Apartment',
+  studio: 'Studio',
+  one_bedroom: 'Single Room',
   shared_room: 'Shared Room',
 };
 

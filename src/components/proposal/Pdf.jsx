@@ -235,7 +235,7 @@ export const generateNativePDF = async (...args) => {
       checkPageBreak(8 + (f.items?.length || 0) * 6);
 
       setText(10, 'bold', DARK);
-      pdf.text(f.propertyName, margin + 2, yPos);
+      pdf.text(f.unitLabel ? `${f.propertyName} · ${f.unitLabel}` : f.propertyName, margin + 2, yPos);
 
       setText(10, 'bold', GREEN);
       pdf.text(`+ EUR ${(f.total || 0).toLocaleString()} / mo`, pageWidth - margin - 2, yPos, { align: 'right' });

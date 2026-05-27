@@ -76,7 +76,7 @@ const ArixDesignerModal = ({ propertyId, propertyName, roomType, isOpen, onClose
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 overflow-auto">
       <div className="absolute inset-0 bg-black/40 transition-opacity duration-300 backdrop-blur-sm" onClick={handleSkip} />
       <div className="relative mx-auto w-[90vw] max-w-[1100px] max-h-[90vh] overflow-hidden rounded-[32px] bg-white shadow-[0_40px_80px_rgba(0,0,0,0.16)] border border-gray-100 backdrop-blur-sm flex flex-col md:flex-row transform scale-95 origin-center">
-        <div className="md:w-[62%] flex flex-col p-5 md:p-8 gap-4 min-h-0">
+        <div className="md:w-[62%] flex flex-col p-5 md:p-8 gap-4 min-h-0 overflow-y-auto">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-3">
               <div className="text-sm uppercase tracking-[0.26em] font-bold text-[#0f4c3a]/70">✦ Arix Magic Designer</div>

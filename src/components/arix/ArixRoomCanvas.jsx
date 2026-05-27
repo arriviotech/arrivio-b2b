@@ -1,10 +1,26 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import roomEmpty from '../../assets/furniture/room_empty.jpg';
+import roomEmpty from '../../assets/furniture/room_empty.png';
 
 const ArixRoomCanvas = ({ design, className, backgroundImage }) => {
   const selected = design?.selectedItems || [];
   const previewImage = backgroundImage || roomEmpty;
+
+  // Explicit stacking order to ensure correct 3D perspective layering in the single room
+  const LAYERING_ORDER = {
+    bookshelf: 10,
+    wardrobe: 20,
+    bed: 30,
+    desk: 40,
+    dining_table: 50,
+    sofa: 60
+  };
+
+  const sortedSelected = [...selected].sort((a, b) => {
+    const orderA = LAYERING_ORDER[a.id] || 0;
+    const orderB = LAYERING_ORDER[b.id] || 0;
+    return orderA - orderB;
+  });
 
   return (
     <div className={`relative w-full h-full bg-gray-50 flex items-center justify-center p-4 ${className || ''}`}>
@@ -22,7 +38,7 @@ const ArixRoomCanvas = ({ design, className, backgroundImage }) => {
         )}
 
         <AnimatePresence>
-          {!backgroundImage && selected.map((item) => (
+          {!backgroundImage && sortedSelected.map((item) => (
             <motion.img
               key={item.id}
               src={item.image}

@@ -6,7 +6,7 @@ export const SERVICES_SEED = [
     detailedDescription: "Private chauffeur/transfer meeting expats at the airport/home.",
     category: "transport",
     priceEur: 95,
-    iconKey: "Car",
+    iconKey: "Plane",
     isActive: true,
   },
   {
@@ -17,7 +17,7 @@ export const SERVICES_SEED = [
     category: "housing",
     priceEur: 1499,
     iconKey: "Home",
-    isActive: true,
+    isActive: false,
   },
   {
     id: "seed-bank",
@@ -76,7 +76,7 @@ export const SERVICES_SEED = [
     detailedDescription: "Private chauffeur/transfer meeting expats at the airport/home.",
     category: "transport",
     priceEur: 95,
-    iconKey: "Car",
+    iconKey: "Plane",
     isActive: true,
   },
   {
@@ -94,7 +94,6 @@ export const SERVICES_SEED = [
 export const SERVICE_CATEGORIES = [
   { key: "all", label: "All" },
   { key: "transport", label: "Transport" },
-  { key: "housing", label: "Housing" },
   { key: "banking", label: "Banking" },
   { key: "insurance", label: "Insurance" },
   { key: "connectivity", label: "SIM" },
