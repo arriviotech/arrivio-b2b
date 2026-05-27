@@ -18,17 +18,12 @@ import img15 from "../../data/properties/15.jpg";
 import img16 from "../../data/properties/16.jpg";
 import img17 from "../../data/properties/17.jpg";
 import img18 from "../../data/properties/18.jpg";
-import img19 from "../../data/properties/19.jpg";
-import img20 from "../../data/properties/20.jpg";
-import img21 from "../../data/properties/21.jpg";
-import img22 from "../../data/properties/22.jpg";
-import img23 from "../../data/properties/23.jpg";
 import img24 from "../../data/properties/24.jpg";
 
 const PREMIUM_IMAGES = [
   img1, img2, img3, img4, img5, img6, img7, img8, img9, img10,
-  img11, img12, img13, img14, img15, img16, img17, img18, img19, img20,
-  img21, img22, img23, img24
+  img11, img12, img13, img14, img15, img16, img17, img18, img3, img6,
+  img4, img4, img5, img24
 ];
 
 function getNumericId(id) {
