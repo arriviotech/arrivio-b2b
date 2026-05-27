@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useProperties } from '../../supabase/hooks/useProperties';
 
 // --- YOUR LOCAL IMAGES ---
 import berlinImg from '../../assets/cities/berlin.jpeg';
@@ -28,40 +29,31 @@ const initialLocations = [
 
 const LocationsSection = () => {
   const [activeCityId, setActiveCityId] = useState(1);
-  const [locations, setLocations] = useState(initialLocations); // ✅ State for locations
+  const { properties } = useProperties();
 
-  // Fetch counts from DB - Safely handled
-  React.useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        if (typeof supabase !== 'undefined') {
-          const { data, error } = await supabase
-            .from('properties')
-            .select('city');
-
-          if (error) {
-            console.error("Error fetching property counts:", error);
-            return;
-          }
-
-          const counts = {};
-          data.forEach(p => {
-            const city = p.city ? p.city.trim() : "";
-            counts[city] = (counts[city] || 0) + 1;
-          });
-
-          setLocations(prev => prev.map(loc => ({
-            ...loc,
-            count: counts[loc.name] || 0
-          })));
-        }
-      } catch (err) {
-        console.warn("Supabase not available, using defaults.");
-      }
-    };
-
-    fetchCounts();
-  }, []);
+  // Derive live "homes per city" counts from the loaded properties.
+  // Previously this referenced an unimported `supabase` global, so the
+  // guard `typeof supabase !== 'undefined'` was always false — the fetch
+  // never ran and every city stayed stuck at its hardcoded count: 0.
+  const locations = useMemo(() => {
+    // Normalize for matching: lowercase, trim, and strip diacritics so the
+    // plain label "Dusseldorf" matches the DB value "Düsseldorf".
+    const norm = (s) =>
+      (s || '')
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/\p{Mn}/gu, '');
+    const counts = {};
+    (properties || []).forEach((p) => {
+      const city = norm(p.city);
+      if (city) counts[city] = (counts[city] || 0) + 1;
+    });
+    return initialLocations.map((loc) => ({
+      ...loc,
+      count: counts[norm(loc.name)] || 0,
+    }));
+  }, [properties]);
 
   const activeLocation = locations.find(l => l.id === activeCityId);
 
