@@ -14,7 +14,7 @@ const Billing = () => {
   const activePlan = {
     name: 'Enterprise Dashboard SaaS',
     yearlyStandardPrice: 3000,
-    yearlyPromoPrice: 2499,
+    yearlyPromoPrice: 1499,
     nextBilling: 'April 10, 2026',
     seatsUsed: 48,
     seatsLimit: 100,
@@ -24,8 +24,8 @@ const Billing = () => {
 
   // Mock corporate transaction invoices
   const [invoices] = useState([
-    { id: '#INV-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€2,499.00', status: 'Paid' },
-    { id: '#INV-2026-002', date: 'Feb 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€2,499.00', status: 'Paid' },
+    { id: '#INV-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€1,499.00', status: 'Paid' },
+    { id: '#INV-2026-002', date: 'Feb 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,499.00', status: 'Paid' },
     { id: '#INV-2026-001', date: 'Jan 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,850.00', status: 'Paid' },
     { id: '#INV-2025-012', date: 'Dec 10, 2025', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Paid' }
   ]);
@@ -71,13 +71,20 @@ const Billing = () => {
                   <span className="text-3xl font-serif font-semibold text-gray-900">€{activePlan.yearlyPromoPrice}</span>
                   <span className="text-xs text-gray-500 font-bold">/ first year</span>
                 </div>
-                <span className="text-[9px] font-extrabold text-[#0f4c3a] block mt-1">First 6 Months Complimentary</span>
               </div>
             </div>
 
             {/* Clean Deal Breakdown Text */}
-            <div className="bg-gray-50/80 border border-gray-150 rounded-2xl p-4.5 text-xs text-gray-655 font-medium leading-relaxed shadow-inner">
-              Your annual subscription starts with <span className="text-[#0f4c3a] font-extrabold">six complimentary months</span>. Billed once as €1,499 for the remaining six months of the first year (standard rate is €3,000/year thereafter).
+            <div className="bg-gray-50/80 border border-gray-150 rounded-2xl p-4.5 text-xs text-gray-650 font-medium leading-relaxed shadow-inner flex items-start gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#0f4c3a]/10 border border-[#0f4c3a]/25 text-[#0f4c3a] flex items-center justify-center shrink-0 mt-0.5">
+                <Sparkles size={14} className="stroke-[2.5]" />
+              </div>
+              <div>
+                <p className="font-bold text-gray-900 text-xs">Special B2B Promo Offer Activated</p>
+                <p className="text-gray-500 mt-0.5 leading-relaxed">
+                  For your first year, standard pricing of <span className="line-through font-semibold text-gray-450">€3,000</span> is discounted to just <span className="text-[#0f4c3a] font-extrabold">€1,499</span>. The standard B2B rate of €3,000/year will apply thereafter.
+                </p>
+              </div>
             </div>
 
           </div>

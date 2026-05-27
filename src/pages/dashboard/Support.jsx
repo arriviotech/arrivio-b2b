@@ -33,6 +33,7 @@ const Support = () => {
   const [priority, setPriority] = useState("normal"); // 'normal' | 'urgent' | 'emergency'
   const [faqSearch, setFaqSearch] = useState("");
   const [expandedFaq, setExpandedFaq] = useState(null);
+  const [showTicketForm, setShowTicketForm] = useState(false);
   
   // Form fields
   const [subject, setSubject] = useState("");
@@ -74,6 +75,7 @@ const Support = () => {
 
     setTickets(prev => [newTicket, ...prev]);
     setSubmitted(true);
+    setShowTicketForm(false);
     setSubject("");
     setMessage("");
     setPriority("normal");
@@ -99,7 +101,7 @@ const Support = () => {
   };
 
   return (
-    <div className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500 pb-20 select-none">
+    <div className="max-w-[1100px] mx-auto space-y-8 animate-in fade-in duration-500 pb-20 select-none">
       
       {/* Premium Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2 pb-2">
@@ -109,7 +111,7 @@ const Support = () => {
           </span>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 leading-none mt-1">Help & Support</h1>
           <p className="text-gray-500 mt-2 font-medium text-sm">
-            Access priority 24/7 corporate support, raise tickets, or coordinate with your concierge.
+            Access priority 24/7 corporate support, search FAQs, or coordinate tickets.
           </p>
         </div>
         
@@ -119,129 +121,252 @@ const Support = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left Column: Form & History */}
-        <div className="lg:col-span-2 space-y-8">
-          
-          {/* Ticket raising container */}
-          <div className="bg-white rounded-2xl border border-[#e5e7eb] p-6 sm:p-8 shadow-sm">
-            <div className="flex items-center justify-between gap-4 mb-6">
-              <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 bg-emerald-50 text-[#0f4c3a] border border-emerald-100/30 rounded-xl flex items-center justify-center shrink-0">
-                  <MessageSquare className="w-5 h-5" />
+      {submitted ? (
+        /* SUCCESS STATE & REVEALED CONCIERGE CARD FLOW */
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start animate-in zoom-in-95 duration-300">
+          {/* Left Side: Success banner & detail check */}
+          <div className="md:col-span-2 space-y-6">
+            <div className="bg-white border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-sm text-center space-y-4">
+              <div className="w-16 h-16 bg-emerald-50 text-[#0f4c3a] border border-emerald-100/50 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50/30 shadow-inner">
+                <CheckCircle2 className="w-8 h-8 text-[#0f4c3a]" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 tracking-tight">Ticket Submitted Successfully!</h3>
+              <p className="text-sm text-gray-505 max-w-md mx-auto leading-relaxed font-medium">
+                We have registered your ticket and flagged your account priority. A dedicated relocation coordinator will reach out via email or phone within 15 minutes.
+              </p>
+              
+              <div className="p-4.5 bg-gray-50 border border-gray-150 rounded-2xl text-xs font-semibold text-gray-700 max-w-sm mx-auto space-y-2">
+                <div className="flex justify-between items-center text-[10px] text-gray-400 uppercase">
+                  <span>Assigned Team</span>
+                  <span>Relocation Operations</span>
                 </div>
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900 tracking-tight leading-none">Raise a Support Ticket</h2>
-                  <p className="text-xs text-gray-400 font-medium mt-1">Direct pipeline to our technical relocation operations team.</p>
+                <div className="flex justify-between items-center text-xs">
+                  <span>Priority Escalation</span>
+                  <span className="text-[#0f4c3a] font-extrabold uppercase">High Priority B2B</span>
                 </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => { setSubmitted(false); setShowTicketForm(false); }}
+                  className="h-10 px-5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-extrabold text-xs uppercase tracking-wider rounded-xl border border-gray-200 active:scale-95 transition-all cursor-pointer"
+                >
+                  Back to FAQs
+                </button>
               </div>
             </div>
 
-            {submitted ? (
-              <div className="py-12 text-center space-y-4 animate-in zoom-in duration-300">
-                <div className="w-16 h-16 bg-emerald-50 text-[#0f4c3a] border border-emerald-100/50 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50/30 shadow-inner">
-                  <CheckCircle2 className="w-8 h-8 text-[#0f4c3a]" />
+            {/* Support Ticket History */}
+            <div className="bg-white rounded-2xl border border-[#e5e7eb] overflow-hidden shadow-sm">
+              <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center gap-4">
+                <div>
+                  <h3 className="font-bold text-gray-900 text-sm">Previous Support Tickets</h3>
+                  <p className="text-[10px] text-gray-400 font-medium mt-0.5">Tracking status of recent corporate support submissions</p>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 tracking-tight">Ticket Submitted Successfully!</h3>
-                <p className="text-sm text-gray-505 max-w-sm mx-auto leading-relaxed font-medium">
-                  We have registered your ticket and flagged your account priority. A dedicated relocation coordinator will reach out via email or phone within 15 minutes.
-                </p>
-                <div className="pt-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-gray-150 text-gray-600 text-[9px] font-black uppercase tracking-wider border border-gray-200">
+                  History ({tickets.length})
+                </span>
+              </div>
+              
+              <div className="divide-y divide-gray-50">
+                {tickets.map((ticket) => (
+                  <div key={ticket.id} className="p-5 hover:bg-gray-50/20 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[9px] font-black text-gray-450 tracking-wider uppercase bg-gray-50 border border-gray-150 px-1.5 py-0.5 rounded">
+                          {ticket.id}
+                        </span>
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border select-none shrink-0 ${
+                          ticket.status === 'Resolved' ? 'bg-emerald-50 text-emerald-705 border-emerald-100/60' : 'bg-blue-50 text-blue-700 border-blue-100/60'
+                        }`}>
+                          {ticket.status}
+                        </span>
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border select-none shrink-0 ${getPriorityStyles(ticket.priority)}`}>
+                          {ticket.priority} priority
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-gray-900 text-sm truncate pr-4">{ticket.subject}</h4>
+                    </div>
+                    
+                    <div className="text-left sm:text-right shrink-0 flex sm:flex-col gap-x-2 gap-y-0.5 text-xs text-gray-400 font-medium">
+                      <span className="text-gray-700 font-bold">{ticket.date}</span>
+                      <span className="hidden sm:inline text-gray-200 font-light">•</span>
+                      <span>{ticket.time}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Right Side: REVEALED VIP CONCIERGE CARD */}
+          <div className="md:col-span-1 space-y-6">
+            {/* VIP Concierge Card */}
+            <div className="bg-[#0f4c3a] rounded-3xl p-6 sm:p-7 text-white shadow-xl relative overflow-hidden border border-[#0f4c3a]/25 group animate-in slide-in-from-right duration-550">
+              
+              <div className="absolute -right-16 -top-16 w-44 h-44 rounded-full bg-white/5 blur-2xl group-hover:bg-white/10 transition-colors duration-500 pointer-events-none" />
+
+              <div className="flex items-center gap-3.5 mb-6">
+                <div className="w-11 h-11 bg-white/10 text-white rounded-xl flex items-center justify-center shrink-0 border border-white/5 shadow-sm">
+                  <Sparkles className="w-5 h-5 text-white animate-pulse" />
+                </div>
+                <div>
+                  <span className="text-[9px] font-extrabold text-emerald-300 uppercase tracking-widest">Arrivio Elite</span>
+                  <h3 className="text-base font-bold text-white leading-none mt-0.5">Your Concierge</h3>
+                </div>
+              </div>
+
+              {/* Profile Section */}
+              <div className="flex items-center gap-3.5 bg-white/5 border border-white/5 rounded-2xl p-3.5 mb-6">
+                <div className="w-12 h-12 rounded-full bg-white/15 border-2 border-white/20 flex items-center justify-center font-extrabold text-base tracking-tight shrink-0 select-none shadow-sm">
+                  SD
+                </div>
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-sm text-white">Sarah Davies</h4>
+                  <p className="text-xs text-emerald-350 mt-0.5 font-bold">Dedicated B2B Success Partner</p>
+                  <p className="text-[9px] text-gray-300 mt-1 font-medium italic">Priority Support Line Active</p>
+                </div>
+              </div>
+
+              <div className="space-y-3.5 pt-1">
+                <a 
+                  href="tel:1800ARRIVIOELITE"
+                  className="h-10 px-4 bg-white hover:bg-gray-50 text-gray-900 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-98"
+                >
+                  <Phone size={12} className="text-[#0f4c3a]" />
+                  Secure Hot Call
+                </a>
+                
+                <div className="border-t border-white/10 my-4 pt-3 space-y-2.5">
+                  <div className="flex items-center gap-3 text-xs text-gray-200">
+                    <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center shrink-0">
+                      <Headset className="w-3.5 h-3.5 text-emerald-300" />
+                    </div>
+                    <span className="font-bold tracking-tight">1800-ARRIVIO-ELITE</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-gray-200">
+                    <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center shrink-0">
+                      <Mail className="w-3.5 h-3.5 text-emerald-300" />
+                    </div>
+                    <span className="font-bold tracking-tight">priority@arrivio.com</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-5 bg-emerald-50/50 border border-emerald-100/30 rounded-2xl text-[11px] font-medium text-emerald-800 leading-relaxed flex items-start gap-2.5">
+              <LifeBuoy className="w-4 h-4 text-[#0f4c3a] shrink-0 mt-0.5 animate-pulse" />
+              <span>
+                As an Arrivio B2B Elite client, raising a ticket triggers premium escalation. Your dedicated partner (Sarah) is notified immediately and will call you back if needed.
+              </span>
+            </div>
+          </div>
+        </div>
+      ) : showTicketForm ? (
+        /* TICKET FORM VIEW */
+        <div className="max-w-[700px] mx-auto space-y-6 animate-in slide-in-from-bottom-6 duration-300">
+          <button
+            onClick={() => setShowTicketForm(false)}
+            className="flex items-center gap-1.5 text-xs font-extrabold text-gray-500 hover:text-gray-900 transition-colors uppercase tracking-wider cursor-pointer border-0 bg-transparent"
+          >
+            ← Back to FAQs
+          </button>
+
+          <div className="bg-white rounded-3xl border border-[#e5e7eb] p-6 sm:p-8 shadow-sm">
+            <div className="flex items-center gap-3.5 mb-6">
+              <div className="w-10 h-10 bg-emerald-50 text-[#0f4c3a] border border-emerald-100/30 rounded-xl flex items-center justify-center shrink-0">
+                <MessageSquare className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900 tracking-tight leading-none">Raise a Support Ticket</h2>
+                <p className="text-xs text-gray-400 font-medium mt-1">Direct pipeline to our technical relocation operations team.</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Priority Selector Pills */}
+              <div className="space-y-2.5">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                  Select Priority Level
+                </label>
+                <div className="grid grid-cols-3 gap-3">
                   <button
-                    onClick={() => setSubmitted(false)}
-                    className="h-10 px-5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-extrabold text-xs uppercase tracking-wider rounded-xl border border-gray-200 active:scale-95 transition-all cursor-pointer"
+                    type="button"
+                    onClick={() => setPriority("normal")}
+                    className={`h-11 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-2 cursor-pointer ${
+                      priority === "normal"
+                        ? "bg-gray-50 border-gray-300 text-gray-900 ring-2 ring-gray-100"
+                        : "bg-white border-gray-200 text-gray-400 hover:border-gray-300"
+                    }`}
                   >
-                    Raise another ticket
+                    <UserCheck size={14} className={priority === "normal" ? "text-gray-800" : "text-gray-400"} />
+                    Standard Query
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPriority("urgent")}
+                    className={`h-11 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-2 cursor-pointer ${
+                      priority === "urgent"
+                        ? "bg-amber-50/50 border-amber-250 text-amber-900 ring-2 ring-amber-50"
+                        : "bg-white border-gray-200 text-gray-400 hover:border-gray-300"
+                    }`}
+                  >
+                    <Clock size={14} className={priority === "urgent" ? "text-amber-600" : "text-gray-400"} />
+                    Urgent Case
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPriority("emergency")}
+                    className={`h-11 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-2 cursor-pointer ${
+                      priority === "emergency"
+                        ? "bg-red-50 border-red-200 text-red-955 ring-2 ring-red-50"
+                        : "bg-white border-gray-200 text-gray-400 hover:border-gray-300"
+                    }`}
+                  >
+                    <ShieldAlert size={14} className={priority === "emergency" ? "text-red-655 animate-bounce" : "text-gray-400"} />
+                    Emergency
                   </button>
                 </div>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                
-                {/* Priority Selector Pills */}
-                <div className="space-y-2.5">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-                    Select Priority Level
-                  </label>
-                  <div className="grid grid-cols-3 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setPriority("normal")}
-                      className={`h-11 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-2 cursor-pointer ${
-                        priority === "normal"
-                          ? "bg-gray-50 border-gray-300 text-gray-900 ring-2 ring-gray-100"
-                          : "bg-white border-gray-200 text-gray-400 hover:border-gray-300"
-                      }`}
-                    >
-                      <UserCheck size={14} className={priority === "normal" ? "text-gray-800" : "text-gray-400"} />
-                      Standard Query
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPriority("urgent")}
-                      className={`h-11 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-2 cursor-pointer ${
-                        priority === "urgent"
-                          ? "bg-amber-50/50 border-amber-250 text-amber-900 ring-2 ring-amber-50"
-                          : "bg-white border-gray-200 text-gray-400 hover:border-gray-300"
-                      }`}
-                    >
-                      <Clock size={14} className={priority === "urgent" ? "text-amber-600" : "text-gray-400"} />
-                      Urgent Case
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPriority("emergency")}
-                      className={`h-11 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-2 cursor-pointer ${
-                        priority === "emergency"
-                          ? "bg-red-50 border-red-200 text-red-955 ring-2 ring-red-50"
-                          : "bg-white border-gray-200 text-gray-400 hover:border-gray-300"
-                      }`}
-                    >
-                      <ShieldAlert size={14} className={priority === "emergency" ? "text-red-655 animate-bounce" : "text-gray-400"} />
-                      Emergency
-                    </button>
-                  </div>
-                </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Subject</label>
-                  <input
-                    type="text"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    placeholder="Enter ticket subject (e.g. Missing health insurance certificate)"
-                    className="w-full h-11 px-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-[#0f4c3a] focus:ring-2 focus:ring-[#0f4c3a]/20 focus:outline-none transition-all duration-200 text-gray-800 font-medium text-sm"
-                    required
-                  />
-                </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Subject</label>
+                <input
+                  type="text"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder="Enter ticket subject (e.g. Missing health insurance certificate)"
+                  className="w-full h-11 px-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-[#0f4c3a] focus:ring-2 focus:ring-[#0f4c3a]/20 focus:outline-none transition-all duration-200 text-gray-800 font-medium text-sm"
+                  required
+                />
+              </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Detailed Message</label>
-                  <textarea
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Describe your issue in detail (please mention any affected employee names if applicable)..."
-                    className="w-full min-h-[140px] p-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-[#0f4c3a] focus:ring-2 focus:ring-[#0f4c3a]/20 focus:outline-none transition-all duration-200 text-gray-800 font-medium text-sm resize-none"
-                    required
-                  ></textarea>
-                </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Detailed Message</label>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Describe your issue in detail (please mention any affected employee names if applicable)..."
+                  className="w-full min-h-[140px] p-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-[#0f4c3a] focus:ring-2 focus:ring-[#0f4c3a]/20 focus:outline-none transition-all duration-200 text-gray-800 font-medium text-sm resize-none"
+                  required
+                ></textarea>
+              </div>
 
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    className="h-11 px-7 bg-[#0f4c3a] hover:bg-[#0a3a2b] text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-sm hover:shadow-emerald-950/20 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                    Send Support Ticket
-                  </button>
-                </div>
-              </form>
-            )}
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  className="h-11 px-7 bg-[#0f4c3a] hover:bg-[#0a3a2b] text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-sm hover:shadow-emerald-950/20 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  Send Support Ticket
+                </button>
+              </div>
+            </form>
           </div>
 
           {/* Ticket history panel */}
-          <div className="bg-white rounded-2xl border border-[#e5e7eb] overflow-hidden shadow-sm">
+          <div className="bg-white rounded-3xl border border-[#e5e7eb] overflow-hidden shadow-sm">
             <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center gap-4">
               <div>
                 <h3 className="font-bold text-gray-900 text-sm">Previous Support Tickets</h3>
@@ -288,130 +413,148 @@ const Support = () => {
             </div>
           </div>
         </div>
-
-        {/* Right Column: Contact Concierge & FAQ */}
-        <div className="space-y-6">
+      ) : (
+        /* INSTANT FAQS VIEW (DEFAULT STATE) */
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start animate-in fade-in duration-500">
           
-          {/* B2B Concierge Card */}
-          <div className="bg-[#0f4c3a] rounded-2xl p-6 sm:p-7 text-white shadow-sm hover:shadow-lg transition-all duration-300 relative overflow-hidden border border-[#0f4c3a]/25 group">
-            
-            {/* Visual background gradient circle decoration */}
-            <div className="absolute -right-16 -top-16 w-44 h-44 rounded-full bg-white/5 blur-2xl group-hover:bg-white/10 transition-colors duration-500 pointer-events-none" />
-
-            <div className="flex items-center gap-3.5 mb-6">
-              <div className="w-11 h-11 bg-white/10 text-white rounded-xl flex items-center justify-center shrink-0 border border-white/5 shadow-sm">
-                <Sparkles className="w-5 h-5 text-white animate-pulse" />
-              </div>
-              <div>
-                <span className="text-[9px] font-extrabold text-emerald-350 uppercase tracking-widest">Arrivio Elite</span>
-                <h3 className="text-base font-bold text-white leading-none mt-0.5">Your Concierge</h3>
-              </div>
-            </div>
-
-            {/* Profile Section */}
-            <div className="flex items-center gap-3.5 bg-white/5 border border-white/5 rounded-2xl p-3.5 mb-6 hover:bg-white/8 transition-colors duration-305">
-              <div className="w-12 h-12 rounded-full bg-white/15 border-2 border-white/20 flex items-center justify-center font-extrabold text-base tracking-tight shrink-0 select-none shadow-sm">
-                SD
-              </div>
-              <div className="min-w-0">
-                <h4 className="font-extrabold text-sm text-white">Sarah Davies</h4>
-                <p className="text-xs text-emerald-300 mt-0.5 font-bold">Dedicated B2B Success Partner</p>
-                <p className="text-[9px] text-gray-300 mt-1 font-medium italic">Priority Support Line Active</p>
-              </div>
-            </div>
-
-            <div className="space-y-3.5 pt-1">
-              <a 
-                href="tel:1800ARRIVIOELITE"
-                className="h-10 px-4 bg-white hover:bg-gray-50 text-gray-900 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-98"
-              >
-                <Phone size={12} className="text-[#0f4c3a]" />
-                Secure Hot Call
-              </a>
-              
-              <div className="border-t border-white/10 my-4 pt-3 space-y-2.5">
-                <div className="flex items-center gap-3 text-xs text-gray-205">
-                  <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center shrink-0">
-                    <Headset className="w-3.5 h-3.5 text-emerald-300" />
-                  </div>
-                  <span className="font-bold tracking-tight">1800-ARRIVIO-ELITE</span>
+          {/* Left Column: FAQ Search & Accordions (col-span 2) */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-3xl border border-[#e5e7eb] p-6 sm:p-8 shadow-sm space-y-6">
+              <div className="flex items-center gap-3.5 pb-4 border-b border-gray-100">
+                <div className="w-10 h-10 bg-gray-50 text-gray-655 border border-gray-150 rounded-xl flex items-center justify-center shrink-0">
+                  <HelpCircle className="w-5 h-5 text-gray-500" />
                 </div>
-                <div className="flex items-center gap-3 text-xs text-gray-205">
-                  <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center shrink-0">
-                    <Mail className="w-3.5 h-3.5 text-emerald-300" />
-                  </div>
-                  <span className="font-bold tracking-tight">priority@arrivio.com</span>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base leading-tight">Instant FAQs</h3>
+                  <p className="text-xs text-gray-400 font-medium mt-0.5">Search quick answers to standard relocation inquiries</p>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Interactive FAQ search & Accordions */}
-          <div className="bg-white rounded-2xl border border-[#e5e7eb] p-6 shadow-sm space-y-5">
-            <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 bg-gray-50 text-gray-655 border border-gray-150 rounded-xl flex items-center justify-center shrink-0">
-                <HelpCircle className="w-5 h-5 text-gray-500" />
+              {/* FAQ Search Bar */}
+              <div className="relative">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search FAQs (e.g. anmelden, credits, driver)..."
+                  value={faqSearch}
+                  onChange={(e) => {
+                    setFaqSearch(e.target.value);
+                    setExpandedFaq(null);
+                  }}
+                  className="w-full h-11 pl-11 pr-4 bg-gray-50/50 border border-gray-200 rounded-xl text-xs font-bold focus:outline-none focus:border-[#0f4c3a] focus:ring-2 focus:ring-[#0f4c3a]/20 transition-all"
+                />
               </div>
-              <div>
-                <h3 className="font-bold text-gray-900 text-sm leading-tight">Instant FAQs</h3>
-                <p className="text-[10px] text-gray-400 font-medium">Search quick answers immediately</p>
-              </div>
-            </div>
 
-            {/* FAQ Search Bar */}
-            <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search FAQs..."
-                value={faqSearch}
-                onChange={(e) => {
-                  setFaqSearch(e.target.value);
-                  setExpandedFaq(null);
-                }}
-                className="w-full h-10 pl-10 pr-4 bg-gray-50/50 border border-gray-200 rounded-xl text-xs font-bold focus:outline-none focus:border-[#0f4c3a] focus:ring-2 focus:ring-[#0f4c3a]/20 transition-all"
-              />
-            </div>
-
-            {/* Accordions */}
-            <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
-              {filteredFaqs.length > 0 ? (
-                filteredFaqs.map((faq, idx) => {
-                  const isExpanded = expandedFaq === idx;
-                  return (
-                    <div 
-                      key={idx} 
-                      className="border border-gray-100 rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.01)] transition-all duration-300"
-                    >
-                      <button
-                        onClick={() => setExpandedFaq(isExpanded ? null : idx)}
-                        className="w-full p-3.5 flex items-center justify-between gap-2.5 text-left bg-gray-50/30 hover:bg-gray-50/80 transition-colors cursor-pointer select-none"
+              {/* Accordions */}
+              <div className="space-y-3 pr-1">
+                {filteredFaqs.length > 0 ? (
+                  filteredFaqs.map((faq, idx) => {
+                    const isExpanded = expandedFaq === idx;
+                    return (
+                      <div 
+                        key={idx} 
+                        className="border border-gray-100 rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.01)] transition-all duration-300 hover:border-gray-200"
                       >
-                        <span className="text-xs font-bold text-gray-800 leading-snug">{faq.q}</span>
-                        <div className="text-gray-400 shrink-0">
-                          {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                        </div>
-                      </button>
-                      
-                      {isExpanded && (
-                        <div className="p-3.5 border-t border-gray-100 bg-white text-xs font-medium text-gray-550 leading-relaxed animate-in slide-in-from-top-2 duration-200 whitespace-pre-line">
-                          {faq.a}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="py-8 text-center text-gray-405 font-bold italic text-xs">
-                  No FAQs match your search.
-                </div>
-              )}
+                        <button
+                          type="button"
+                          onClick={() => setExpandedFaq(isExpanded ? null : idx)}
+                          className="w-full p-4 flex items-center justify-between gap-3 text-left bg-gray-50/30 hover:bg-gray-50/80 transition-colors cursor-pointer select-none border-0"
+                        >
+                          <span className="text-xs sm:text-sm font-extrabold text-gray-800 leading-snug">{faq.q}</span>
+                          <div className="text-gray-400 shrink-0">
+                            {isExpanded ? <ChevronUp size={16} className="text-[#0f4c3a]" /> : <ChevronDown size={16} />}
+                          </div>
+                        </button>
+                        
+                        {isExpanded && (
+                          <div className="p-4 border-t border-gray-100 bg-white text-xs sm:text-sm font-medium text-gray-550 leading-relaxed animate-in slide-in-from-top-2 duration-200 whitespace-pre-line">
+                            {faq.a}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="py-12 text-center text-gray-400 font-bold italic text-xs">
+                    No FAQs match your search query. Try another term.
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
+          {/* Right Column: CTA Widget & Compact Support History (col-span 1) */}
+          <div className="lg:col-span-1 space-y-6">
+            
+            {/* Call-to-Action for Ticket submission */}
+            <div className="bg-emerald-50/20 border border-emerald-100/30 rounded-3xl p-6 shadow-sm space-y-4">
+              <div className="w-10 h-10 bg-[#0f4c3a]/10 text-[#0f4c3a] border border-[#0f4c3a]/15 rounded-xl flex items-center justify-center shrink-0">
+                <MessageCircle className="w-5 h-5" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-bold text-gray-950 text-base leading-tight">Need Direct Help?</h3>
+                <p className="text-xs text-gray-500 font-semibold leading-relaxed mt-1">
+                  If your question isn't in our FAQs, raise a priority corporate support ticket.
+                </p>
+              </div>
+              
+              <button
+                type="button"
+                onClick={() => { setShowTicketForm(true); }}
+                className="w-full h-11 bg-[#0f4c3a] hover:bg-[#0a3120] text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-md hover:shadow-emerald-950/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                Raise a Support Ticket
+              </button>
+            </div>
+
+            {/* Ticket history panel */}
+            <div className="bg-white rounded-3xl border border-[#e5e7eb] overflow-hidden shadow-sm">
+              <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center gap-4">
+                <div>
+                  <h3 className="font-bold text-gray-900 text-sm">Recent Tickets</h3>
+                  <p className="text-[10px] text-gray-400 font-semibold mt-0.5">Corporate support history</p>
+                </div>
+                <span className="px-2 py-0.5 rounded-full bg-gray-150 text-gray-600 text-[8px] font-black uppercase tracking-wider border border-gray-200">
+                  {tickets.length}
+                </span>
+              </div>
+              
+              <div className="divide-y divide-gray-50">
+                {tickets.length > 0 ? (
+                  tickets.map((ticket) => (
+                    <div key={ticket.id} className="p-4.5 hover:bg-gray-50/20 transition-colors flex flex-col gap-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[8px] font-black text-gray-450 tracking-wider uppercase bg-gray-50 border border-gray-150 px-1 py-0.5 rounded">
+                          {ticket.id}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className={`px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase border select-none shrink-0 ${
+                            ticket.status === 'Resolved' ? 'bg-emerald-50 text-emerald-705 border-emerald-100/60' : 'bg-blue-50 text-blue-700 border-blue-100/60'
+                          }`}>
+                            {ticket.status}
+                          </span>
+                          <span className={`px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase border select-none shrink-0 ${getPriorityStyles(ticket.priority)}`}>
+                            {ticket.priority}
+                          </span>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900 text-xs truncate">{ticket.subject}</h4>
+                        <p className="text-[9px] text-gray-405 mt-1 font-semibold">{ticket.date} • {ticket.time}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-6 text-center text-gray-400 font-bold italic text-xs">
+                    No support tickets raised yet.
+                  </div>
+                )}
+              </div>
+            </div>
+
+          </div>
         </div>
-        
-      </div>
+      )}
     </div>
   );
 };

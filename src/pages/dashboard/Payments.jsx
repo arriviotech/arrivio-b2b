@@ -8,14 +8,14 @@ const Payments = () => {
 
     const storedTx = localStorage.getItem('arrivio_transactions');
     const transactions = storedTx ? JSON.parse(storedTx) : [
-        { id: '#TRX-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€2,499.00', status: 'Completed', logo: '✦' },
-        { id: '#TRX-2026-002', date: 'Feb 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€2,499.00', status: 'Completed', logo: '↑' },
+        { id: '#TRX-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€1,499.00', status: 'Completed', logo: '✦' },
+        { id: '#TRX-2026-002', date: 'Feb 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,499.00', status: 'Completed', logo: '↑' },
         { id: '#TRX-2026-001', date: 'Jan 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,850.00', status: 'Completed', logo: '↑' },
         { id: '#TRX-2025-012', date: 'Dec 10, 2025', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Completed', logo: '✦' },
     ];
 
     const balances = [
-        { label: 'Next Payment', value: '€2,499.00', date: 'April 10, 2026', icon: CreditCard, color: 'indigo' },
+        { label: 'Next Payment', value: '€1,499.00', date: 'April 10, 2026', icon: CreditCard, color: 'indigo' },
         { label: 'Unused Credits', value: `€${creditsVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, date: 'Non-expiring', icon: Wallet, color: 'emerald' },
     ];
 

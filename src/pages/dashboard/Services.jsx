@@ -7,6 +7,7 @@ import ServiceCard from "../../components/services/ServiceCard";
 import RequestServiceModal from "../../components/services/RequestServiceModal";
 import OrdersList from "../../components/services/OrdersList";
 import SecureChatDrawer from "../../components/services/SecureChatDrawer";
+import { ArrowRight } from "lucide-react";
 
 const ORDER_TABS = [
   { key: "pending", label: "Active" }, // MVP: treat pending as active
@@ -22,6 +23,11 @@ export default function Services() {
   const [paymentSuccessOrder, setPaymentSuccessOrder] = useState(null);
   const [activeChat, setActiveChat] = useState(null);
   const [ordersSubTab, setOrdersSubTab] = useState("cart"); // 'cart' | 'status'
+  const [selectedOrderIds, setSelectedOrderIds] = useState([]);
+  
+  const storedCredits = localStorage.getItem('arrivio_credits');
+  const creditsVal = storedCredits !== null ? parseFloat(storedCredits) : 3500.00;
+  
   const totalEmployees = MOCK_EMPLOYEES.length;
 
   const { services, loading: servicesLoading } = useServices();
@@ -132,6 +138,42 @@ export default function Services() {
       (o) => o.paymentStatus !== "paid" && o.status !== "cancelled" && o.status !== "delivered"
     );
   }, [groupedOrders, mode]);
+
+  // Filter out any selected IDs that are no longer in the cart (e.g. if cancelled/deleted)
+  const validSelectedOrderIds = useMemo(() => {
+    const cartIds = new Set(cartOrders.map(o => o.id));
+    return selectedOrderIds.filter(id => cartIds.has(id));
+  }, [selectedOrderIds, cartOrders]);
+
+  const selectedOrdersForSummary = useMemo(() => {
+    return cartOrders
+      .filter(o => validSelectedOrderIds.includes(o.id))
+      .map(o => ({
+        id: o.id,
+        serviceName: o.serviceName,
+        priceEur: o.priceEur,
+        employeesCount: o.employees.length || 1,
+        totalPrice: o.priceEur * (o.employees.length || 1)
+      }));
+  }, [cartOrders, validSelectedOrderIds]);
+
+  const checkoutTotalCost = useMemo(() => {
+    return selectedOrdersForSummary.reduce((acc, o) => acc + o.totalPrice, 0);
+  }, [selectedOrdersForSummary]);
+
+  const handleToggleSelectOrder = (orderId) => {
+    setSelectedOrderIds((prev) =>
+      prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
+    );
+  };
+
+  const handleToggleSelectAll = () => {
+    if (validSelectedOrderIds.length === cartOrders.length && cartOrders.length > 0) {
+      setSelectedOrderIds([]);
+    } else {
+      setSelectedOrderIds(cartOrders.map((o) => o.id));
+    }
+  };
 
   const statusOrders = useMemo(() => {
     if (mode !== "orders") return [];
@@ -281,25 +323,200 @@ export default function Services() {
 
           {/* ── TAB VIEW CONDITIONAL RENDERING ── */}
           {ordersSubTab === "cart" ? (
-            <div className="bg-white border border-gray-100 rounded-[28px] p-5 sm:p-6 shadow-sm animate-in fade-in duration-300 outline-none focus:outline-none">
-              <OrdersList
-                orders={cartOrders}
-                loading={ordersLoading}
-                canCancel={true}
-                refresh={refresh}
-                onCancel={(order) => {
-                  const ids = Array.isArray(order?.orderIds) ? order.orderIds : [order.id];
-                  if (ids.length > 1) return updateManyStatus({ ids, status: "cancelled" });
-                  return updateStatus({ id: ids[0], status: "cancelled" });
-                }}
-                onPay={(order) => {
-                  setPayingOrder(order);
-                }}
-                onOpenChat={(recipient) => {
-                  setActiveChat(recipient);
-                }}
-              />
-            </div>
+            cartOrders.length === 0 ? (
+              <div className="bg-white border border-gray-100 rounded-[28px] p-5 sm:p-6 shadow-sm animate-in fade-in duration-300 outline-none focus:outline-none">
+                <OrdersList
+                  orders={cartOrders}
+                  loading={ordersLoading}
+                  canCancel={true}
+                  refresh={refresh}
+                  onCancel={(order) => {
+                    const ids = Array.isArray(order?.orderIds) ? order.orderIds : [order.id];
+                    if (ids.length > 1) return updateManyStatus({ ids, status: "cancelled" });
+                    return updateStatus({ id: ids[0], status: "cancelled" });
+                  }}
+                  onPay={(order) => {
+                    setPayingOrder(order);
+                  }}
+                  onOpenChat={(recipient) => {
+                    setActiveChat(recipient);
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start animate-in fade-in duration-300">
+                {/* Left column: Cart Items (span 2) */}
+                <div className="lg:col-span-2 space-y-4">
+                  {/* Master "Select All" bar */}
+                  <div 
+                    onClick={handleToggleSelectAll}
+                    className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between shadow-sm select-none cursor-pointer hover:border-gray-200 transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+                        validSelectedOrderIds.length === cartOrders.length && cartOrders.length > 0
+                          ? "bg-[#0f4c3a] border-transparent text-white shadow-sm"
+                          : "border-gray-300 hover:border-gray-400 bg-white"
+                      }`}>
+                        {validSelectedOrderIds.length === cartOrders.length && cartOrders.length > 0 && (
+                          <svg className="w-3.5 h-3.5 stroke-[3.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3.5" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="text-xs font-extrabold text-gray-800 uppercase tracking-wider">
+                        Select All Services ({validSelectedOrderIds.length} / {cartOrders.length} selected)
+                      </span>
+                    </div>
+                    
+                    {validSelectedOrderIds.length > 0 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // Avoid selecting/unselecting all
+                          const selectedOrdersList = cartOrders.filter(o => validSelectedOrderIds.includes(o.id));
+                          const allOrderIdsToCancel = selectedOrdersList.flatMap(o => o.orderIds);
+                          updateManyStatus({ ids: allOrderIdsToCancel, status: "cancelled" }).then(() => {
+                            setSelectedOrderIds([]);
+                            refresh();
+                          });
+                        }}
+                        className="text-[10px] font-black text-red-600 hover:text-red-750 uppercase tracking-widest transition-colors cursor-pointer border-0 bg-transparent"
+                      >
+                        Cancel Selected
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Cart Items List */}
+                  <div className="bg-white border border-gray-100 rounded-[28px] p-5 sm:p-6 shadow-sm outline-none focus:outline-none">
+                    <OrdersList
+                      orders={cartOrders}
+                      loading={ordersLoading}
+                      canCancel={true}
+                      refresh={refresh}
+                      onCancel={(order) => {
+                        const ids = Array.isArray(order?.orderIds) ? order.orderIds : [order.id];
+                        if (ids.length > 1) return updateManyStatus({ ids, status: "cancelled" });
+                        return updateStatus({ id: ids[0], status: "cancelled" });
+                      }}
+                      onPay={(order) => {
+                        setPayingOrder(order);
+                      }}
+                      onOpenChat={(recipient) => {
+                        setActiveChat(recipient);
+                      }}
+                      isCartMode={true}
+                      selectedOrderIds={validSelectedOrderIds}
+                      onToggleSelectOrder={handleToggleSelectOrder}
+                    />
+                  </div>
+                </div>
+
+                {/* Right column: Order Summary Card (span 1) */}
+                <div className="lg:col-span-1">
+                  <div className="bg-white border border-gray-200/80 rounded-[32px] p-7 md:p-8 shadow-md sticky top-6 space-y-6 animate-in fade-in duration-300">
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900 leading-none tracking-tight">Order Summary</h2>
+                      <p className="text-xs text-gray-400 mt-1.5 font-medium leading-relaxed">
+                        Review and proceed with pre-paid credit payment.
+                      </p>
+                    </div>
+
+                    {/* Selected items cost details */}
+                    {selectedOrdersForSummary.length > 0 ? (
+                      <div className="space-y-4 max-h-48 overflow-y-auto pr-1 arrivio-scrollbar">
+                        {selectedOrdersForSummary.map(o => (
+                          <div key={o.id} className="pb-3 border-b border-gray-100 last:border-0 last:pb-0">
+                            <div className="flex justify-between items-baseline gap-3">
+                              <span className="font-bold text-gray-900 text-sm">{o.serviceName}</span>
+                              <span className="font-bold text-gray-900 text-sm">€{o.totalPrice.toLocaleString()}</span>
+                            </div>
+                            <p className="text-xs text-gray-400 font-medium mt-0.5">
+                              {o.employeesCount} Employee(s) × €{o.priceEur}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-8 text-center bg-gray-50/50 rounded-2xl border border-dashed border-gray-250">
+                        <p className="text-sm text-gray-400 font-bold italic">No services selected</p>
+                        <p className="text-[11px] text-gray-400 font-medium mt-1 leading-snug max-w-[200px] mx-auto">
+                          Check boxes on the left to select services to pay.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Cost Calculation block - Premium plain white card layout from proposal/mockup */}
+                    <div className="pt-2 space-y-3.5">
+                      <div className="flex justify-between items-center text-sm font-bold text-gray-955">
+                        <span>Total Selected Price</span>
+                        <span className="text-base font-bold text-gray-900">€{checkoutTotalCost.toLocaleString()}</span>
+                      </div>
+
+                      <div className="flex justify-between items-center text-sm font-bold text-gray-955">
+                        <span>Available Credits</span>
+                        <span className="text-emerald-700 font-bold">€{creditsVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                      </div>
+
+                      <div className="border-t border-dashed border-gray-300 my-4" />
+
+                      <div className="flex justify-between items-center text-xs font-black uppercase tracking-widest text-gray-700">
+                        <span>Remaining Balance</span>
+                        <span className="text-emerald-700 text-sm font-black">
+                          €{(creditsVal - checkoutTotalCost).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Insufficient funds warning */}
+                    {validSelectedOrderIds.length > 0 && creditsVal < checkoutTotalCost && (
+                      <div className="bg-red-50 border border-red-100 rounded-xl p-3.5 flex items-start gap-2.5 animate-in fade-in duration-300">
+                        <svg className="w-4 h-4 text-red-650 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <p className="text-[10px] font-bold text-red-750 leading-normal">
+                          Insufficient credits! Please top up your balance before checkout.
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="space-y-3 pt-1">
+                      <button
+                        disabled={validSelectedOrderIds.length === 0 || creditsVal < checkoutTotalCost}
+                        onClick={() => {
+                          const selectedOrders = cartOrders.filter(o => validSelectedOrderIds.includes(o.id));
+                          const combinedPayingOrder = {
+                            isBulk: true,
+                            orderIds: selectedOrders.flatMap(o => o.orderIds),
+                            priceEur: checkoutTotalCost,
+                            employees: selectedOrders.flatMap(o => o.employees),
+                            serviceName: selectedOrders.map(o => o.serviceName).join(", "),
+                            details: selectedOrders.map(o => ({
+                              id: o.id,
+                              serviceName: o.serviceName,
+                              totalCost: o.priceEur * (o.employees.length || 1),
+                              employeesCount: o.employees.length
+                            }))
+                          };
+                          setPayingOrder(combinedPayingOrder);
+                        }}
+                        className={`w-full py-4.5 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 ${
+                          validSelectedOrderIds.length > 0 && creditsVal >= checkoutTotalCost
+                            ? "bg-[#0f4c3a] hover:bg-[#1A2E22] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
+                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        }`}
+                      >
+                        Proceed to Payment ({validSelectedOrderIds.length})
+                      </button>
+                    </div>
+
+                    <p className="text-center text-gray-400 text-[10px] mt-4 leading-snug">
+                      Pre-paid credit transaction. Balance updated immediately.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )
           ) : (
             <div className="bg-white border border-gray-100 rounded-[28px] p-5 sm:p-6 shadow-sm animate-in fade-in duration-300 outline-none focus:outline-none">
               <OrdersList
@@ -333,7 +550,7 @@ export default function Services() {
 
       {/* ── CUSTOM PAYMENT CONFIRMATION MODAL ── */}
       {payingOrder && (() => {
-        const totalCost = payingOrder.priceEur * (payingOrder.employees.length || 1);
+        const totalCost = payingOrder.isBulk ? payingOrder.priceEur : (payingOrder.priceEur * (payingOrder.employees.length || 1));
         const storedCredits = localStorage.getItem('arrivio_credits');
         const creditsVal = storedCredits !== null ? parseFloat(storedCredits) : 3500.00;
         const isSufficient = creditsVal >= totalCost;
@@ -367,14 +584,32 @@ export default function Services() {
 
               {/* Transaction Summary Card */}
               <div className="bg-gray-50/50 border border-gray-100 rounded-2xl p-4 mb-5 space-y-3">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-400 font-bold uppercase tracking-wider text-[9px]">Service Ordered</span>
-                  <span className="text-gray-800 font-bold">{payingOrder.serviceName}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-400 font-bold uppercase tracking-wider text-[9px]">Recipients</span>
-                  <span className="text-gray-800 font-bold">{payingOrder.employees.length} Employee(s)</span>
-                </div>
+                {payingOrder.isBulk ? (
+                  <div className="space-y-2.5 max-h-36 overflow-y-auto pr-1 arrivio-scrollbar pb-1.5">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-200/50 pb-1 mb-1">Services Checklist</p>
+                    {payingOrder.details.map((detail, idx) => (
+                      <div key={idx} className="flex justify-between items-center text-xs py-1 border-b border-gray-100 last:border-0 last:pb-0">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-gray-800 font-bold truncate">{detail.serviceName}</p>
+                          <p className="text-[9px] text-gray-400 font-extrabold uppercase tracking-wider">{detail.employeesCount} employee(s)</p>
+                        </div>
+                        <span className="text-gray-700 font-bold shrink-0">€{detail.totalCost.toLocaleString()}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-gray-400 font-bold uppercase tracking-wider text-[9px]">Service Ordered</span>
+                      <span className="text-gray-800 font-bold">{payingOrder.serviceName}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-gray-400 font-bold uppercase tracking-wider text-[9px]">Recipients</span>
+                      <span className="text-gray-800 font-bold">{payingOrder.employees.length} Employee(s)</span>
+                    </div>
+                  </>
+                )}
+                
                 <div className="border-t border-gray-200/50 my-2 pt-2 flex justify-between items-center text-xs">
                   <span className="text-gray-400 font-bold uppercase tracking-wider text-[9px]">Current Balance</span>
                   <span className="text-gray-800 font-bold">€{creditsVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
@@ -396,7 +631,7 @@ export default function Services() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                   <p className="text-[11px] font-bold text-red-700 leading-normal">
-                    Insufficient Arrivio Credits! Please top up your balance in the Payments section before completing this order.
+                    Insufficient Arrivio Credits! Please top up your balance in the Payments section before completing this payment.
                   </p>
                 </div>
               )}
@@ -409,23 +644,40 @@ export default function Services() {
                     // Deduct credits
                     localStorage.setItem('arrivio_credits', nextBalance.toString());
 
-                    // Add transaction
+                    // Add transaction(s)
                     const storedTx = localStorage.getItem('arrivio_transactions');
                     const transactions = storedTx ? JSON.parse(storedTx) : [
-                      { id: '#TRX-94812', date: 'Mar 10, 2026', type: 'Subscription', amount: '€2,499.00', status: 'Completed', logo: '✦' },
-                      { id: '#TRX-94755', date: 'Feb 10, 2026', type: 'Subscription', amount: '€2,499.00', status: 'Completed', logo: '✦' },
+                      { id: '#TRX-94812', date: 'Mar 10, 2026', type: 'Subscription', amount: '€1,499.00', status: 'Completed', logo: '✦' },
+                      { id: '#TRX-94755', date: 'Feb 10, 2026', type: 'Subscription', amount: '€1,499.00', status: 'Completed', logo: '✦' },
                       { id: '#TRX-94621', date: 'Jan 22, 2026', type: 'Capacity Top-up', amount: '€450.00', status: 'Completed', logo: '↑' },
                       { id: '#TRX-94590', date: 'Jan 10, 2026', type: 'Subscription', amount: '€1,850.00', status: 'Completed', logo: '✦' },
                     ];
-                    const newTrx = {
-                      id: `#TRX-${Math.floor(10000 + Math.random() * 90000)}`,
-                      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                      type: `Service: ${payingOrder.serviceName}`,
-                      amount: `€${totalCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-                      status: 'Completed',
-                      logo: 'S'
-                    };
-                    localStorage.setItem('arrivio_transactions', JSON.stringify([newTrx, ...transactions]));
+                    
+                    let nextTransactionsList = [...transactions];
+                    if (payingOrder.isBulk) {
+                      payingOrder.details.forEach(detail => {
+                        const newTrx = {
+                          id: `#TRX-${Math.floor(10000 + Math.random() * 90000)}`,
+                          date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                          type: `Service: ${detail.serviceName}`,
+                          amount: `€${detail.totalCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                          status: 'Completed',
+                          logo: 'S'
+                        };
+                        nextTransactionsList = [newTrx, ...nextTransactionsList];
+                      });
+                    } else {
+                      const newTrx = {
+                        id: `#TRX-${Math.floor(10000 + Math.random() * 90000)}`,
+                        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                        type: `Service: ${payingOrder.serviceName}`,
+                        amount: `€${totalCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                        status: 'Completed',
+                        logo: 'S'
+                      };
+                      nextTransactionsList = [newTrx, ...nextTransactionsList];
+                    }
+                    localStorage.setItem('arrivio_transactions', JSON.stringify(nextTransactionsList));
 
                     // Update order paymentStatus to "paid"
                     const ids = Array.isArray(payingOrder?.orderIds) ? payingOrder.orderIds : [payingOrder.id];
@@ -440,10 +692,11 @@ export default function Services() {
 
                     // Show success
                     setPaymentSuccessOrder({
-                      serviceName: payingOrder.serviceName,
+                      serviceName: payingOrder.isBulk ? `${payingOrder.details.length} Services` : payingOrder.serviceName,
                       totalCost,
                       nextBalance
                     });
+                    setSelectedOrderIds([]); // Reset checkout checklist
                     setPayingOrder(null);
                   }}
                   className="w-full py-3 bg-[#0f4c3a] hover:bg-[#0a3120] text-white rounded-2xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-md hover:shadow-emerald-950/20 active:scale-[0.98] disabled:opacity-30 disabled:pointer-events-none cursor-pointer flex items-center justify-center gap-1.5"

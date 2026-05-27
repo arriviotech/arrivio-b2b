@@ -3,8 +3,8 @@ import { FileText, Download, Filter, Search, MoreVertical, ArrowUpRight, CheckCi
 
 const Invoices = () => {
     const invoices = [
-        { id: '#INV-2026-003', date: 'Mar 10, 2026', amount: '€2,499.00', status: 'Paid', method: 'Visa ending 4242' },
-        { id: '#INV-2026-002', date: 'Feb 10, 2026', amount: '€2,499.00', status: 'Paid', method: 'Visa ending 4242' },
+        { id: '#INV-2026-003', date: 'Mar 10, 2026', amount: '€1,499.00', status: 'Paid', method: 'Visa ending 4242' },
+        { id: '#INV-2026-002', date: 'Feb 10, 2026', amount: '€1,499.00', status: 'Paid', method: 'Visa ending 4242' },
         { id: '#INV-2026-001', date: 'Jan 10, 2026', amount: '€1,850.00', status: 'Paid', method: 'Visa ending 4242' },
         { id: '#INV-2025-012', date: 'Dec 10, 2025', amount: '€1,850.00', status: 'Paid', method: 'Bank Transfer' },
     ];
@@ -52,7 +52,7 @@ const Invoices = () => {
                     </div>
                     <div>
                         <p className="text-[10px] font-bold text-[#0f4c3a] uppercase tracking-widest mb-0.5">Upcoming Invoice</p>
-                        <p className="text-base font-bold text-gray-900 leading-snug">Next payment of €2,499.00 due on April 10, 2026</p>
+                        <p className="text-base font-bold text-gray-900 leading-snug">Next payment of €1,499.00 due on April 10, 2026</p>
                     </div>
                 </div>
                 <button className="px-5 py-2.5 bg-white border border-gray-200 text-[#0f4c3a] rounded-xl font-bold hover:bg-gray-50 transition-all shadow-sm text-xs cursor-pointer">
