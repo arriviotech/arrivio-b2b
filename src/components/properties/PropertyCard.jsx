@@ -26,7 +26,7 @@ const PropertyCard = ({ property }) => {
   };
 
   // Unit types present with at least one available unit on this property
-  const UNIT_TYPE_ORDER = ['studio', 'one_bedroom', 'two_bedroom', 'shared_room'];
+  const UNIT_TYPE_ORDER = ['studio', 'one_bedroom', 'shared_room'];
   const availableTypes = UNIT_TYPE_ORDER.filter((type) => {
     const list = (property.units || []).filter(
       (u) => u.unit_type === type && u.status === 'available'
@@ -38,7 +38,7 @@ const PropertyCard = ({ property }) => {
   const isAvailable = availableCount > 0;
   const breakdown = property.breakdown || {};
   const unitTypes = Object.entries(breakdown).filter(([, count]) => count > 0);
-  const typeLabels = { studio: 'Studio', one_bedroom: 'One Bed', two_bedroom: 'Two Bed', shared_room: 'Shared' };
+  const typeLabels = { studio: 'Studio', one_bedroom: 'Single Room', shared_room: 'Shared Room' };
 
   return (
     <div

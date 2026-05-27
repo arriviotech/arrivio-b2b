@@ -11,12 +11,13 @@ import Payments from './Payments';
 import Contracts from './Contracts';
 import Team from './Team';
 import Services from './Services';
+import Support from './Support';
 
 const Dashboard = () => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     return (
-        <div className="min-h-screen bg-[var(--color-background-neutral)] flex font-sans text-gray-900">
+        <div className="min-h-screen bg-[#f2f2f2] flex font-sans text-gray-900">
             <DashboardSidebar
                 isCollapsed={isSidebarCollapsed}
                 toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -34,6 +35,7 @@ const Dashboard = () => {
                     <Route path="billing" element={<Billing />} />
                     <Route path="invoices" element={<Invoices />} />
                     <Route path="payments" element={<Payments />} />
+                    <Route path="support" element={<Support />} />
                 </Routes>
             </main>
         </div>

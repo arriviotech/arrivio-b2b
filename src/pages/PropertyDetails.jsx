@@ -64,12 +64,13 @@ const PropertyDetails = () => {
     );
   }
 
-  // Group units by type for sections
+  // Group units by type for sections.
+  // two_bedroom rows are remapped to shared_room at the service layer, so they're
+  // already counted in `sharedUnits` below — no separate section needed.
   const units = property.units || [];
   const studioUnits = units.filter(u => u.unit_type === 'studio');
   const sharedUnits = units.filter(u => u.unit_type === 'shared_room');
   const oneBedUnits = units.filter(u => u.unit_type === 'one_bedroom');
-  const twoBedUnits = units.filter(u => u.unit_type === 'two_bedroom');
 
   // Build shared options from real unit data
   const sharedOptions = [];
@@ -77,20 +78,10 @@ const PropertyDetails = () => {
   if (oneBedUnits.length > 0) {
     const cheapest = Math.min(...oneBedUnits.flatMap(u => (u.unit_pricing_rules || []).map(p => p.monthly_rent_cents)));
     sharedOptions.push({
-      title: "1-Bedroom Apartment",
+      title: "Single Room",
       description: "Full apartment with one private bedroom",
       price: cheapest > 0 ? cheapest / 100 : property.price,
       units: oneBedUnits,
-    });
-  }
-
-  if (twoBedUnits.length > 0) {
-    const cheapest = Math.min(...twoBedUnits.flatMap(u => (u.unit_pricing_rules || []).map(p => p.monthly_rent_cents)));
-    sharedOptions.push({
-      title: "2-Bedroom Apartment",
-      description: "Full apartment with two private bedrooms",
-      price: cheapest > 0 ? cheapest / 100 : property.price + 200,
-      units: twoBedUnits,
     });
   }
 

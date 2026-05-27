@@ -37,7 +37,7 @@ const DashboardPropertyDetails = () => {
     const [statusFilter, setStatusFilter] = useState('All');
 
     // Find the property from Supabase data
-    const { properties } = useProperties();
+    const { properties, loading } = useProperties();
     const property = properties.find(p => p.id === id);
 
     // Generate mock unit data based on the property's breakdown
@@ -145,13 +145,39 @@ const DashboardPropertyDetails = () => {
         return mockUnits.find(u => u.id === selectedUnitId);
     }, [mockUnits, selectedUnitId]);
 
+    // Close modal on Escape key press
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        };
+
+        if (selectedUnitId !== null) {
+            window.addEventListener('keydown', handleKeyDown);
+        }
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [selectedUnitId]);
+
+    if (loading) {
+        return (
+            <div className="max-w-6xl mx-auto text-center py-20 flex flex-col items-center justify-center animate-in fade-in duration-300">
+                <div className="w-10 h-10 border-4 border-[#0f4c3a]/20 border-t-[#0f4c3a] rounded-full animate-spin mb-4" />
+                <p className="text-gray-500 font-bold text-xs tracking-wider uppercase">Loading property details...</p>
+            </div>
+        );
+    }
+
     if (!property) {
         return (
             <div className="max-w-6xl mx-auto text-center py-20">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Property Not Found</h2>
                 <button
                     onClick={() => navigate('/dashboard/properties')}
-                    className="text-[#1e6f50] font-medium hover:underline flex items-center justify-center gap-2 mx-auto"
+                    className="text-[#0f4c3a] font-medium hover:underline flex items-center justify-center gap-2 mx-auto"
                 >
                     <ArrowLeft size={16} /> Back to Properties
                 </button>
@@ -198,23 +224,6 @@ const DashboardPropertyDetails = () => {
         setSelectedUnitId(null);
     };
 
-    // Close modal on Escape key press
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        };
-
-        if (selectedUnitId !== null) {
-            window.addEventListener('keydown', handleKeyDown);
-        }
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [selectedUnitId]);
-
     const handleAllocate = (e) => {
         e.preventDefault();
         if (allocationEmail) {
@@ -240,14 +249,14 @@ const DashboardPropertyDetails = () => {
                 Back to all properties
             </button>
 
-            <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 mb-8">
+            <div className="bg-white rounded-2xl overflow-hidden border border-[#e5e7eb] shadow-sm mb-8">
                 <div className="h-64 relative">
                     <img src={property.image} alt={property.name} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
                     <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end">
                         <div>
                             <div className="flex items-center gap-2 text-white/80 font-bold text-sm mb-3 uppercase tracking-wider">
-                                <span className="bg-[#1e6f50] text-white px-3 py-1 rounded-full text-xs">Active Contract</span>
+                                <span className="bg-[#0f4c3a] text-white px-3 py-1 rounded-full text-xs">Active Contract</span>
                                 <span className="flex items-center gap-1 drop-shadow-md pb-0.5">
                                     <MapPin size={14} /> {property.neighborhood}, {property.city}
                                 </span>
@@ -267,13 +276,13 @@ const DashboardPropertyDetails = () => {
                 <div className="flex border-b border-gray-100 px-8">
                     <button
                         onClick={() => setActiveTab('units')}
-                        className={`py-4 font-bold text-sm border-b-2 transition-colors mr-8 flex items-center gap-2 ${activeTab === 'units' ? 'border-[#1e6f50] text-[#1e6f50]' : 'border-transparent text-gray-500 hover:text-gray-900'}`}
+                        className={`py-4 font-bold text-sm border-b-2 transition-colors mr-8 flex items-center gap-2 ${activeTab === 'units' ? 'border-[#0f4c3a] text-[#0f4c3a]' : 'border-transparent text-gray-500 hover:text-gray-900'}`}
                     >
                         <Building2 size={16} /> Unit Management
                     </button>
                     <button
                         onClick={() => setActiveTab('tickets')}
-                        className={`py-4 font-bold text-sm border-b-2 transition-colors mr-8 flex items-center gap-2 ${activeTab === 'tickets' ? 'border-[#1e6f50] text-[#1e6f50]' : 'border-transparent text-gray-500 hover:text-gray-900'}`}
+                        className={`py-4 font-bold text-sm border-b-2 transition-colors mr-8 flex items-center gap-2 ${activeTab === 'tickets' ? 'border-[#0f4c3a] text-[#0f4c3a]' : 'border-transparent text-gray-500 hover:text-gray-900'}`}
                     >
                         <Wrench size={16} /> Support Tickets
                         <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-xs ml-1">1</span>
@@ -282,14 +291,14 @@ const DashboardPropertyDetails = () => {
             </div>
 
             {/* Tab Content */}
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+            <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-6 sm:p-8">
                 {activeTab === 'units' && (
                     <div>
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-xl font-bold text-gray-900">Reserved Units ({filteredUnits.length})</h2>
                             <div className="flex gap-2">
                                 <button className="px-4 py-2 border border-gray-200 text-gray-700 font-bold rounded-xl text-sm hover:bg-gray-50 transition-colors">Export List</button>
-                                <button className="px-4 py-2 bg-[#1e6f50] text-white font-bold rounded-xl text-sm hover:bg-[#15543c] transition-colors shadow-sm">Assign Residents</button>
+                                <button className="px-4 py-2 bg-[#0f4c3a] text-white font-bold rounded-xl text-sm hover:bg-[#0a3a2b] transition-colors shadow-sm">Assign Residents</button>
                             </div>
                         </div>
 
@@ -353,7 +362,7 @@ const DashboardPropertyDetails = () => {
                                                         </span>
                                                     ) : unit.resident ? (
                                                         <div className="flex items-center gap-2">
-                                                            <div className="w-6 h-6 rounded-full bg-[#1e6f50]/10 flex items-center justify-center text-[#1e6f50] text-[10px] font-bold">
+                                                            <div className="w-6 h-6 rounded-full bg-[#0f4c3a]/10 flex items-center justify-center text-[#0f4c3a] text-[10px] font-bold">
                                                                 {unit.resident.split(' ').map(n => n[0]).join('')}
                                                             </div>
                                                             <span className="font-medium text-gray-900">{unit.resident}</span>
@@ -364,7 +373,7 @@ const DashboardPropertyDetails = () => {
                                                 </td>
                                                 <td className="py-4 px-4 text-gray-600 text-sm">{unit.leaseEnd || '-'}</td>
                                                 <td className="py-4 px-4 text-right">
-                                                    <button className="text-[#1e6f50] flex items-center justify-end w-full gap-1.5 font-bold text-sm hover:underline transition-opacity">
+                                                    <button className="text-[#0f4c3a] flex items-center justify-end w-full gap-1.5 font-bold text-sm hover:underline transition-opacity">
                                                         <Eye size={16} /> View
                                                     </button>
                                                 </td>
@@ -389,18 +398,18 @@ const DashboardPropertyDetails = () => {
                         <div className="lg:col-span-2">
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-xl font-bold text-gray-900">Recent Tickets</h2>
-                                <button className="px-4 py-2 bg-[#1e6f50] text-white font-bold rounded-xl text-sm hover:bg-[#15543c] transition-colors shadow-sm flex gap-2 items-center">
+                                <button className="px-4 py-2 bg-[#0f4c3a] text-white font-bold rounded-xl text-sm hover:bg-[#0a3a2b] transition-colors shadow-sm flex gap-2 items-center">
                                     <MessageSquare size={16} /> Raise Ticket
                                 </button>
                             </div>
 
                             <div className="space-y-4">
                                 {mockTickets.map((ticket) => (
-                                    <div key={ticket.id} className="border border-gray-100 rounded-2xl p-5 hover:border-gray-200 hover:shadow-sm transition-all bg-white cursor-pointer group">
+                                    <div key={ticket.id} className="border border-gray-100 rounded-2xl p-5 hover:border-gray-250 hover:shadow-md transition-all bg-white cursor-pointer group">
                                         <div className="flex justify-between items-start mb-2">
                                             <div className="flex items-center gap-3">
                                                 {getTicketStatusIcon(ticket.status)}
-                                                <h3 className="font-bold text-gray-900 group-hover:text-[#1e6f50] transition-colors">{ticket.title}</h3>
+                                                <h3 className="font-bold text-gray-900 group-hover:text-[#0f4c3a] transition-colors">{ticket.title}</h3>
                                             </div>
                                             <span className="text-xs font-bold text-gray-400 bg-gray-50 px-2.5 py-1 rounded-md border border-gray-100">{ticket.id}</span>
                                         </div>
@@ -408,7 +417,7 @@ const DashboardPropertyDetails = () => {
                                             <span className="flex items-center gap-1"><Building2 size={14} /> Unit {ticket.unit}</span>
                                             <span className="flex items-center gap-1"><Clock size={14} /> {ticket.date}</span>
                                             {ticket.priority === 'high' && (
-                                                <span className="text-red-600 font-bold text-xs uppercase bg-red-50 px-2 py-0.5 rounded flex items-center">High Priority</span>
+                                                <span className="text-red-650 font-bold text-xs uppercase bg-red-50 px-2 py-0.5 rounded flex items-center">High Priority</span>
                                             )}
                                         </div>
                                     </div>
@@ -418,7 +427,7 @@ const DashboardPropertyDetails = () => {
 
                         {/* Info Column */}
                         <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 h-max">
-                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><MessageSquare size={18} className="text-[#1e6f50]" /> Support Overview</h3>
+                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><MessageSquare size={18} className="text-[#0f4c3a]" /> Support Overview</h3>
                             <p className="text-sm text-gray-600 mb-6 leading-relaxed">
                                 Use this portal to report maintenance issues or request support for this property. Our local property management team typically responds within 4 hours.
                             </p>
@@ -460,7 +469,7 @@ const DashboardPropertyDetails = () => {
                                 {/* Left Info Panel */}
                                 <div className="w-full md:w-1/3 space-y-4">
                                     <h4 className="font-bold text-gray-900 flex items-center gap-2 mb-2">
-                                        <FileText size={16} className="text-[#1e6f50]" /> Unit Details
+                                        <FileText size={16} className="text-[#0f4c3a]" /> Unit Details
                                     </h4>
                                     <div className="bg-gray-50/50 p-5 rounded-2xl border border-gray-100 space-y-4">
                                         <div className="flex justify-between items-center text-sm">
@@ -486,7 +495,7 @@ const DashboardPropertyDetails = () => {
                                     {selectedUnit.isShared ? (
                                         <div className="space-y-4">
                                             <h4 className="font-bold text-gray-900 flex items-center gap-2 mb-2">
-                                                <Users size={16} className="text-[#1e6f50]" /> Shared Rooms ({selectedUnit.rooms.length})
+                                                <Users size={16} className="text-[#0f4c3a]" /> Shared Rooms ({selectedUnit.rooms.length})
                                             </h4>
                                             <div className="space-y-4">
                                                 {selectedUnit.rooms.map((room) => (
@@ -500,7 +509,7 @@ const DashboardPropertyDetails = () => {
                                                             </div>
                                                             {room.status === 'occupied' ? (
                                                                 <div className="flex items-center gap-3 mt-2">
-                                                                    <div className="w-10 h-10 rounded-full bg-[#1e6f50]/10 flex items-center justify-center text-[#1e6f50] font-bold text-sm">
+                                                                    <div className="w-10 h-10 rounded-full bg-[#0f4c3a]/10 flex items-center justify-center text-[#0f4c3a] font-bold text-sm">
                                                                         {room.resident.split(' ').map(n => n[0]).join('')}
                                                                     </div>
                                                                     <div>
@@ -518,7 +527,7 @@ const DashboardPropertyDetails = () => {
                                                                     <MessageSquare size={14} /> Message
                                                                 </button>
                                                             ) : (
-                                                                <button className="px-4 py-2 bg-[#1e6f50] text-white font-bold rounded-xl text-sm hover:bg-[#15543c] shadow-sm transition-all flex items-center justify-center gap-2 w-full">
+                                                                <button className="px-4 py-2 bg-[#0f4c3a] text-white font-bold rounded-xl text-sm hover:bg-[#0a3a2b] shadow-sm transition-all flex items-center justify-center gap-2 w-full">
                                                                     Allocate
                                                                 </button>
                                                             )}
@@ -530,7 +539,7 @@ const DashboardPropertyDetails = () => {
                                     ) : selectedUnit.status === 'occupied' ? (
                                         <div className="space-y-4">
                                             <h4 className="font-bold text-gray-900 flex items-center gap-2 mb-2">
-                                                <Users size={16} className="text-[#1e6f50]" /> {selectedUnit.tenants.length > 0 ? `Resident Details (${selectedUnit.tenants.length})` : 'Tenant Information'}
+                                                <Users size={16} className="text-[#0f4c3a]" /> {selectedUnit.tenants.length > 0 ? `Resident Details (${selectedUnit.tenants.length})` : 'Tenant Information'}
                                             </h4>
 
                                             {selectedUnit.tenants.length > 0 ? (
@@ -538,7 +547,7 @@ const DashboardPropertyDetails = () => {
                                                     {selectedUnit.tenants.map((tenant) => (
                                                         <div key={tenant.id} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6 transition-all hover:shadow-md hover:border-gray-200">
                                                             <div className="flex items-center gap-4 flex-1">
-                                                                <div className="w-12 h-12 rounded-full bg-[#1e6f50]/10 flex items-center justify-center text-[#1e6f50] font-bold shadow-sm ring-4 ring-[#1e6f50]/5">
+                                                                <div className="w-12 h-12 rounded-full bg-[#0f4c3a]/10 flex items-center justify-center text-[#0f4c3a] font-bold shadow-sm ring-4 ring-[#0f4c3a]/5">
                                                                     {tenant.initials}
                                                                 </div>
                                                                 <div>
@@ -563,7 +572,7 @@ const DashboardPropertyDetails = () => {
                                                                 </div>
                                                             </div>
                                                             <div className="flex items-center pl-4 border-l border-gray-50">
-                                                                <button className="p-2.5 text-gray-400 hover:text-[#1e6f50] hover:bg-emerald-50 rounded-xl transition-all shadow-sm border border-transparent hover:border-emerald-100" title="Message Resident">
+                                                                <button className="p-2.5 text-gray-400 hover:text-[#0f4c3a] hover:bg-emerald-50 rounded-xl transition-all shadow-sm border border-transparent hover:border-emerald-100" title="Message Resident">
                                                                     <MessageSquare size={18} />
                                                                 </button>
                                                             </div>
@@ -574,7 +583,7 @@ const DashboardPropertyDetails = () => {
                                                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row justify-between gap-6">
                                                     <div className="space-y-5 flex-1">
                                                         <div className="flex items-center gap-4">
-                                                            <div className="w-14 h-14 rounded-full bg-[#1e6f50]/10 flex items-center justify-center text-[#1e6f50] text-xl font-bold shadow-sm">
+                                                            <div className="w-14 h-14 rounded-full bg-[#0f4c3a]/10 flex items-center justify-center text-[#0f4c3a] text-xl font-bold shadow-sm">
                                                                 {selectedUnit.resident ? selectedUnit.resident.split(' ').map(n => n[0]).join('') : 'R'}
                                                             </div>
                                                             <div>
@@ -608,9 +617,8 @@ const DashboardPropertyDetails = () => {
                                             )}
                                         </div>
                                     ) : selectedUnit.status === 'vacant' ? (
-                                        <div className="space-y-4">
-                                            <h4 className="font-bold text-gray-900 flex items-center gap-2 mb-2">
-                                                <Mail size={16} className="text-[#1e6f50]" /> Allocate Tenant
+                                        <div className="space-y-4">                                            <h4 className="font-bold text-gray-900 flex items-center gap-2 mb-2">
+                                                <Mail size={16} className="text-[#0f4c3a]" /> Allocate Tenant
                                             </h4>
                                             <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)]">
                                                 {allocationSuccess ? (
@@ -619,11 +627,11 @@ const DashboardPropertyDetails = () => {
                                                             <CheckCircle2 size={32} />
                                                         </div>
                                                         <h5 className="text-xl font-bold text-gray-900 mb-2">Invitation Sent!</h5>
-                                                        <p className="text-gray-500 max-w-sm">A secure login email has been dispatched. They can now create an account and view their moving-in details.</p>
+                                                        <p className="text-gray-500 max-w-sm text-sm">A secure login email has been dispatched. They can now create an account and view their moving-in details.</p>
                                                     </div>
                                                 ) : (
                                                     <form onSubmit={handleAllocate}>
-                                                        <p className="text-sm text-gray-600 mb-6 leading-relaxed">Send an invitation to the incoming employee so they can create their account, view their floor plan, and prepare for move-in.</p>
+                                                        <p className="text-sm text-gray-650 mb-6 leading-relaxed">Send an invitation to the incoming employee so they can create their account, view their floor plan, and prepare for move-in.</p>
                                                         <div className="flex gap-3">
                                                             <div className="relative flex-1">
                                                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
@@ -633,12 +641,12 @@ const DashboardPropertyDetails = () => {
                                                                     placeholder="employee@acme-corp.com"
                                                                     value={allocationEmail}
                                                                     onChange={(e) => setAllocationEmail(e.target.value)}
-                                                                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#1e6f50]/10 focus:border-[#1e6f50] transition-all font-medium text-gray-900 placeholder-gray-400 inset-y-0"
+                                                                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#0f4c3a]/10 focus:border-[#0f4c3a] transition-all font-medium text-gray-900 placeholder-gray-400 inset-y-0"
                                                                 />
                                                             </div>
                                                             <button
                                                                 type="submit"
-                                                                className="px-8 py-3 bg-[#1e6f50] text-white font-bold rounded-xl hover:bg-[#15543c] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap flex items-center gap-2 active:translate-y-0"
+                                                                className="px-8 py-3 bg-[#0f4c3a] text-white font-bold rounded-xl hover:bg-[#0a3a2b] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap flex items-center gap-2 active:translate-y-0"
                                                             >
                                                                 Send Invite <ArrowLeft size={16} className="rotate-180" />
                                                             </button>
@@ -650,7 +658,7 @@ const DashboardPropertyDetails = () => {
                                     ) : (
                                         <div className="space-y-4 h-full">
                                             <h4 className="font-bold text-gray-900 flex items-center gap-2 mb-2">
-                                                <Wrench size={16} className="text-[#1e6f50]" /> Maintenance Status
+                                                <Wrench size={16} className="text-[#0f4c3a]" /> Maintenance Status
                                             </h4>
                                             <div className="bg-amber-50/50 p-6 rounded-2xl border border-amber-100 flex flex-col items-center justify-center text-center h-[calc(100%-2.5rem)] shadow-inner">
                                                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">

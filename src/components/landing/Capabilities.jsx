@@ -68,17 +68,10 @@ const Capabilities = () => {
               <div className="w-10 h-10 rounded-lg bg-[#f4f7f6] border border-gray-100 flex items-center justify-center mb-4">
                 <LayoutDashboard className="w-5 h-5 text-emerald-600" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Unified Dashboard</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Unified SaaS Dashboard</h3>
               <p className="text-gray-500 text-sm leading-relaxed">
-                Experience the power of a centralized hub.
+                A powerful, centralized SaaS platform to manage housing and services at scale.
               </p>
-            </div>
-
-            {/* Abstract UI Elements */}
-            <div className="space-y-3 relative z-10 translate-y-2 group-hover:-translate-y-2 transition-transform duration-500">
-              <div className="h-2 w-3/4 bg-slate-200 rounded-full"></div>
-              <div className="h-2 w-1/2 bg-slate-100 rounded-full"></div>
-              <div className="h-2 w-full bg-slate-100 rounded-full opacity-60"></div>
             </div>
 
             {/* Background blur */}

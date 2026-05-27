@@ -41,48 +41,45 @@ const Status = ({ property }) => {
     const progress = Math.round((currentStep / steps.length) * 100);
 
     return (
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 mb-4 overflow-hidden transition-all duration-300 hover:shadow-md">
+        <div className="bg-white rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-lg transition-all duration-300 mb-4 overflow-hidden">
             {/* Header / Accordion Trigger */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-left hover:bg-gray-50/50 transition-colors"
+                className="w-full p-5 flex items-center justify-between gap-4 text-left hover:bg-gray-50/40 transition-colors group"
             >
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-[#1e6f50]/10 rounded-2xl flex items-center justify-center text-[#1e6f50] shrink-0">
-                        <Building2 size={24} />
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center text-[#0f4c3a] shrink-0 border border-gray-100">
+                        <Building2 size={20} className="stroke-[2]" />
                     </div>
-                    <div>
-                        <h3 className="text-lg font-bold text-gray-900 leading-tight">{property.name}</h3>
-                        <div className="flex items-center gap-3 mt-1 text-sm text-gray-500">
-                            <span className="flex items-center gap-1">
-                                <Calendar size={14} />
-                                Moved in: {property.moveInDate || 'TBD'}
-                            </span>
-                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                            <span className="font-medium text-[#1e6f50]">{progress}% Ready</span>
+                    <div className="min-w-0 flex-1">
+                        <h3 className="text-base font-sans font-bold text-gray-900 leading-tight truncate">{property.name}</h3>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-gray-450 font-medium">
+                            <span>Moved in: {property.moveInDate || 'TBD'}</span>
+                            <span className="text-gray-300 font-normal select-none">•</span>
+                            <span className="font-bold text-[#0f4c3a]">{progress}% Ready</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-6 w-full sm:w-auto self-end sm:self-center">
-                    <div className="hidden lg:block w-48 h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="flex items-center gap-6 shrink-0">
+                    <div className="hidden sm:block w-44 md:w-56 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-[#1e6f50] transition-all duration-1000 ease-out"
+                            className="h-full bg-[#0f4c3a] transition-all duration-1000 ease-out"
                             style={{ width: `${progress}%` }}
                         />
                     </div>
-                    <div className={`p-2 rounded-xl bg-gray-50 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#1e6f50] bg-[#1e6f50]/10' : ''}`}>
-                        <ChevronDown size={20} />
+                    <div className={`w-8 h-8 rounded-full border border-gray-200/50 flex items-center justify-center bg-gray-50/50 text-gray-400 transition-all duration-300 ${isOpen ? 'rotate-180 text-[#0f4c3a] bg-[#0f4c3a]/5 border-[#0f4c3a]/15 shadow-sm' : 'hover:bg-gray-100 hover:text-gray-600'}`}>
+                        <ChevronDown size={15} className="stroke-[2.5]" />
                     </div>
                 </div>
             </button>
 
             {/* Expanded Content */}
-            <div className={`transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[500px] opacity-100 border-t border-gray-50' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+            <div className={`transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[500px] opacity-100 border-t border-gray-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
                 <div className="p-8 bg-gray-50/30">
                     <div className="flex items-center justify-between mb-8">
-                        <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Onboarding Progress</p>
-                        <p className="text-sm font-bold text-[#1e6f50]">{currentStep} of {steps.length} Milestones</p>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Onboarding Progress</p>
+                        <p className="text-xs font-bold text-[#0f4c3a]">{currentStep} of {steps.length} Milestones</p>
                     </div>
 
                     <div className="relative overflow-x-auto pb-4 custom-scrollbar">
@@ -96,15 +93,15 @@ const Status = ({ property }) => {
                                     <div key={index} className="flex-1 flex flex-col items-center group relative">
                                         {/* Connector Line */}
                                         {index < steps.length - 1 && (
-                                            <div className={`absolute left-1/2 top-4 w-full h-[2px] -z-0 ${index < currentStep - 1 ? 'bg-[#1e6f50]' : 'bg-gray-200'
+                                            <div className={`absolute left-1/2 top-4 w-full h-[2px] -z-0 ${index < currentStep - 1 ? 'bg-[#0f4c3a]' : 'bg-gray-200'
                                                 }`} />
                                         )}
 
                                         {/* Step Circle */}
                                         <div className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${isCompleted
-                                                ? 'bg-[#1e6f50] text-white shadow-lg shadow-[#1e6f50]/20'
+                                                ? 'bg-[#0f4c3a] text-white shadow-md shadow-[#0f4c3a]/10'
                                                 : isCurrent
-                                                    ? 'bg-white border-[2.5px] border-[#1e6f50] text-[#1e6f50] shadow-xl shadow-[#1e6f50]/10 animate-pulse'
+                                                    ? 'bg-white border-[2.5px] border-[#0f4c3a] text-[#0f4c3a] shadow-md shadow-[#0f4c3a]/5 animate-pulse'
                                                     : 'bg-white border-2 border-gray-100 text-gray-300'
                                             }`}>
                                             <Icon size={14} />
@@ -139,6 +136,7 @@ const Status = ({ property }) => {
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: #cbd5e1;
+          border-radius: 10px;
         }
       `}</style>
         </div>

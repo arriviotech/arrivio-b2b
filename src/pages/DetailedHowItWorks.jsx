@@ -47,11 +47,12 @@ const detailedSteps = [
     icon: <LayoutDashboard className="w-8 h-8" />,
     title: "Allocate & Manage",
     subtitle: "Your Centralized Housing Hub",
-    description: "The Arrivio Dashboard gives you full control over your global housing footprint. Assign employees, track move-in dates, and manage extensions with a few clicks.",
+    description: "The Arrivio Dashboard gives you full control over your global housing footprint and relocation logistics. Assign employees, manage move-in dates, and coordinate essential services like SIM cards and city registration with a few clicks.",
     points: [
       "Real-time employee assignment tools",
       "Digital move-in/move-out coordination",
       "Automated guest communication and support",
+      "Integrated relocation services (SIM, Registration, Banking)",
       "Inventory tracking and utilization metrics"
     ]
   },
@@ -59,12 +60,12 @@ const detailedSteps = [
     icon: <BarChart3 className="w-8 h-8" />,
     title: "Track & Report",
     subtitle: "Data-Driven Insights for Growth",
-    description: "Optimize your housing spend with detailed analytics. Monitor occupancy rates, track employee satisfaction, and generate custom reports for internal stakeholders.",
+    description: "Optimize your housing and relocation spend with detailed analytics. Monitor occupancy rates, track the status of essential services, and generate custom reports for internal stakeholders.",
     points: [
       "Monthly occupancy and spend analysis",
+      "Real-time service fulfillment tracking",
       "Employee satisfaction survey results",
-      "Custom ROI reporting for leadership",
-      "Predictive analytics for future housing needs"
+      "Custom ROI reporting for leadership"
     ]
   }
 ];

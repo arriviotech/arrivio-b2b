@@ -10,7 +10,7 @@ const StudioSection = ({ property, units = [] }) => {
       property={property}
       units={units}
       unitTypeKey="studio"
-      title="Private Studio"
+      title="Studio"
       description="Self-contained studio apartment"
       icon={User}
     />

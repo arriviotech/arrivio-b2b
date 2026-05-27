@@ -17,7 +17,7 @@ const BILLS_INCLUDED = [
   { icon: Sparkles, label: 'Cleaning' },
 ];
 
-// Map type → plural label for the CTA ("Add Private Studios", "Add 1-Bed Apartments", …)
+// Map type → plural label for the CTA ("Add Studios", "Add Single Rooms", …)
 const pluralizeType = (formattedTitle) => {
   if (!formattedTitle) return 'units';
   if (formattedTitle.endsWith('s')) return formattedTitle;

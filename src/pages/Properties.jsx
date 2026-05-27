@@ -21,7 +21,24 @@ const Properties = () => {
   const [sortOrder, setSortOrder] = useState('relevant');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isNavHidden, setIsNavHidden] = useState(false);
+  // Multi-select room type filter. Empty set = no filter applied.
+  const [selectedRoomTypes, setSelectedRoomTypes] = useState(new Set());
   const lastScrollY = useRef(0);
+
+  const ROOM_TYPE_OPTIONS = [
+    { key: 'studio', label: 'Studio' },
+    { key: 'one_bedroom', label: 'Single Room' },
+    { key: 'shared_room', label: 'Shared Room' },
+  ];
+
+  const toggleRoomType = (key) => {
+    setSelectedRoomTypes((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
 
   useEffect(() => {
     const NAVBAR_HEIGHT = 64; // px — matches h-16; desktop h-20 is 80 but 64 is the safer threshold
@@ -87,6 +104,12 @@ const Properties = () => {
       const s = searchTerm.toLowerCase();
       if (!p.name?.toLowerCase().includes(s) && !p.city?.toLowerCase().includes(s) && !(p.neighborhood || '').toLowerCase().includes(s) && !(p.address || '').toLowerCase().includes(s)) return false;
     }
+    // Room-type filter — keep properties that have at least one unit of any selected type
+    if (selectedRoomTypes.size > 0) {
+      const breakdown = p.breakdown || {};
+      const hasMatch = [...selectedRoomTypes].some((key) => (breakdown[key] || 0) > 0);
+      if (!hasMatch) return false;
+    }
     return true;
   });
 
@@ -98,7 +121,9 @@ const Properties = () => {
   });
 
   const hasPriceFilter = priceRange[0] > 0 || priceRange[1] < 2000;
-  const activeFilterCount = (selectedCity !== 'All' ? 1 : 0) + (hasPriceFilter ? 1 : 0);
+  const hasRoomTypeFilter = selectedRoomTypes.size > 0;
+  const activeFilterCount =
+    (selectedCity !== 'All' ? 1 : 0) + (hasPriceFilter ? 1 : 0) + (hasRoomTypeFilter ? 1 : 0);
 
   return (
     <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#f2f2f2] relative">
@@ -202,6 +227,29 @@ const Properties = () => {
             </div>
           </div>
 
+          {/* ── ROOM TYPE PILLS (multi-select) ── */}
+          <div className="flex items-center gap-2 mb-3 md:mb-4 overflow-x-auto no-scrollbar">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#9ca3af] shrink-0">
+              Room type
+            </span>
+            {ROOM_TYPE_OPTIONS.map(({ key, label }) => {
+              const isActive = selectedRoomTypes.has(key);
+              return (
+                <button
+                  key={key}
+                  onClick={() => toggleRoomType(key)}
+                  className={`px-3 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all shrink-0 border ${
+                    isActive
+                      ? 'border-[#0f4c3a] bg-[#0f4c3a] text-white shadow-sm'
+                      : 'border-[#e5e7eb] bg-white text-[#374151] hover:border-[#0f4c3a]/40'
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+
           {/* ── ACTIVE FILTER CHIPS (all sizes) ── */}
           {activeFilterCount > 0 && (
             <div className="flex items-center gap-2 mb-4 md:mb-5 overflow-x-auto no-scrollbar">
@@ -224,8 +272,22 @@ const Properties = () => {
                   <X size={11} className="text-[#9ca3af] group-hover:text-red-500 group-active:text-red-500 transition-colors" />
                 </button>
               )}
+              {hasRoomTypeFilter && (
+                <button
+                  onClick={() => setSelectedRoomTypes(new Set())}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#e5e7eb] text-[11px] font-semibold text-[#374151] whitespace-nowrap hover:border-red-300 hover:bg-red-50 hover:text-red-600 active:bg-red-50 active:text-red-600 transition-colors group shadow-sm"
+                >
+                  <span>
+                    {[...selectedRoomTypes]
+                      .map((k) => ROOM_TYPE_OPTIONS.find((o) => o.key === k)?.label)
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </span>
+                  <X size={11} className="text-[#9ca3af] group-hover:text-red-500 group-active:text-red-500 transition-colors" />
+                </button>
+              )}
               <button
-                onClick={() => { handleCityChange('All'); setPriceRange([0, 2000]); }}
+                onClick={() => { handleCityChange('All'); setPriceRange([0, 2000]); setSelectedRoomTypes(new Set()); }}
                 className="px-3 py-1 rounded-full text-[11px] font-semibold text-[#9ca3af] hover:text-[#111827] hover:bg-white hover:shadow-sm border border-transparent hover:border-[#e5e7eb] transition-all whitespace-nowrap shrink-0"
               >
                 Clear all
@@ -251,7 +313,7 @@ const Properties = () => {
                   Try adjusting your filters or search term to find what you're looking for.
                 </p>
                 <button
-                  onClick={() => { handleCityChange('All'); setPriceRange([0, 2000]); }}
+                  onClick={() => { handleCityChange('All'); setPriceRange([0, 2000]); setSelectedRoomTypes(new Set()); }}
                   className="px-8 py-3 rounded-full bg-[#0f4c3a] text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
                 >
                   Clear all filters
@@ -274,7 +336,10 @@ const Properties = () => {
         priceRange={priceRange}
         onPriceChange={setPriceRange}
         properties={allProperties}
-        onClearAll={() => { handleCityChange('All'); setPriceRange([0, 2000]); }}
+        onClearAll={() => { handleCityChange('All'); setPriceRange([0, 2000]); setSelectedRoomTypes(new Set()); }}
+        roomTypeOptions={ROOM_TYPE_OPTIONS}
+        selectedRoomTypes={selectedRoomTypes}
+        onToggleRoomType={toggleRoomType}
       />
     </div>
   );

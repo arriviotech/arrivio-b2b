@@ -17,6 +17,7 @@ import { WishlistProvider } from './context/WishlistContext';
 import { ModalProvider, useModal } from './context/ModalContext';
 import { ArixDesignerProvider, useArixDesigner } from './context/ArixDesignerContext';
 import ArixDesignerModal from './components/arix/ArixDesignerModal';
+import ArixSharedDesignerModal from './components/arix/ArixSharedDesignerModal';
 import { AuthProvider } from './context/AuthContext';
 import Signin from './pages/Signin';
 import Imprint from './pages/legal/Imprint';
@@ -84,7 +85,22 @@ const ArixOrchestrator = () => {
 
   const handleCustomize = () => {
     if (!toast) return;
-    openModal(toast);
+    // Resolve the storage slot ID per unit type so the regular modal reads/writes
+    // the correct slot. Shared keeps using the raw property ID (its helpers
+    // append "_shared" internally).
+    const slotSuffix =
+      toast.roomType === 'Studio'
+        ? '_studio'
+        : toast.roomType === 'Single Room'
+          ? '_one_bedroom'
+          : '';
+    const isShared = (toast.roomType || '').toLowerCase().includes('shared');
+    const propertyIdForModal = isShared ? toast.propertyId : `${toast.propertyId}${slotSuffix}`;
+    openModal({
+      propertyId: propertyIdForModal,
+      propertyName: toast.propertyName,
+      roomType: toast.roomType,
+    });
     setToast(null);
   };
   const handleDismiss = () => {
@@ -112,9 +128,12 @@ const ArixOrchestrator = () => {
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-bold uppercase tracking-widest text-[#0f4c3a]/70 mb-1">✦ Arix Magic Designer</p>
                   <p className="text-sm font-bold text-gray-900 leading-snug truncate">
-                    Customize furniture for {toast.propertyName}?
+                    Customize {toast.roomType || 'this room'}?
                   </p>
-                  <p className="text-xs text-gray-500 mt-0.5">Optional — see your room come alive.</p>
+                  <p className="text-[11px] text-gray-500 mt-0.5 truncate">
+                    {toast.propertyName}
+                    {toast.roomType ? ` · ${toast.roomType}` : ''}
+                  </p>
                 </div>
                 <button
                   onClick={handleDismiss}
@@ -143,14 +162,25 @@ const ArixOrchestrator = () => {
         )}
       </AnimatePresence>
 
-      <ArixDesignerModal
-        isOpen={modalState.isOpen}
-        propertyId={modalState.propertyId}
-        propertyName={modalState.propertyName}
-        roomType={modalState.roomType}
-        onClose={closeModal}
-        onSave={closeModal}
-      />
+      {modalState.roomType && modalState.roomType.toLowerCase().includes('shared') ? (
+        <ArixSharedDesignerModal
+          isOpen={modalState.isOpen}
+          propertyId={modalState.propertyId}
+          propertyName={modalState.propertyName}
+          roomType={modalState.roomType}
+          onClose={closeModal}
+          onSave={closeModal}
+        />
+      ) : (
+        <ArixDesignerModal
+          isOpen={modalState.isOpen}
+          propertyId={modalState.propertyId}
+          propertyName={modalState.propertyName}
+          roomType={modalState.roomType}
+          onClose={closeModal}
+          onSave={closeModal}
+        />
+      )}
     </>
   );
 };

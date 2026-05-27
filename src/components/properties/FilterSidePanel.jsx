@@ -142,7 +142,20 @@ const CityDropdown = ({ value, options, onChange }) => {
   );
 };
 
-const FilterSidePanel = ({ isOpen, onClose, selectedCity, onCityChange, cityOptions, priceRange, onPriceChange, properties, onClearAll }) => {
+const FilterSidePanel = ({
+  isOpen,
+  onClose,
+  selectedCity,
+  onCityChange,
+  cityOptions,
+  priceRange,
+  onPriceChange,
+  properties,
+  onClearAll,
+  roomTypeOptions = [],
+  selectedRoomTypes,
+  onToggleRoomType,
+}) => {
   // Lock body scroll when open
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : 'unset';
@@ -191,6 +204,31 @@ const FilterSidePanel = ({ isOpen, onClose, selectedCity, onCityChange, cityOpti
                 <h3 className="text-sm font-bold text-[#111827] mb-4">Price Range</h3>
                 <PriceHistogram min={0} max={2000} value={priceRange} onChange={onPriceChange} properties={properties} />
               </div>
+
+              {/* Room type */}
+              {roomTypeOptions.length > 0 && (
+                <div className="pb-6 border-b border-slate-100">
+                  <h3 className="text-sm font-bold text-[#111827] mb-4">Room type</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {roomTypeOptions.map(({ key, label }) => {
+                      const isActive = selectedRoomTypes?.has(key);
+                      return (
+                        <button
+                          key={key}
+                          onClick={() => onToggleRoomType(key)}
+                          className={`px-3 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all border ${
+                            isActive
+                              ? 'border-[#0f4c3a] bg-[#0f4c3a] text-white shadow-sm'
+                              : 'border-[#e5e7eb] bg-white text-[#374151] hover:border-[#0f4c3a]/40'
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Footer */}
