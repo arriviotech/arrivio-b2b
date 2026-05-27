@@ -16,11 +16,6 @@ import img15 from './properties/15.jpg';
 import img16 from './properties/16.jpg';
 import img17 from './properties/17.jpg';
 import img18 from './properties/18.jpg';
-import img19 from './properties/19.jpg';
-import img20 from './properties/20.jpg';
-import img21 from './properties/21.jpg';
-import img22 from './properties/22.jpg';
-import img23 from './properties/23.jpg';
 import img24 from './properties/24.jpg';
 
 export const MOCK_PROPERTIES = [
@@ -135,7 +130,7 @@ export const MOCK_PROPERTIES = [
     name: "Frankfurt Single Living",
     neighborhood: "Frankfurt Central",
     city: "Frankfurt",
-    image: img22,
+    image: img4,
     totalUnits: 9,
     breakdown: { individual: 9 },
     sharedBy: 3,
@@ -395,7 +390,7 @@ export const MOCK_PROPERTIES = [
     name: "Aachen Mitte",
     neighborhood: "Aachen Mitte",
     city: "Aachen",
-    image: img19,
+    image: img3,
     totalUnits: 12,
     breakdown: { studio: 6, shared: 6 },
     price: 900,
@@ -410,7 +405,7 @@ export const MOCK_PROPERTIES = [
     name: "Aachen Laurensberg",
     neighborhood: "Aachen Laurensberg",
     city: "Aachen",
-    image: img20,
+    image: img6,
     totalUnits: 10,
     breakdown: { studio: 5, shared: 5 },
     price: 950,
@@ -425,7 +420,7 @@ export const MOCK_PROPERTIES = [
     name: "Aachen Burtscheid",
     neighborhood: "Aachen Burtscheid",
     city: "Aachen",
-    image: img21,
+    image: img1,
     totalUnits: 8,
     breakdown: { studio: 4, shared: 4 },
     price: 920,
@@ -456,7 +451,7 @@ export const MOCK_PROPERTIES = [
     name: "Dusseldorf Bilk",
     neighborhood: "Dusseldorf Bilk",
     city: "Dusseldorf",
-    image: img22,
+    image: img4,
     totalUnits: 14,
     breakdown: { studio: 7, shared: 7 },
     price: 1300,
@@ -471,7 +466,7 @@ export const MOCK_PROPERTIES = [
     name: "Dusseldorf Flingern",
     neighborhood: "Dusseldorf Flingern",
     city: "Dusseldorf",
-    image: img23,
+    image: img5,
     totalUnits: 12,
     breakdown: { studio: 6, shared: 6 },
     price: 1250,
