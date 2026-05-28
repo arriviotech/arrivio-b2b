@@ -384,15 +384,22 @@ export default function OrdersList({
                           Assigned Employees
                         </p>
                         <div className="flex flex-wrap gap-2">
-                          {employees.map((name) => (
-                            <div
-                              key={name}
-                              className="px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-800 shadow-sm flex items-center gap-1.5 hover:border-emerald-100 transition-colors"
-                            >
+                          {o.isAllEmployees ? (
+                            <div className="px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-800 shadow-sm flex items-center gap-1.5 hover:border-emerald-100 transition-colors">
                               <div className="w-1.5 h-1.5 rounded-full bg-[#0f4c3a]/60"></div>
-                              {name}
+                              All Employees ({employees.length})
                             </div>
-                          ))}
+                          ) : (
+                            employees.map((name) => (
+                              <div
+                                key={name}
+                                className="px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-800 shadow-sm flex items-center gap-1.5 hover:border-emerald-100 transition-colors"
+                              >
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#0f4c3a]/60"></div>
+                                {name}
+                              </div>
+                            ))
+                          )}
                         </div>
                       </div>
                     )}

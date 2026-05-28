@@ -13,10 +13,10 @@ export default function ServicesStrip() {
   const top = useMemo(() => {
     const list = services || [];
     const preferredIds = [
-      "seed-airport-pickup",
-      "seed-airport-dropoff",
-      "seed-housing",
-      "seed-bank",
+      "svc-airport-meet-greet",
+      "svc-anmeldung",
+      "svc-bank",
+      "svc-city-half",
     ];
     const byId = new Map(list.map((s) => [s.id, s]));
     const preferred = preferredIds.map((id) => byId.get(id)).filter(Boolean);

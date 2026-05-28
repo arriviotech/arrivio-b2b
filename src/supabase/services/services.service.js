@@ -14,28 +14,17 @@ function normalizeService(row) {
     iconKey: row.iconKey ?? row.icon_key ?? null,
     isActive: row.isActive ?? row.is_active ?? true,
     createdAt: row.createdAt ?? row.created_at ?? null,
+    features: row.features ?? [],
   };
 }
 
-const SERVICE_ORDER = [
-  "Airport Pickup",
-  "Airport Drop-off",
-  "Housing Support",
-  "Bank Account Setup",
-  "Insurance Setup",
-  "SIM Card Setup",
-  "Anmeldung Support",
-  "Tax ID Support",
-  "City Integration Guide",
-];
-
 function sortServices(services) {
-  const rank = new Map(SERVICE_ORDER.map((name, idx) => [name, idx]));
+  // Sort by category first, then by price (descending)
   return [...services].sort((a, b) => {
-    const ra = rank.has(a.name) ? rank.get(a.name) : 999;
-    const rb = rank.has(b.name) ? rank.get(b.name) : 999;
-    if (ra !== rb) return ra - rb;
-    return a.name.localeCompare(b.name);
+    if (a.category !== b.category) {
+      return a.category.localeCompare(b.category);
+    }
+    return b.priceEur - a.priceEur;
   });
 }
 
