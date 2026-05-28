@@ -119,8 +119,12 @@ const HeroVisual = () => {
                   type="category"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 11, fill: '#6B7280', fontWeight: 500 }}
-                  width={70}
+                  tick={({ x, y, payload }) => (
+                    <text x={x - 50} y={y} dy={4} textAnchor="start" fontSize={11} fontWeight={500} fill="#6B7280">
+                      {payload.value}
+                    </text>
+                  )}
+                  width={62}
                 />
                 <Tooltip
                   cursor={{ fill: 'transparent' }}
@@ -131,7 +135,7 @@ const HeroVisual = () => {
                     fontSize: 12,
                   }}
                 />
-                <Bar dataKey="value" radius={[0, 5, 5, 0]} barSize={10}>
+                <Bar dataKey="value" radius={[0, 5, 5, 0]} barSize={11}>
                   {cityData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}

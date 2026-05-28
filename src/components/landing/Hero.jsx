@@ -78,22 +78,22 @@ const Hero = () => {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.34 }}
-              className="flex flex-wrap items-center gap-3"
+              className="flex flex-wrap items-center gap-2"
             >
               {/* All 3 use same base: rounded-xl border, py-2.5 px-5, text-[13.5px] font-semibold */}
               <button
                 onClick={() => {
                   document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-[13.5px] font-semibold px-5 py-2.5 rounded-xl border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200"
+                className="inline-flex items-center gap-1.5 bg-[#0f4c3a] hover:bg-[#186b53] text-white text-[12.5px] font-semibold px-3.5 py-2 rounded-xl border border-[#0f4c3a] shadow-sm hover:shadow-md transition-all duration-200 whitespace-nowrap"
               >
-                <Handshake size={15} className="text-[#0f4c3a]" />
+                <Handshake size={15} className="text-white" />
                 Partner with Arrivio
               </button>
 
               <button
                 onClick={() => navigate('/properties')}
-                className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-[13.5px] font-semibold px-5 py-2.5 rounded-xl border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200"
+                className="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 text-gray-800 text-[12.5px] font-semibold px-3.5 py-2 rounded-xl border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 whitespace-nowrap"
               >
                 <Building2 size={15} className="text-[#0f4c3a]" />
                 View Properties
@@ -102,10 +102,10 @@ const Hero = () => {
               <a
                 href="/arrivio-b2b-deck.pdf"
                 download="Arrivio_Company_Deck.pdf"
-                className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-[13.5px] font-semibold px-5 py-2.5 rounded-xl border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200"
+                className="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 text-gray-800 text-[12.5px] font-semibold px-3.5 py-2 rounded-xl border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 whitespace-nowrap"
               >
                 <Download size={15} className="text-[#0f4c3a]" />
-                Company Deck
+                Download Deck
               </a>
             </motion.div>
 
