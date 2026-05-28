@@ -55,7 +55,7 @@ const HeroVisual = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-3 gap-4">
-        {/* Area Chart — spans 2 cols */}
+        {/* Area Chart- spans 2 cols */}
         <div className="col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <div className="flex justify-between items-center mb-4">
             <div>

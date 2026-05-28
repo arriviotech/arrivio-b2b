@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapPin } from 'lucide-react';
 
-// Simplified header — title + location only.
+// Simplified header- title + location only.
 // Floor / size / occupants now live in the right sidebar (UnitBox).
 const UnitStats = ({ property, formattedTitle, unit }) => {
   return (
@@ -11,9 +11,8 @@ const UnitStats = ({ property, formattedTitle, unit }) => {
           {formattedTitle}
         </h1>
         {unit?.tier && unit.tier !== 'standard' && (
-          <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
-            unit.tier === 'premium' ? 'bg-gradient-to-r from-[#B8860B] to-[#DAA520] text-white' : 'bg-[#0f4c3a] text-white'
-          }`}>
+          <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${unit.tier === 'premium' ? 'bg-gradient-to-r from-[#B8860B] to-[#DAA520] text-white' : 'bg-[#0f4c3a] text-white'
+            }`}>
             {unit.tier}
           </span>
         )}

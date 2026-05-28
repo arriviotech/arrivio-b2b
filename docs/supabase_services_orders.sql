@@ -1,4 +1,4 @@
--- Arrivio B2B — Services Feature (MVP v1.0)
+-- Arrivio B2B- Services Feature (MVP v1.0)
 -- Supabase/Postgres SQL to create required tables for Services + Orders.
 --
 -- Notes:

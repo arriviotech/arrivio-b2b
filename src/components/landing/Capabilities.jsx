@@ -72,7 +72,7 @@ const Capabilities = () => {
             >
               {/* Hover glow */}
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#0f4c3a]/[0.03] rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-              
+
               <div className="relative z-10 w-full">
                 <div className="w-11 h-11 rounded-xl bg-[#f4f7f6] border border-gray-100 flex items-center justify-center mb-5 text-emerald-600 group-hover:bg-[#0f4c3a]/5 group-hover:border-[#0f4c3a]/10 transition-all duration-500 group-hover:scale-110">
                   {feature.icon}
@@ -85,7 +85,7 @@ const Capabilities = () => {
             </motion.div>
           ))}
 
-          {/* Dashboard Preview — Featured Card */}
+          {/* Dashboard Preview- Featured Card */}
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}

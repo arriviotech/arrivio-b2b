@@ -77,7 +77,7 @@ const Contracts = () => {
                         </div>
                     )}
 
-                    {/* Status Pill Badge — top left */}
+                    {/* Status Pill Badge- top left */}
                     <div className="absolute top-3 left-3">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-sm backdrop-blur-sm ${getStatusColor(contract.status)}`}>
                             <span className={`relative flex h-2 w-2`}>
@@ -88,7 +88,7 @@ const Contracts = () => {
                         </span>
                     </div>
 
-                    {/* Contract ID Badge — top right */}
+                    {/* Contract ID Badge- top right */}
                     <div className="absolute top-3 right-3 z-10 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-bold text-gray-700 shadow-sm border border-gray-100 uppercase tracking-wider">
                         {contract.id}
                     </div>
@@ -125,7 +125,7 @@ const Contracts = () => {
                     <div className="flex items-center gap-2 text-[12px] text-[#6b7280] mb-4">
                         <span className="flex items-center gap-1.5">
                             <Calendar size={14} className="text-[#9ca3af]" />
-                            <span className="font-semibold text-[#374151]">{contract.checkIn} — {contract.checkOut}</span>
+                            <span className="font-semibold text-[#374151]">{contract.checkIn}- {contract.checkOut}</span>
                         </span>
                     </div>
 

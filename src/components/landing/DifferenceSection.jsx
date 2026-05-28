@@ -10,8 +10,8 @@ const DifferenceSection = () => {
 
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-          
-          {/* Left — Text Content */}
+
+          {/* Left- Text Content */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -31,8 +31,8 @@ const DifferenceSection = () => {
             <p className="text-lg text-gray-500 mb-10 leading-relaxed">
               Unlike traditional housing platforms where you search for individual apartments at the last minute, Arrivio allows companies to reserve housing capacity in advance for upcoming hires.
             </p>
-            
-            {/* Example Card — glassmorphism */}
+
+            {/* Example Card- glassmorphism */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -42,7 +42,7 @@ const DifferenceSection = () => {
             >
               {/* Green accent border */}
               <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#0f4c3a] to-[#186b53] rounded-full" />
-              
+
               <div className="flex items-start gap-4 pl-3">
                 <div className="w-11 h-11 rounded-full bg-emerald-50 flex items-center justify-center shrink-0 border border-emerald-100">
                   <span className="text-emerald-700 font-bold text-sm">Ex</span>
@@ -54,8 +54,8 @@ const DifferenceSection = () => {
               </div>
             </motion.div>
           </motion.div>
-          
-          {/* Right — Image */}
+
+          {/* Right- Image */}
           <motion.div
             initial={{ opacity: 0, x: 30, scale: 0.97 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
@@ -65,9 +65,9 @@ const DifferenceSection = () => {
           >
             {/* Background shadow card */}
             <div className="absolute inset-0 bg-gradient-to-tr from-[#0f4c3a]/15 to-[#D4A017]/10 rounded-3xl translate-x-4 translate-y-4 transition-transform duration-700 group-hover:translate-x-5 group-hover:translate-y-5" />
-            <img 
-              src={housingCapacityImg} 
-              alt="Modern apartment architecture with greenery" 
+            <img
+              src={housingCapacityImg}
+              alt="Modern apartment architecture with greenery"
               className="rounded-3xl shadow-2xl w-full object-cover aspect-[4/3] relative z-10 transition-transform duration-700 group-hover:scale-[1.02]"
             />
             {/* Overlay gradient on hover */}

@@ -1,6 +1,6 @@
 ===== PAGE 1 =====
 
-Arrivio B2B — Services Feature
+Arrivio B2B- Services Feature
 Implementation Speciﬁcation for Codex
 Prepared by: Arrivio Dev Team Date: May 21, 2026 Status: Ready for Implementation Version:
 MVP v1.0
@@ -23,9 +23,9 @@ Table of Contents
 12. TBD / Post-MVP
 1. Overview
 Add a Services feature to the Arrivio B2B Partner Platform. This allows HR admins and company
-administrators to browse, request, and track relocation services for their employees — either
+administrators to browse, request, and track relocation services for their employees- either
 individually or in bulk.
-The feature is inspired by the existing B2C services ﬂow (see Section 4 — Visual Reference) but
+The feature is inspired by the existing B2C services ﬂow (see Section 4- Visual Reference) but
 adapted speciﬁcally for B2B use cases: multi-employee ordering, per-employee customization,
 and centralized order tracking.
 Entry points:
@@ -51,53 +51,53 @@ This is the most important section. Read it fully before doing anything else.
 This feature is being added to an existing B2B codebase. Before writing a single line of code,
 Codex must:
 3.1 Read and Understand the Codebase
-Explore the full project structure — understand how folders are organised, where pages
+Explore the full project structure- understand how folders are organised, where pages
 live, where components live, where API routes are deﬁned
 Read at least 2–3 existing page components to understand the coding style, how state is
 managed, how Axios is used, how props are structured
-Read the existing sidebar/navigation component — understand exactly how nav items
+Read the existing sidebar/navigation component- understand exactly how nav items
 are added so the new Services item follows the same pattern precisely
-Read the existing dashboard page — understand the layout structure so the Services strip
+Read the existing dashboard page- understand the layout structure so the Services strip
 is inserted correctly without breaking existing sections
-Read existing modal components if any exist — follow the same pattern for the Request
+Read existing modal components if any exist- follow the same pattern for the Request
 Modal
 
 ===== PAGE 3 =====
 
-Read existing backend route ﬁles — follow the same structure, middleware usage, error
+Read existing backend route ﬁles- follow the same structure, middleware usage, error
 handling, and response format already established
-Read existing Supabase schema or migration ﬁles — understand existing table
+Read existing Supabase schema or migration ﬁles- understand existing table
 structures, naming conventions, and foreign key patterns before creating new tables
-3.2 Follow Existing Conventions — Always
+3.2 Follow Existing Conventions- Always
 File naming: match whatever convention is already used (PascalCase, camelCase, kebab-
 case)
 Folder structure: place new ﬁles exactly where similar existing ﬁles are placed
 Component patterns: if existing components use a certain prop pattern, hooks pattern, or
-state management approach — replicate it
+state management approach- replicate it
 API patterns: match the existing route structure, middleware chain, and response format
-Styling: use the same Tailwind class patterns already used in the codebase — do not
+Styling: use the same Tailwind class patterns already used in the codebase- do not
 introduce new design tokens or override existing ones
 Database: follow the existing table naming conventions, column naming style, and foreign
 key references
 3.3 Do Not Assume
-Do not assume folder paths — read the codebase ﬁrst
-Do not assume table names — check existing Supabase schema ﬁrst
-Do not assume how auth/session works — read existing authenticated routes ﬁrst
-Do not assume how company_id or employee_id is stored — read existing data models
+Do not assume folder paths- read the codebase ﬁrst
+Do not assume table names- check existing Supabase schema ﬁrst
+Do not assume how auth/session works- read existing authenticated routes ﬁrst
+Do not assume how company_id or employee_id is stored- read existing data models
 ﬁrst
 4. Visual Reference
 The following screenshots are attached to this document and should be used as functional
-reference only — not as a design template. The B2B implementation must follow the B2B
+reference only- not as a design template. The B2B implementation must follow the B2B
 platform's existing design language, not the B2C design.
 Attached Screenshots
 Screenshot What it shows
 screenshot-1-
 dashboard.png
-B2C dashboard with the Popular Services strip — reference for strip
+B2C dashboard with the Popular Services strip- reference for strip
 placement and card layout concept
 screenshot-2-services-
 page.png
-B2C full services page — reference for category ﬁlters, service cards
+B2C full services page- reference for category ﬁlters, service cards
 grid, and Browse/My Orders toggle
 
 ===== PAGE 4 =====
@@ -105,18 +105,18 @@ grid, and Browse/My Orders toggle
 Screenshot What it shows
 screenshot-3-request-
 modal.png
-B2C request modal — reference for the modal's functional elements
+B2C request modal- reference for the modal's functional elements
 (quantity, special requests, conﬁrm)
 screenshot-4-my-
 orders.png
-B2C My Orders tab — reference for order list layout, status badges,
+B2C My Orders tab- reference for order list layout, status badges,
 and tab structure
 How to Use These Screenshots
 Use them to understand what each screen should do and what elements it should contain
-Do not copy the B2C visual style — colours, fonts, spacing, and component shapes must
+Do not copy the B2C visual style- colours, fonts, spacing, and component shapes must
 match the existing B2B platform
 The B2B platform uses a dark sidebar, white content area, and Arrivio green as the primary
-accent — stay consistent with that
+accent- stay consistent with that
 5. Navigation Changes
 Current Sidebar Structure
 Updated Sidebar Structure
@@ -143,7 +143,7 @@ FINANCIAL
 Implementation notes:
 Read the existing sidebar component before making changes
 Follow the exact same pattern used to add existing nav items (icon, label, route, active state)
-Use a relevant Lucide icon (suggestion: Briefcase or ShoppingBag — choose whichever
+Use a relevant Lucide icon (suggestion: Briefcase or ShoppingBag- choose whichever
 ﬁts better visually)
 Route: follow the existing routing convention in the codebase (e.g. /dashboard/services
 or whatever pattern is used)
@@ -181,11 +181,11 @@ Transport · Housing · Banking · Insurance · Connectivity · Legal
 7.1 Dashboard Services Strip
 Location: Main dashboard page, placed below the stats cards (Active Properties, Total
 Employees, Monthly Spend) and above the Recent Activity section.
-Purpose: Quick discovery of available services. A teaser strip — not the primary entry point.
+Purpose: Quick discovery of available services. A teaser strip- not the primary entry point.
 What it should contain
 Section heading: "Popular Services"
 Sub-label: "Help your employees settle in faster"
-A "View All →" link on the right of the heading — navigates to the full Services page
+A "View All →" link on the right of the heading- navigates to the full Services page
 4 service cards in a horizontal row (responsive: 4 columns desktop, 2 tablet, 1 mobile)
 Suggested featured services: Airport Pickup, SIM Card, Bank Account, Anmeldung
 Support
@@ -239,19 +239,19 @@ Service icon, category tag, service name, description, price
 
 ===== PAGE 8 =====
 
-Step 1 — Choose Recipients
+Step 1- Choose Recipients
 Two options displayed as selectable cards or a segmented control:
-Option A — All Employees
+Option A- All Employees
 Order applies to all employees under the company
 Show a count: e.g. "48 employees will receive this service"
 Read how employees are fetched/stored from existing code before implementing
-Option B — Select Speciﬁc Employees
+Option B- Select Speciﬁc Employees
 Searchable multi-select dropdown
 Each employee shown as: [Avatar initial] Full Name · Job Title
 Selected employees shown as removable tags
-Step 2 — Per-Employee Customization
+Step 2- Per-Employee Customization
 Only shown when Option B is selected AND more than one employee is chosen.
-A collapsible accordion — one row per selected employee. When expanded, shows a small form
+A collapsible accordion- one row per selected employee. When expanded, shows a small form
 with ﬁelds relevant to the service:
 Service Fields
 Airport Pickup Pickup date, Pickup time, Flight number (optional)
@@ -262,7 +262,7 @@ SIM Card Delivery address
 Anmeldung Support Appointment date preference, Current address
 Tax ID Guidance Preferred contact method
 If HR does not customize a row, default/blank values apply.
-Step 3 — Additional Details
+Step 3- Additional Details
 Quantity stepper (− / number / +)
 Special requests text area (optional)
 Modal Footer
@@ -298,7 +298,7 @@ Services tab.
 
 ===== PAGE 10 =====
 
-MVP Bundles (Placeholder — conﬁrm with Arrivio team before go-live)
+MVP Bundles (Placeholder- conﬁrm with Arrivio team before go-live)
 Bundle Name Included Services Placeholder Price
 Starter Pack SIM Card + Bank Account €40
 Relocation Essentials Airport Pickup + Anmeldung Support + SIM Card €130
@@ -311,7 +311,7 @@ REQUEST BUNDLE button
 Bundle Request Flow
 Same modal as individual service request (Section 7.3). Each service in the bundle creates a
 separate order row in My Orders, linked by a shared bundle reference ID.
-Future Enhancement — Phase 2
+Future Enhancement- Phase 2
 Custom bundle builder: allow HR admins to create their own service combinations. Do not
 implement in MVP.
 9. Backend Requirements
@@ -319,9 +319,9 @@ General Instructions
 Read existing Express route ﬁles before creating new ones
 Follow the same middleware, auth veriﬁcation, error handling, and response format already
 in use
-All new routes must be protected — only authenticated users with the correct company role
+All new routes must be protected- only authenticated users with the correct company role
 can access them
-Orders must always be scoped to the authenticated user's company_id — read how this is
+Orders must always be scoped to the authenticated user's company_id- read how this is
 handled in existing routes
 Required Endpoints
 MethodEndpoint Description
@@ -341,7 +341,7 @@ Adjust route paths to match existing API conventions in the codebase.
 General Instructions
 Read existing Supabase migration ﬁles or schema before creating new tables
 Follow existing naming conventions (snake_case assumed but verify)
-Use existing companies and employees table names and foreign key references — do not
+Use existing companies and employees table names and foreign key references- do not
 create duplicate tables
 Add RLS (Row Level Security) policies consistent with how existing tables are secured
 New Tables Required
@@ -380,12 +380,12 @@ Columns needed:
 Unique ID (primary key)
 Company ID (foreign key → existing companies table)
 Service ID (foreign key → services)
-Bundle reference ID (nullable — groups bundle orders together)
-Employee ID (nullable — NULL means "All Employees", foreign key → existing employees
+Bundle reference ID (nullable- groups bundle orders together)
+Employee ID (nullable- NULL means "All Employees", foreign key → existing employees
 table)
 Quantity
 Special requests (text, nullable)
-Custom ﬁelds (JSON — stores per-employee customization data)
+Custom ﬁelds (JSON- stores per-employee customization data)
 Status (pending / active / delivered / cancelled)
 Ordered timestamp
 Updated timestamp
@@ -396,21 +396,21 @@ Follow the exact response format already used in the existing API. Read existing
 ===== PAGE 13 =====
 
 to conﬁrm the structure before implementing.
-POST /api/orders — Key Request Fields
+POST /api/orders- Key Request Fields
 The order creation endpoint must handle:
-service_id — which service is being ordered
-recipient_type — "all" or "specific"
-employee_ids — array of employee IDs (used when recipient_type is "specific")
-quantity — number per employee
-special_requests — optional free text
-custom_fields — object keyed by employee ID, containing per-employee customization
+service_id- which service is being ordered
+recipient_type- "all" or "specific"
+employee_ids- array of employee IDs (used when recipient_type is "specific")
+quantity- number per employee
+special_requests- optional free text
+custom_fields- object keyed by employee ID, containing per-employee customization
 data
 When recipient_type is "all", the backend should fetch all active employees under the
-company and create an order row for each one (or a single order with a null employee_id —
+company and create an order row for each one (or a single order with a null employee_id-
 decide based on what makes the My Orders view easier to query).
-GET /api/orders — Supported Filters
-status — ﬁlter by order status
-employee_id — ﬁlter by speciﬁc employee
+GET /api/orders- Supported Filters
+status- ﬁlter by order status
+employee_id- ﬁlter by speciﬁc employee
 Pagination (follow existing pagination pattern in the codebase)
 12. TBD / Post-MVP
 The following are intentionally out of scope for MVP. Do not implement. They are documented
@@ -419,7 +419,7 @@ here for future reference.
 ===== PAGE 14 =====
 
 Item Notes
-Payment ﬂow To be conﬁrmed — consolidated monthly invoice vs direct Stripe/Cashfree
+Payment ﬂow To be conﬁrmed- consolidated monthly invoice vs direct Stripe/Cashfree
 payment. Add a payment step to the Request Modal once conﬁrmed.
 Bundle deﬁnitions Placeholder bundles in Section 8 need to be conﬁrmed with the Arrivio team
 before go-live.

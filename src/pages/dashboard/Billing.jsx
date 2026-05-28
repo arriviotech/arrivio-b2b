@@ -30,7 +30,7 @@ const Billing = () => {
     { id: '#INV-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€2,500.00', status: 'Paid' },
     { id: '#INV-2026-002', date: 'Feb 10, 2026', type: 'Arrivio Balance Top-up', amount: '€1,499.00', status: 'Paid' },
     { id: '#INV-2026-001', date: 'Jan 10, 2026', type: 'Arrivio Balance Top-up', amount: '€1,850.00', status: 'Paid' },
-    { id: '#INV-2026-012', date: 'Dec 10, 2026', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Paid' }
+    { id: '#INV-2025-012', date: 'Dec 10, 2025', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Paid' }
   ]);
 
   return (
@@ -158,9 +158,10 @@ const Billing = () => {
               <div className="text-[10px] text-gray-250 font-medium leading-relaxed p-3.5 bg-white/5 border border-white/10 rounded-2xl shadow-inner">
                 Arrivio Credits are used to procure relocation services like Airport Pickups, Anmeldung, and Tax Setups for your employees.
               </div>
-              <button 
+              <button
                 onClick={() => setIsTopUpOpen(true)}
                 className="w-full py-3 bg-white text-[#0f4c3a] hover:bg-gray-50 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all active:scale-[0.98] cursor-pointer shadow-sm">
+
                 Top Up Arrivio Balance
               </button>
             </div>

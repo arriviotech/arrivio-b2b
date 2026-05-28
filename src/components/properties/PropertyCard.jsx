@@ -45,7 +45,7 @@ const PropertyCard = ({ property }) => {
       onClick={handleClick}
       className="bg-white rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group overflow-hidden flex flex-col h-full"
     >
-      {/* Image — compact 16:9 */}
+      {/* Image- compact 16:9 */}
       <div className="relative aspect-[16/9] overflow-hidden bg-[#f0f0f0]">
         {property.image ? (
           <img
@@ -59,7 +59,7 @@ const PropertyCard = ({ property }) => {
           </div>
         )}
 
-        {/* Availability badge — top left */}
+        {/* Availability badge- top left */}
         <div className="absolute top-3 left-3">
           {isAvailable ? (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-sm text-[10px] font-bold text-[#16a34a] shadow-sm">
@@ -77,18 +77,16 @@ const PropertyCard = ({ property }) => {
           )}
         </div>
 
-        {/* Heart — top right */}
+        {/* Heart- top right */}
         <button
-          className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow-sm transition-transform hover:scale-110 ${
-            isWishlisted ? 'bg-rose-50' : 'bg-white/95 backdrop-blur-sm'
-          }`}
+          className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow-sm transition-transform hover:scale-110 ${isWishlisted ? 'bg-rose-50' : 'bg-white/95 backdrop-blur-sm'
+            }`}
           onClick={handleHeartClick}
         >
           <Heart
             size={16}
-            className={`transition-colors ${
-              isWishlisted ? 'fill-red-500 text-red-500' : 'text-[#6b7280] group-hover:text-red-500'
-            }`}
+            className={`transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-[#6b7280] group-hover:text-red-500'
+              }`}
           />
         </button>
       </div>
@@ -105,7 +103,7 @@ const PropertyCard = ({ property }) => {
           {property.neighborhood || property.district}{property.city ? `, ${property.city}` : ''}
         </p>
 
-        {/* Unit type breakdown — pill badges */}
+        {/* Unit type breakdown- pill badges */}
         {unitTypes.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-3">
             {unitTypes.map(([type, count]) => (
@@ -152,16 +150,15 @@ const PropertyCard = ({ property }) => {
           </span>
         </div>
 
-        {/* Quick-add toggle + panel — stops propagation from the parent card click */}
+        {/* Quick-add toggle + panel- stops propagation from the parent card click */}
         {availableTypes.length > 0 && (
           <div className="mt-3" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={handleQuickAddToggle}
-              className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-colors ${
-                isQuickAddOpen
+              className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-colors ${isQuickAddOpen
                   ? 'bg-[#0f4c3a] text-white'
                   : 'bg-[#0f4c3a]/5 text-[#0f4c3a] hover:bg-[#0f4c3a]/10'
-              }`}
+                }`}
             >
               <span className="flex items-center gap-1.5">
                 <Zap size={12} />

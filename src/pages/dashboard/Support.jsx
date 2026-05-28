@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { 
   MessageSquare, Send, CheckCircle2, LifeBuoy, Mail, Headset, 
-  Search, ChevronDown, ChevronUp, Phone, Sparkles, Clock, 
-  UserCheck, ShieldAlert, FileText, HelpCircle, MessageCircle 
+  Search, ChevronDown, ChevronUp, Phone, Sparkles,
+  HelpCircle, MessageCircle, ArrowLeft, Clock, Plus
 } from 'lucide-react';
 
 const FAQS = [
@@ -30,7 +30,6 @@ const FAQS = [
 
 const Support = () => {
   const [submitted, setSubmitted] = useState(false);
-  const [priority, setPriority] = useState("normal"); // 'normal' | 'urgent' | 'emergency'
   const [faqSearch, setFaqSearch] = useState("");
   const [expandedFaq, setExpandedFaq] = useState(null);
   const [showTicketForm, setShowTicketForm] = useState(false);
@@ -63,12 +62,11 @@ const Support = () => {
     e.preventDefault();
     if (!subject.trim() || !message.trim()) return;
 
-    // Add to ticket history list
     const newTicket = {
       id: `TK-${Math.floor(8000 + Math.random() * 2000)}`,
       subject,
       status: 'In Progress',
-      priority,
+      priority: 'normal',
       date: new Date().toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' }),
       time: new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
     };
@@ -78,7 +76,6 @@ const Support = () => {
     setShowTicketForm(false);
     setSubject("");
     setMessage("");
-    setPriority("normal");
   };
 
   const filteredFaqs = useMemo(() => {
@@ -88,17 +85,7 @@ const Support = () => {
     );
   }, [faqSearch]);
 
-  const getPriorityStyles = (p) => {
-    switch (p) {
-      case 'emergency':
-        return 'bg-red-50 text-red-750 border-red-100';
-      case 'urgent':
-        return 'bg-amber-50 text-amber-705 border-amber-100';
-      case 'normal':
-      default:
-        return 'bg-gray-50 text-gray-500 border-gray-150';
-    }
-  };
+
 
   return (
     <div className="max-w-[1100px] mx-auto space-y-8 animate-in fade-in duration-500 pb-20 select-none">
@@ -146,14 +133,22 @@ const Support = () => {
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 flex items-center justify-center gap-3 flex-wrap">
                 <button
                   onClick={() => { setSubmitted(false); setShowTicketForm(false); }}
                   className="h-10 px-5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-extrabold text-xs uppercase tracking-wider rounded-xl border border-gray-200 active:scale-95 transition-all cursor-pointer"
                 >
                   Back to FAQs
                 </button>
+                <button
+                  onClick={() => { setSubmitted(false); setShowTicketForm(true); }}
+                  className="h-10 px-5 bg-[#0f4c3a] hover:bg-[#0a3a2b] text-white font-extrabold text-xs uppercase tracking-wider rounded-xl border border-[#0f4c3a] active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <Send className="w-3 h-3" />
+                  Raise Another Ticket
+                </button>
               </div>
+
             </div>
 
             {/* Support Ticket History */}
@@ -180,9 +175,6 @@ const Support = () => {
                           ticket.status === 'Resolved' ? 'bg-emerald-50 text-emerald-705 border-emerald-100/60' : 'bg-blue-50 text-blue-700 border-blue-100/60'
                         }`}>
                           {ticket.status}
-                        </span>
-                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border select-none shrink-0 ${getPriorityStyles(ticket.priority)}`}>
-                          {ticket.priority} priority
                         </span>
                       </div>
                       <h4 className="font-bold text-gray-900 text-sm truncate pr-4">{ticket.subject}</h4>
@@ -264,152 +256,109 @@ const Support = () => {
           </div>
         </div>
       ) : showTicketForm ? (
-        /* TICKET FORM VIEW */
-        <div className="max-w-[700px] mx-auto space-y-6 animate-in slide-in-from-bottom-6 duration-300">
+        /* ── REDESIGNED TICKET FORM ── */
+        <div className="animate-in slide-in-from-bottom-4 duration-300">
           <button
             onClick={() => setShowTicketForm(false)}
-            className="flex items-center gap-1.5 text-xs font-extrabold text-gray-500 hover:text-gray-900 transition-colors uppercase tracking-wider cursor-pointer border-0 bg-transparent"
+            className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-gray-700 transition-colors mb-6 cursor-pointer border-0 bg-transparent"
           >
-            ← Back to FAQs
+            <ArrowLeft size={13} />
+            Back to Help Center
           </button>
 
-          <div className="bg-white rounded-3xl border border-[#e5e7eb] p-6 sm:p-8 shadow-sm">
-            <div className="flex items-center gap-3.5 mb-6">
-              <div className="w-10 h-10 bg-emerald-50 text-[#0f4c3a] border border-emerald-100/30 rounded-xl flex items-center justify-center shrink-0">
-                <MessageSquare className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 tracking-tight leading-none">Raise a Support Ticket</h2>
-                <p className="text-xs text-gray-400 font-medium mt-1">Direct pipeline to our technical relocation operations team.</p>
-              </div>
-            </div>
+          <div className="grid lg:grid-cols-[1fr_340px] gap-6">
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Priority Selector Pills */}
-              <div className="space-y-2.5">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-                  Select Priority Level
-                </label>
-                <div className="grid grid-cols-3 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setPriority("normal")}
-                    className={`h-11 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-2 cursor-pointer ${
-                      priority === "normal"
-                        ? "bg-gray-50 border-gray-300 text-gray-900 ring-2 ring-gray-100"
-                        : "bg-white border-gray-200 text-gray-400 hover:border-gray-300"
-                    }`}
-                  >
-                    <UserCheck size={14} className={priority === "normal" ? "text-gray-800" : "text-gray-400"} />
-                    Standard Query
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPriority("urgent")}
-                    className={`h-11 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-2 cursor-pointer ${
-                      priority === "urgent"
-                        ? "bg-amber-50/50 border-amber-250 text-amber-900 ring-2 ring-amber-50"
-                        : "bg-white border-gray-200 text-gray-400 hover:border-gray-300"
-                    }`}
-                  >
-                    <Clock size={14} className={priority === "urgent" ? "text-amber-600" : "text-gray-400"} />
-                    Urgent Case
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPriority("emergency")}
-                    className={`h-11 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-2 cursor-pointer ${
-                      priority === "emergency"
-                        ? "bg-red-50 border-red-200 text-red-955 ring-2 ring-red-50"
-                        : "bg-white border-gray-200 text-gray-400 hover:border-gray-300"
-                    }`}
-                  >
-                    <ShieldAlert size={14} className={priority === "emergency" ? "text-red-655 animate-bounce" : "text-gray-400"} />
-                    Emergency
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Subject</label>
-                <input
-                  type="text"
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  placeholder="Enter ticket subject (e.g. Missing health insurance certificate)"
-                  className="w-full h-11 px-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-[#0f4c3a] focus:ring-2 focus:ring-[#0f4c3a]/20 focus:outline-none transition-all duration-200 text-gray-800 font-medium text-sm"
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Detailed Message</label>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Describe your issue in detail (please mention any affected employee names if applicable)..."
-                  className="w-full min-h-[140px] p-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-[#0f4c3a] focus:ring-2 focus:ring-[#0f4c3a]/20 focus:outline-none transition-all duration-200 text-gray-800 font-medium text-sm resize-none"
-                  required
-                ></textarea>
-              </div>
-
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  className="h-11 px-7 bg-[#0f4c3a] hover:bg-[#0a3a2b] text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-sm hover:shadow-emerald-950/20 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  Send Support Ticket
-                </button>
-              </div>
-            </form>
-          </div>
-
-          {/* Ticket history panel */}
-          <div className="bg-white rounded-3xl border border-[#e5e7eb] overflow-hidden shadow-sm">
-            <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center gap-4">
-              <div>
-                <h3 className="font-bold text-gray-900 text-sm">Previous Support Tickets</h3>
-                <p className="text-[10px] text-gray-400 font-medium mt-0.5">Tracking status of recent corporate support submissions</p>
-              </div>
-              <span className="px-2.5 py-0.5 rounded-full bg-gray-150 text-gray-600 text-[9px] font-black uppercase tracking-wider border border-gray-200">
-                History ({tickets.length})
-              </span>
-            </div>
-            
-            <div className="divide-y divide-gray-50">
-              {tickets.length > 0 ? (
-                tickets.map((ticket) => (
-                  <div key={ticket.id} className="p-5 hover:bg-gray-50/20 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in duration-300">
-                    <div className="space-y-1 flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[9px] font-black text-gray-450 tracking-wider uppercase bg-gray-50 border border-gray-150 px-1.5 py-0.5 rounded">
-                          {ticket.id}
-                        </span>
-                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border select-none shrink-0 ${
-                          ticket.status === 'Resolved' ? 'bg-emerald-50 text-emerald-705 border-emerald-100/60' : 'bg-blue-50 text-blue-700 border-blue-100/60'
-                        }`}>
-                          {ticket.status}
-                        </span>
-                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border select-none shrink-0 ${getPriorityStyles(ticket.priority)}`}>
-                          {ticket.priority} priority
-                        </span>
-                      </div>
-                      <h4 className="font-bold text-gray-900 text-sm truncate pr-4">{ticket.subject}</h4>
-                    </div>
-                    
-                    <div className="text-left sm:text-right shrink-0 flex sm:flex-col gap-x-2 gap-y-0.5 text-xs text-gray-400 font-medium">
-                      <span className="text-gray-700 font-bold">{ticket.date}</span>
-                      <span className="hidden sm:inline text-gray-200 font-light">•</span>
-                      <span>{ticket.time}</span>
-                    </div>
+            {/* ── LEFT: Form ── */}
+            <div className="bg-white rounded-3xl border border-[#e5e7eb] shadow-sm overflow-hidden">
+              {/* Form header */}
+              <div className="px-8 pt-8 pb-6 border-b border-gray-100">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-2xl bg-[#0f4c3a]/8 flex items-center justify-center">
+                    <MessageSquare className="w-5 h-5 text-[#0f4c3a]" />
                   </div>
-                ))
-              ) : (
-                <div className="p-8 text-center text-gray-400 font-bold italic text-xs">
-                  No support tickets raised yet.
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 tracking-tight">New Support Request</h2>
+                    <p className="text-xs text-gray-400 font-medium mt-0.5">Routed directly to our relocation operations team</p>
+                  </div>
                 </div>
-              )}
+              </div>
+
+              <form onSubmit={handleSubmit} className="px-8 py-7 space-y-6">
+
+                {/* Subject */}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black text-gray-500 uppercase tracking-widest">
+                    Subject
+                  </label>
+                  <input
+                    type="text"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="What do you need help with?"
+                    className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#0f4c3a] focus:ring-2 focus:ring-[#0f4c3a]/10 focus:outline-none transition-all text-gray-800 font-medium text-sm placeholder:text-gray-300"
+                    required
+                  />
+                </div>
+
+                {/* Message */}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black text-gray-500 uppercase tracking-widest">
+                    Details
+                  </label>
+                  <textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Describe your issue in detail — include any affected employee names, property names, or service IDs if relevant..."
+                    className="w-full min-h-[180px] p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#0f4c3a] focus:ring-2 focus:ring-[#0f4c3a]/10 focus:outline-none transition-all text-gray-800 font-medium text-sm resize-none placeholder:text-gray-300 leading-relaxed"
+                    required
+                  />
+                </div>
+
+                {/* Footer row */}
+                <div className="flex items-center justify-between gap-4 pt-1">
+                  <p className="text-[11px] text-gray-400 font-medium">
+                    <Clock className="inline w-3 h-3 mr-1 -mt-px" />
+                    Response within 15 minutes
+                  </p>
+                  <button
+                    type="submit"
+                    className="h-11 px-7 bg-[#0f4c3a] hover:bg-[#0a3a2b] text-white font-bold text-xs uppercase tracking-wider rounded-2xl shadow-sm active:scale-95 transition-all cursor-pointer flex items-center gap-2"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    Submit Ticket
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* ── RIGHT: Sidebar ── */}
+            <div className="space-y-4">
+
+              {/* Recent tickets */}
+              <div className="bg-white rounded-3xl border border-[#e5e7eb] overflow-hidden">
+                <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                  <h4 className="font-bold text-gray-900 text-sm">Recent Tickets</h4>
+                  <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider bg-gray-100 px-2 py-0.5 rounded-full">{tickets.length}</span>
+                </div>
+                <div className="divide-y divide-gray-50">
+                  {tickets.length > 0 ? tickets.map((t) => (
+                    <div key={t.id} className="px-5 py-3.5 hover:bg-gray-50/50 transition-colors">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-gray-900 truncate">{t.subject}</p>
+                          <p className="text-[10px] text-gray-400 font-medium mt-0.5">{t.id} · {t.date}</p>
+                        </div>
+                        <span className={`shrink-0 px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider border ${
+                          t.status === 'Resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-blue-50 text-blue-600 border-blue-100'
+                        }`}>{t.status}</span>
+                      </div>
+                    </div>
+                  )) : (
+                    <div className="px-5 py-6 text-center text-[11px] text-gray-400 font-medium">No tickets yet</div>
+                  )}
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -532,9 +481,6 @@ const Support = () => {
                             ticket.status === 'Resolved' ? 'bg-emerald-50 text-emerald-705 border-emerald-100/60' : 'bg-blue-50 text-blue-700 border-blue-100/60'
                           }`}>
                             {ticket.status}
-                          </span>
-                          <span className={`px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase border select-none shrink-0 ${getPriorityStyles(ticket.priority)}`}>
-                            {ticket.priority}
                           </span>
                         </div>
                       </div>

@@ -14,7 +14,7 @@ const Payments = () => {
         { id: '#TRX-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€2,500.00', status: 'Completed', logo: '✦' },
         { id: '#TRX-2026-002', date: 'Feb 10, 2026', type: 'Arrivio Balance Top-up', amount: '€1,499.00', status: 'Completed', logo: '↑' },
         { id: '#TRX-2026-001', date: 'Jan 10, 2026', type: 'Arrivio Balance Top-up', amount: '€1,850.00', status: 'Completed', logo: '↑' },
-        { id: '#TRX-2026-012', date: 'Dec 10, 2026', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Completed', logo: '✦' },
+        { id: '#TRX-2025-012', date: 'Dec 10, 2025', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Completed', logo: '✦' },
     ];
 
     const balances = [

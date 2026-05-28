@@ -25,7 +25,7 @@ const Hero = () => {
           {/* ── LEFT ── */}
           <div className="flex flex-col">
 
-            {/* Section badge — consistent style */}
+            {/* Section badge- consistent style */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -60,10 +60,6 @@ const Hero = () => {
                   transition={{ duration: 0.6, delay: 0.75, ease: 'easeOut' }}
                   className="absolute -bottom-0.5 left-0 right-0 h-[2.5px] bg-gradient-to-r from-[#0f4c3a]/25 via-[#D4A017]/40 to-transparent rounded-full origin-left"
                 />
-              </span>
-              <br />
-              <span className="text-gray-400 font-normal text-[2rem] md:text-[2.4rem] lg:text-[2.7rem]">
-                for modern enterprises
               </span>
             </motion.h1>
 

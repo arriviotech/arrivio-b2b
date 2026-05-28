@@ -105,15 +105,14 @@ const QuickAddBar = ({
     <button
       onClick={handleClick}
       disabled={buttonDisabled}
-      className={`shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1 ${
-        wantsToRemove
+      className={`shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1 ${wantsToRemove
           ? 'border border-red-300 text-red-600 hover:bg-red-50'
           : isSaved
             ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default'
             : wantsToAdd || wantsToUpdate
               ? 'bg-[#0f4c3a] hover:bg-[#0a3a2b] text-white'
               : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-      }`}
+        }`}
     >
       {wantsToRemove ? (
         <><Trash2 size={12} /> Remove</>
@@ -127,7 +126,7 @@ const QuickAddBar = ({
     </button>
   );
 
-  // Compact mode — 2-row layout (info on top, actions on bottom), gentle container
+  // Compact mode- 2-row layout (info on top, actions on bottom), gentle container
   if (compact) {
     return (
       <div onClick={stop} className="p-3 rounded-lg bg-white border border-gray-100 hover:border-[#0f4c3a]/20 transition-colors">
@@ -154,7 +153,7 @@ const QuickAddBar = ({
     );
   }
 
-  // Non-compact mode — single-row layout (PropertyDetails / UnitTypeCard)
+  // Non-compact mode- single-row layout (PropertyDetails / UnitTypeCard)
   return (
     <div onClick={stop} className="flex items-center gap-3 p-4 bg-[#0f4c3a]/[0.06] border border-[#0f4c3a]/25 rounded-xl shadow-sm">
       {/* Type label + price/availability */}
@@ -172,7 +171,7 @@ const QuickAddBar = ({
         </div>
       </div>
 
-      {/* Subtotal — desktop only */}
+      {/* Subtotal- desktop only */}
       {qty > 0 && (
         <div className="hidden md:block text-right shrink-0 min-w-[64px]">
           <div className="text-sm font-bold text-[#0f4c3a]">€{subtotal.toLocaleString()}</div>

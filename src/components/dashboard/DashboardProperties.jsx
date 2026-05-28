@@ -19,7 +19,7 @@ const PropertyCardItem = ({ property, navigate }) => {
             quantity: count,
             typeKey: type
         }));
-    
+
     const totalUnits = property.totalUnits || reservedBreakdown.reduce((acc, unit) => acc + unit.quantity, 0);
     const size = property.details?.size || (property.size ? property.size : '16–46');
     const priceVal = property.price || property.priceEur || 522;
@@ -29,7 +29,7 @@ const PropertyCardItem = ({ property, navigate }) => {
             onClick={() => navigate(`/property/${property.slug || property.id}`)}
             className="bg-white rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group overflow-hidden flex flex-col h-full"
         >
-            {/* Image — compact 16:9 */}
+            {/* Image- compact 16:9 */}
             <div className="relative aspect-[16/9] overflow-hidden bg-[#f0f0f0]">
                 {property.image ? (
                     <img
@@ -43,7 +43,7 @@ const PropertyCardItem = ({ property, navigate }) => {
                     </div>
                 )}
 
-                {/* Status/Availability Badge — top left */}
+                {/* Status/Availability Badge- top left */}
                 <div className="absolute top-3 left-3">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-sm text-[10px] font-bold text-[#16a34a] shadow-sm">
                         <span className="relative flex h-2 w-2">
@@ -54,18 +54,16 @@ const PropertyCardItem = ({ property, navigate }) => {
                     </span>
                 </div>
 
-                {/* Heart — top right */}
+                {/* Heart- top right */}
                 <button
-                    className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow-sm transition-transform hover:scale-110 ${
-                        isWishlisted ? 'bg-rose-50' : 'bg-white/95 backdrop-blur-sm'
-                    }`}
+                    className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow-sm transition-transform hover:scale-110 ${isWishlisted ? 'bg-rose-50' : 'bg-white/95 backdrop-blur-sm'
+                        }`}
                     onClick={handleHeartClick}
                 >
                     <Heart
                         size={16}
-                        className={`transition-colors ${
-                            isWishlisted ? 'fill-red-500 text-red-500' : 'text-[#6b7280] group-hover:text-red-500'
-                        }`}
+                        className={`transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-[#6b7280] group-hover:text-red-500'
+                            }`}
                     />
                 </button>
             </div>
@@ -81,7 +79,7 @@ const PropertyCardItem = ({ property, navigate }) => {
                     {property.neighborhood || property.district || property.city}{property.city && (property.neighborhood || property.district) ? `, ${property.city}` : ''}
                 </p>
 
-                {/* Unit type breakdown — pill badges */}
+                {/* Unit type breakdown- pill badges */}
                 {reservedBreakdown.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-3">
                         {reservedBreakdown.map((unit) => (

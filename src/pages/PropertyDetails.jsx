@@ -124,7 +124,7 @@ const PropertyDetails = () => {
 
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
 
-            {/* Left side: Overall Property Details — sticky */}
+            {/* Left side: Overall Property Details- sticky */}
             <div className="w-full lg:w-[380px] shrink-0">
               <div className="lg:sticky lg:top-24">
                 <PropertyInfo property={property} />

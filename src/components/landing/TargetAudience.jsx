@@ -34,8 +34,24 @@ const TargetAudience = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center max-w-2xl mx-auto mb-20"
+          className="text-center max-w-2xl mx-auto mb-20 flex flex-col items-center"
         >
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45 }}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#0f4c3a]/15 bg-[#0f4c3a]/[0.04] mb-6"
+          >
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0f4c3a] opacity-50" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#0f4c3a]" />
+            </span>
+            <span className="text-[11px] font-semibold text-[#0f4c3a] tracking-[0.12em] uppercase">
+              Target Audience
+            </span>
+          </motion.div>
+
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Built for{' '}
             <span className="bg-gradient-to-r from-[#0f4c3a] to-[#186b53] bg-clip-text text-transparent">Global Organisations</span>

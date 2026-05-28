@@ -32,9 +32,9 @@ const UnitDetails = () => {
   const [quantity, setQuantity] = useState(existingReservation ? existingReservation.quantity : 0);
 
   // Keep local quantity in sync with the reservation context. Needed for two cases:
-  // (1) Initial load — property/unit aren't ready on first render, so existingReservation
+  // (1) Initial load- property/unit aren't ready on first render, so existingReservation
   //     is undefined and useState defaults to 0. Once data arrives, we sync.
-  // (2) User updates the cart elsewhere (e.g., on the Proposal page) — this page reflects it.
+  // (2) User updates the cart elsewhere (e.g., on the Proposal page)- this page reflects it.
   useEffect(() => {
     setQuantity(existingReservation?.quantity || 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -91,7 +91,7 @@ const UnitDetails = () => {
     );
   }
 
-  // Get pricing — prefer b2b, fallback to cheapest
+  // Get pricing- prefer b2b, fallback to cheapest
   const pricingRules = unit.unit_pricing_rules || [];
   const b2bPricing = pricingRules.find(p => p.tenant_type === 'b2b');
   const cheapestPricing = pricingRules.length > 0
@@ -100,11 +100,11 @@ const UnitDetails = () => {
   const activePricing = b2bPricing || cheapestPricing;
   const unitPrice = activePricing ? activePricing.monthly_rent_cents / 100 : property.price || 0;
 
-  // Availability — count same-type units that are available
+  // Availability- count same-type units that are available
   const sameTypeUnits = (property.units || []).filter(u => u.unit_type === unit.unit_type);
   const totalAvailable = sameTypeUnits.filter(u => u.status === 'available').length;
 
-  // Gallery — use property photos, preferring unit-specific ones
+  // Gallery- use property photos, preferring unit-specific ones
   const allPhotos = property.gallery || [];
   const galleryImages = allPhotos.length > 0
     ? allPhotos.map(p => p.url || p)
@@ -165,7 +165,7 @@ const UnitDetails = () => {
             </div>
           </div>
 
-          {/* Title strip — full width, above the columns */}
+          {/* Title strip- full width, above the columns */}
           <div className="mb-6">
             <UnitStats property={property} formattedTitle={formattedTitle} unit={unit} />
           </div>
