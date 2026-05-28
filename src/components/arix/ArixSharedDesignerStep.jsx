@@ -17,7 +17,7 @@ const ArixSharedDesignerStep = ({ property }) => {
   return (
     <div className="bg-white rounded-2xl p-6 transition-shadow duration-200">
       <div className="flex flex-col gap-4">
-        {/* Header — no redundant button; the body has its own CTA */}
+        {/* Header- no redundant button; the body has its own CTA */}
         <div className="border-b border-gray-100 pb-4">
           <div className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#0f4c3a]">{property.name}</div>
           <h3 className="text-base font-bold text-gray-900 mt-1">✦ Staged Interior Layout</h3>

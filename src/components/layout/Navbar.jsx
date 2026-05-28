@@ -16,7 +16,7 @@ const Navbar = ({ minimal = false }) => {
   const { openSignin } = useModal();
   const { isLoggedIn } = useAuth();
 
-  // Scroll behavior — hide on scroll down, show on scroll up
+  // Scroll behavior- hide on scroll down, show on scroll up
   useEffect(() => {
     const handleScroll = () => {
       const y = window.scrollY;
@@ -60,7 +60,7 @@ const Navbar = ({ minimal = false }) => {
             <img src={greenLogo} alt="Arrivio" className="h-10 w-auto object-contain transition-all duration-500" />
           </Link>
 
-          {/* CENTER LINKS — truly centered */}
+          {/* CENTER LINKS- truly centered */}
           {!minimal && (
             <div className="hidden md:flex items-center gap-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
               {landingLinks.map((link) => {
@@ -182,7 +182,7 @@ const MobileDrawer = ({ isOpen, onClose, landingLinks, isLoggedIn, openSignin, n
               })}
             </div>
 
-            {/* Dashboard — only when logged in */}
+            {/* Dashboard- only when logged in */}
             {isLoggedIn && (
               <div className="px-3 py-1 border-t border-[#f2f2f2] mt-1">
                 <p className="text-[13px] font-bold uppercase tracking-widest text-[#9ca3af] px-3 mb-2 mt-2.5">Manage</p>
@@ -197,7 +197,7 @@ const MobileDrawer = ({ isOpen, onClose, landingLinks, isLoggedIn, openSignin, n
             )}
           </div>
 
-          {/* Footer — Book a Demo (primary) + Sign In (secondary) */}
+          {/* Footer- Book a Demo (primary) + Sign In (secondary) */}
           {!isLoggedIn && (
             <div className="px-5 py-5 border-t border-[#f2f2f2] space-y-3">
               <button

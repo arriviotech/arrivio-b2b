@@ -38,7 +38,7 @@ export const ARIX_ENABLED = true;
 
 // Renders:
 //  (a) a soft slide-in toast at the bottom-right when a new reservation is added
-//      — invites the user to customize furniture without taking over the screen
+//     - invites the user to customize furniture without taking over the screen
 //  (b) the full Arix Designer modal (opened via the toast OR Proposal page)
 const ArixOrchestrator = () => {
   const { reservations } = useReservation();
@@ -73,7 +73,7 @@ const ArixOrchestrator = () => {
     prevRef.current = reservations;
   }, [reservations]);
 
-  // Dismiss the toast when the route changes — the prompt is contextual to the page
+  // Dismiss the toast when the route changes- the prompt is contextual to the page
   // the user was on; carrying it across navigation reads as a stale notification.
   useEffect(() => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -85,22 +85,7 @@ const ArixOrchestrator = () => {
 
   const handleCustomize = () => {
     if (!toast) return;
-    // Resolve the storage slot ID per unit type so the regular modal reads/writes
-    // the correct slot. Shared keeps using the raw property ID (its helpers
-    // append "_shared" internally).
-    const slotSuffix =
-      toast.roomType === 'Studio'
-        ? '_studio'
-        : toast.roomType === 'Single Room'
-          ? '_one_bedroom'
-          : '';
-    const isShared = (toast.roomType || '').toLowerCase().includes('shared');
-    const propertyIdForModal = isShared ? toast.propertyId : `${toast.propertyId}${slotSuffix}`;
-    openModal({
-      propertyId: propertyIdForModal,
-      propertyName: toast.propertyName,
-      roomType: toast.roomType,
-    });
+    openModal(toast);
     setToast(null);
   };
   const handleDismiss = () => {
@@ -128,12 +113,9 @@ const ArixOrchestrator = () => {
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-bold uppercase tracking-widest text-[#0f4c3a]/70 mb-1">✦ Arix Magic Designer</p>
                   <p className="text-sm font-bold text-gray-900 leading-snug truncate">
-                    Customize {toast.roomType || 'this room'}?
+                    Customize furniture for {toast.propertyName}?
                   </p>
-                  <p className="text-[11px] text-gray-500 mt-0.5 truncate">
-                    {toast.propertyName}
-                    {toast.roomType ? ` · ${toast.roomType}` : ''}
-                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">Optional- see your room come alive.</p>
                 </div>
                 <button
                   onClick={handleDismiss}

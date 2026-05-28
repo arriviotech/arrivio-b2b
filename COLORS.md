@@ -29,10 +29,10 @@ Use these as `bg-arrivio-green`, `text-arrivio-accent`, etc.
 | `#1A2E22` | Dark overlay     | `bg-[#1A2E22]`              |
 
 **When to use:**
-- `#0f4c3a` — Buttons, borders, icons, links, spinners, badges
-- `#186b53` — Hover states on buttons, secondary highlights, pricing accents
-- `#0a3a2b` — Active/pressed states, deep accents on dark panels
-- `#1A2E22` — Navbar/footer dark overlays, modal backdrops
+- `#0f4c3a`- Buttons, borders, icons, links, spinners, badges
+- `#186b53`- Hover states on buttons, secondary highlights, pricing accents
+- `#0a3a2b`- Active/pressed states, deep accents on dark panels
+- `#1A2E22`- Navbar/footer dark overlays, modal backdrops
 
 ---
 
@@ -45,9 +45,9 @@ Use these as `bg-arrivio-green`, `text-arrivio-accent`, etc.
 | `#E2D5B2` | Muted gold        | Subtle accent tints               |
 
 **When to use:**
-- `#D4A017` — Star ratings, featured/premium badges, gold accents, shield icons
-- `#F7E6B0` — Light gold text on dark backgrounds (hero, banners)
-- `#E2D5B2` — Subtle gold tints on search bar / hero elements
+- `#D4A017`- Star ratings, featured/premium badges, gold accents, shield icons
+- `#F7E6B0`- Light gold text on dark backgrounds (hero, banners)
+- `#E2D5B2`- Subtle gold tints on search bar / hero elements
 
 ---
 
@@ -58,11 +58,11 @@ Uses the standard Tailwind gray scale. Keep this hierarchy consistent.
 | Hex       | Tailwind   | Role                              |
 | --------- | ---------- | --------------------------------- |
 | `#111827` | `gray-900` | Primary headings & body text      |
-| `#1A1A1A` | —          | Landing/legal page headings only  |
+| `#1A1A1A` |-          | Landing/legal page headings only  |
 | `#1f2937` | `gray-800` | Sub-headings, secondary text      |
 | `#374151` | `gray-700` | Labels, stats, tertiary headings  |
 | `#4b5563` | `gray-600` | Body descriptions, meta text      |
-| `#5C5C50` | —          | Landing/legal page body text      |
+| `#5C5C50` |-          | Landing/legal page body text      |
 | `#6b7280` | `gray-500` | Placeholders, secondary metadata  |
 | `#9ca3af` | `gray-400` | Disabled text, timestamps, muted  |
 
@@ -95,7 +95,7 @@ Uses the standard Tailwind gray scale. Keep this hierarchy consistent.
 | --------- | ------------ | ----------------------------- |
 | `#e5e7eb` | `gray-200`   | Standard card/section borders |
 | `#d1d5db` | `gray-300`   | Heavier dividers              |
-| `#e8e8e8` | —            | Navbar pill backgrounds       |
+| `#e8e8e8` |-            | Navbar pill backgrounds       |
 | `#9ca3af` | `gray-400`   | Subtle input borders          |
 
 ---
@@ -112,7 +112,7 @@ Uses the standard Tailwind gray scale. Keep this hierarchy consistent.
 **Rules:**
 - Green dot (available): `#22C55E`
 - Red dot (occupied): `#EA4335`
-- Do not use brand green (`#0f4c3a`) for success states — use `#22C55E`
+- Do not use brand green (`#0f4c3a`) for success states- use `#22C55E`
 
 ---
 
@@ -144,7 +144,7 @@ Uses the standard Tailwind gray scale. Keep this hierarchy consistent.
 - Use `lining-nums` for numeric displays (prices, stats, counts)
 
 **Don't:**
-- Introduce new off-white/cream hex codes — use `#f2f2f2`, `#f0f0f0`, `#f7f7f7`, or `white`
-- Use `#000000` for text — use `#111827`
+- Introduce new off-white/cream hex codes- use `#f2f2f2`, `#f0f0f0`, `#f7f7f7`, or `white`
+- Use `#000000` for text- use `#111827`
 - Mix brand green (`#0f4c3a`) with semantic green (`#22C55E`) for status indicators
-- Add new gold variants — use `#D4A017` as the single gold accent
+- Add new gold variants- use `#D4A017` as the single gold accent

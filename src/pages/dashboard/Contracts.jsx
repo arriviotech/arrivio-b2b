@@ -1,8 +1,22 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Building2, Clock, Heart, ArrowRight, Home } from 'lucide-react';
 
 const Contracts = () => {
     const contracts = [
+        {
+            id: 'CT-7041',
+            property: 'Berlin Central Hub',
+            location: 'Mitte, Berlin',
+            image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=400',
+            checkIn: 'Dec 15, 2026',
+            checkOut: 'Dec 15, 2027',
+            units: [
+                { type: 'Shared Room', quantity: 5 }
+            ],
+            status: 'Active',
+            totalPrice: '€13,200'
+        },
         {
             id: 'CT-5921',
             property: 'Frankfurt Sachsenhausen',
@@ -29,19 +43,6 @@ const Contracts = () => {
             ],
             status: 'Active',
             totalPrice: '€8,100'
-        },
-        {
-            id: 'CT-7041',
-            property: 'Berlin Central Hub',
-            location: 'Mitte, Berlin',
-            image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=400',
-            checkIn: 'Dec 15, 2026',
-            checkOut: 'Dec 15, 2027',
-            units: [
-                { type: 'Premium Studio', quantity: 12 }
-            ],
-            status: 'Active',
-            totalPrice: '€13,200'
         }
     ];
 
@@ -55,10 +56,11 @@ const Contracts = () => {
 
     // Card subcomponent for local states like wishlist heart
     const ContractCard = ({ contract }) => {
-        const [isWishlisted, setIsWishlisted] = useState(false);
+        const navigate = useNavigate();
 
         return (
             <div
+                onClick={() => navigate(`/dashboard/contracts/${contract.id}`)}
                 className="bg-white rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group overflow-hidden flex flex-col h-full"
             >
                 {/* Image Aspect Box */}
@@ -75,7 +77,7 @@ const Contracts = () => {
                         </div>
                     )}
 
-                    {/* Status Pill Badge — top left */}
+                    {/* Status Pill Badge- top left */}
                     <div className="absolute top-3 left-3">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-sm backdrop-blur-sm ${getStatusColor(contract.status)}`}>
                             <span className={`relative flex h-2 w-2`}>
@@ -86,7 +88,7 @@ const Contracts = () => {
                         </span>
                     </div>
 
-                    {/* Contract ID Badge — top right */}
+                    {/* Contract ID Badge- top right */}
                     <div className="absolute top-3 right-3 z-10 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-bold text-gray-700 shadow-sm border border-gray-100 uppercase tracking-wider">
                         {contract.id}
                     </div>
@@ -123,7 +125,7 @@ const Contracts = () => {
                     <div className="flex items-center gap-2 text-[12px] text-[#6b7280] mb-4">
                         <span className="flex items-center gap-1.5">
                             <Calendar size={14} className="text-[#9ca3af]" />
-                            <span className="font-semibold text-[#374151]">{contract.checkIn} — {contract.checkOut}</span>
+                            <span className="font-semibold text-[#374151]">{contract.checkIn}- {contract.checkOut}</span>
                         </span>
                     </div>
 
@@ -146,7 +148,7 @@ const Contracts = () => {
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-20">
             <div>
-                <h1 className="text-3xl font-bold text-[#0f4c3a] mb-2">Contracts</h1>
+                <h1 className="text-3xl font-bold text-[#0f4c3a] mb-2">Active Contracts</h1>
                 <p className="text-gray-550 text-sm font-medium">Active and past housing contracts held by your company.</p>
             </div>
 

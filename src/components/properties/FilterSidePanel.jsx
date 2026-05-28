@@ -34,7 +34,7 @@ const PriceHistogram = ({ min, max, value, onChange, properties }) => {
     <div>
       <div className="flex items-center justify-between mb-4">
         <span className="text-sm font-bold text-[#111827]">
-          €{range[0]} — €{range[1]}+
+          €{range[0]}- €{range[1]}+
         </span>
         <span className="text-[10px] font-bold text-gray-400 bg-gray-50 px-2 py-1 rounded-md">EUR / month</span>
       </div>
@@ -105,9 +105,8 @@ const CityDropdown = ({ value, options, onChange }) => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center gap-2 py-2.5 pl-9 pr-3 rounded-xl border text-xs font-semibold transition-all ${
-          isOpen ? 'ring-1 ring-[#0f4c3a]/10 shadow-md border-[#0f4c3a]/20' : 'border-[#e5e7eb] hover:border-[#9ca3af]'
-        }`}
+        className={`w-full flex items-center gap-2 py-2.5 pl-9 pr-3 rounded-xl border text-xs font-semibold transition-all ${isOpen ? 'ring-1 ring-[#0f4c3a]/10 shadow-md border-[#0f4c3a]/20' : 'border-[#e5e7eb] hover:border-[#9ca3af]'
+          }`}
       >
         <MapPin size={14} className="absolute left-3 text-[#9ca3af]" />
         <span className={selected?.value !== 'All' ? 'text-[#111827]' : 'text-[#9ca3af]'}>
@@ -128,9 +127,8 @@ const CityDropdown = ({ value, options, onChange }) => {
               <button
                 key={opt.value}
                 onClick={() => { onChange(opt.value); setIsOpen(false); }}
-                className={`w-full text-left px-4 py-2.5 text-xs font-medium transition-colors ${
-                  value === opt.value ? 'bg-[#0f4c3a]/5 text-[#111827] font-semibold' : 'text-[#4b5563] hover:bg-slate-50'
-                }`}
+                className={`w-full text-left px-4 py-2.5 text-xs font-medium transition-colors ${value === opt.value ? 'bg-[#0f4c3a]/5 text-[#111827] font-semibold' : 'text-[#4b5563] hover:bg-slate-50'
+                  }`}
               >
                 {opt.label}
               </button>

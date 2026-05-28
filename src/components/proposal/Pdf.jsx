@@ -1,12 +1,12 @@
 import jsPDF from 'jspdf';
 
 // Brand palette
-const GREEN = [15, 76, 58];        // #0f4c3a — primary brand
-const GREEN_DARK = [10, 58, 43];   // #0a3a2b — accent
-const DARK = [17, 24, 39];         // #111827 — body text
-const MUTED = [107, 114, 128];     // #6b7280 — labels
-const SOFT = [156, 163, 175];      // #9ca3af — disclaimers
-const LIGHTBG = [244, 247, 246];   // #f4f7f6 — section header bg
+const GREEN = [15, 76, 58];        // #0f4c3a- primary brand
+const GREEN_DARK = [10, 58, 43];   // #0a3a2b- accent
+const DARK = [17, 24, 39];         // #111827- body text
+const MUTED = [107, 114, 128];     // #6b7280- labels
+const SOFT = [156, 163, 175];      // #9ca3af- disclaimers
+const LIGHTBG = [244, 247, 246];   // #f4f7f6- section header bg
 const BORDER = [229, 231, 235];    // #e5e7eb
 const WHITE = [255, 255, 255];
 const GREEN_TINT = [200, 220, 210]; // light label on green
@@ -279,7 +279,7 @@ export const generateNativePDF = async (...args) => {
   }
 
   // ============================================================
-  // SECTION 5: ESTIMATED MONTHLY TOTAL — branded box
+  // SECTION 5: ESTIMATED MONTHLY TOTAL- branded box
   // ============================================================
   checkPageBreak(38);
   yPos += 6;

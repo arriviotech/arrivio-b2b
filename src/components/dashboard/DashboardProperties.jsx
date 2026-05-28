@@ -19,17 +19,17 @@ const PropertyCardItem = ({ property, navigate }) => {
             quantity: count,
             typeKey: type
         }));
-    
+
     const totalUnits = property.totalUnits || reservedBreakdown.reduce((acc, unit) => acc + unit.quantity, 0);
     const size = property.details?.size || (property.size ? property.size : '16–46');
     const priceVal = property.price || property.priceEur || 522;
 
     return (
         <div
-            onClick={() => navigate(`/dashboard/properties/${property.id}`)}
+            onClick={() => navigate(`/property/${property.slug || property.id}`)}
             className="bg-white rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group overflow-hidden flex flex-col h-full"
         >
-            {/* Image — compact 16:9 */}
+            {/* Image- compact 16:9 */}
             <div className="relative aspect-[16/9] overflow-hidden bg-[#f0f0f0]">
                 {property.image ? (
                     <img
@@ -43,7 +43,7 @@ const PropertyCardItem = ({ property, navigate }) => {
                     </div>
                 )}
 
-                {/* Status/Availability Badge — top left */}
+                {/* Status/Availability Badge- top left */}
                 <div className="absolute top-3 left-3">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-sm text-[10px] font-bold text-[#16a34a] shadow-sm">
                         <span className="relative flex h-2 w-2">
@@ -54,18 +54,16 @@ const PropertyCardItem = ({ property, navigate }) => {
                     </span>
                 </div>
 
-                {/* Heart — top right */}
+                {/* Heart- top right */}
                 <button
-                    className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow-sm transition-transform hover:scale-110 ${
-                        isWishlisted ? 'bg-rose-50' : 'bg-white/95 backdrop-blur-sm'
-                    }`}
+                    className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow-sm transition-transform hover:scale-110 ${isWishlisted ? 'bg-rose-50' : 'bg-white/95 backdrop-blur-sm'
+                        }`}
                     onClick={handleHeartClick}
                 >
                     <Heart
                         size={16}
-                        className={`transition-colors ${
-                            isWishlisted ? 'fill-red-500 text-red-500' : 'text-[#6b7280] group-hover:text-red-500'
-                        }`}
+                        className={`transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-[#6b7280] group-hover:text-red-500'
+                            }`}
                     />
                 </button>
             </div>
@@ -81,7 +79,7 @@ const PropertyCardItem = ({ property, navigate }) => {
                     {property.neighborhood || property.district || property.city}{property.city && (property.neighborhood || property.district) ? `, ${property.city}` : ''}
                 </p>
 
-                {/* Unit type breakdown — pill badges */}
+                {/* Unit type breakdown- pill badges */}
                 {reservedBreakdown.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-3">
                         {reservedBreakdown.map((unit) => (
@@ -171,8 +169,8 @@ const DashboardProperties = () => {
         <div className="max-w-6xl mx-auto pb-12">
             <header className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6 mb-10 pb-2">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">Your Properties</h1>
-                    <p className="text-gray-550 mt-2 font-medium text-sm">Manage and view the properties you have reserved capacity in.</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">All Properties</h1>
+                    <p className="text-gray-550 mt-2 font-medium text-sm">Browse all available properties in Arrivio to secure housing for your employees.</p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
@@ -230,7 +228,7 @@ const DashboardProperties = () => {
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900 mb-3">No properties found</h2>
                     <p className="text-gray-550 mb-8 max-w-md text-center text-sm font-medium">
-                        {searchQuery ? `We couldn't find any properties matching "${searchQuery}".` : "Your reserved properties will appear here. Browse our available catalog to secure housing."}
+                        {searchQuery ? `We couldn't find any properties matching "${searchQuery}".` : "Properties will appear here. Browse our available catalog to secure housing."}
                     </p>
                     {searchQuery && (
                         <button

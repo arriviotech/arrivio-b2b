@@ -7,6 +7,7 @@ import ServiceCard from "../../components/services/ServiceCard";
 import RequestServiceModal from "../../components/services/RequestServiceModal";
 import OrdersList from "../../components/services/OrdersList";
 import SecureChatDrawer from "../../components/services/SecureChatDrawer";
+import TopUpModal from "../../components/dashboard/TopUpModal";
 import { ArrowRight } from "lucide-react";
 
 const ORDER_TABS = [
@@ -24,6 +25,7 @@ export default function Services() {
   const [activeChat, setActiveChat] = useState(null);
   const [ordersSubTab, setOrdersSubTab] = useState("cart"); // 'cart' | 'status'
   const [selectedOrderIds, setSelectedOrderIds] = useState([]);
+  const [isTopUpOpen, setIsTopUpOpen] = useState(false);
   
   const storedCredits = localStorage.getItem('arrivio_credits');
   const creditsVal = storedCredits !== null ? parseFloat(storedCredits) : 3500.00;
@@ -481,33 +483,42 @@ export default function Services() {
                     )}
 
                     <div className="space-y-3 pt-1">
-                      <button
-                        disabled={validSelectedOrderIds.length === 0 || creditsVal < checkoutTotalCost}
-                        onClick={() => {
-                          const selectedOrders = cartOrders.filter(o => validSelectedOrderIds.includes(o.id));
-                          const combinedPayingOrder = {
-                            isBulk: true,
-                            orderIds: selectedOrders.flatMap(o => o.orderIds),
-                            priceEur: checkoutTotalCost,
-                            employees: selectedOrders.flatMap(o => o.employees),
-                            serviceName: selectedOrders.map(o => o.serviceName).join(", "),
-                            details: selectedOrders.map(o => ({
-                              id: o.id,
-                              serviceName: o.serviceName,
-                              totalCost: o.priceEur * (o.employees.length || 1),
-                              employeesCount: o.employees.length
-                            }))
-                          };
-                          setPayingOrder(combinedPayingOrder);
-                        }}
-                        className={`w-full py-4.5 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 ${
-                          validSelectedOrderIds.length > 0 && creditsVal >= checkoutTotalCost
-                            ? "bg-[#0f4c3a] hover:bg-[#1A2E22] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
-                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        }`}
-                      >
-                        Proceed to Payment ({validSelectedOrderIds.length})
-                      </button>
+                      {validSelectedOrderIds.length > 0 && creditsVal < checkoutTotalCost ? (
+                        <button
+                          onClick={() => setIsTopUpOpen(true)}
+                          className="w-full py-4.5 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 bg-[#0f4c3a] hover:bg-[#1A2E22] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
+                        >
+                          Add Money to Balance
+                        </button>
+                      ) : (
+                        <button
+                          disabled={validSelectedOrderIds.length === 0}
+                          onClick={() => {
+                            const selectedOrders = cartOrders.filter(o => validSelectedOrderIds.includes(o.id));
+                            const combinedPayingOrder = {
+                              isBulk: true,
+                              orderIds: selectedOrders.flatMap(o => o.orderIds),
+                              priceEur: checkoutTotalCost,
+                              employees: selectedOrders.flatMap(o => o.employees),
+                              serviceName: selectedOrders.map(o => o.serviceName).join(", "),
+                              details: selectedOrders.map(o => ({
+                                id: o.id,
+                                serviceName: o.serviceName,
+                                totalCost: o.priceEur * (o.employees.length || 1),
+                                employeesCount: o.employees.length
+                              }))
+                            };
+                            setPayingOrder(combinedPayingOrder);
+                          }}
+                          className={`w-full py-4.5 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 ${
+                            validSelectedOrderIds.length > 0
+                              ? "bg-[#0f4c3a] hover:bg-[#1A2E22] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
+                              : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          }`}
+                        >
+                          Proceed to Payment ({validSelectedOrderIds.length})
+                        </button>
+                      )}
                     </div>
 
                     <p className="text-center text-gray-400 text-[10px] mt-4 leading-snug">
@@ -765,6 +776,30 @@ export default function Services() {
         isOpen={Boolean(activeChat)}
         onClose={() => setActiveChat(null)}
         recipient={activeChat}
+      />
+      <TopUpModal 
+        isOpen={isTopUpOpen} 
+        onClose={() => setIsTopUpOpen(false)}
+        defaultAmount={Math.max(500, checkoutTotalCost - creditsVal)}
+        onConfirm={(amount) => {
+          const current = parseFloat(localStorage.getItem('arrivio_credits') || "3500");
+          localStorage.setItem('arrivio_credits', (current + amount).toString());
+          
+          const newTrx = {
+              id: `#TRX-${Math.floor(10000 + Math.random() * 90000)}`,
+              date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+              type: 'Capacity Top-up',
+              amount: `€${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+              status: 'Completed',
+              logo: '↑'
+          };
+          const storedTx = localStorage.getItem('arrivio_transactions');
+          const transactions = storedTx ? JSON.parse(storedTx) : [];
+          const nextTx = [newTrx, ...transactions];
+          localStorage.setItem('arrivio_transactions', JSON.stringify(nextTx));
+          
+          window.location.reload();
+        }}
       />
     </div>
   );

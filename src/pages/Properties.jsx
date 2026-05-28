@@ -41,7 +41,7 @@ const Properties = () => {
   };
 
   useEffect(() => {
-    const NAVBAR_HEIGHT = 64; // px — matches h-16; desktop h-20 is 80 but 64 is the safer threshold
+    const NAVBAR_HEIGHT = 64; // px- matches h-16; desktop h-20 is 80 but 64 is the safer threshold
     const JITTER_THRESHOLD = 6;
 
     const handleScroll = () => {
@@ -140,11 +140,10 @@ const Properties = () => {
             <div className="flex md:hidden items-center justify-between w-full">
               <button
                 onClick={() => setIsFilterOpen(true)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full border text-[12px] font-semibold whitespace-nowrap transition-all ${
-                  activeFilterCount > 0
+                className={`flex items-center gap-2 px-4 py-2 rounded-full border text-[12px] font-semibold whitespace-nowrap transition-all ${activeFilterCount > 0
                     ? 'border-[#0f4c3a] bg-[#0f4c3a] text-white shadow-sm'
                     : 'border-[#d1d5db] bg-white text-[#111827] shadow-sm'
-                }`}
+                  }`}
               >
                 <SlidersHorizontal size={13} className={activeFilterCount > 0 ? 'text-white' : 'text-[#6b7280]'} />
                 Filters
@@ -157,17 +156,16 @@ const Properties = () => {
               <SortDropdown value={sortOrder} options={sortOptions} onChange={setSortOrder} />
             </div>
 
-            {/* DESKTOP: City tabs only — full width nav row */}
+            {/* DESKTOP: City tabs only- full width nav row */}
             <div className="hidden md:flex items-center overflow-x-auto no-scrollbar w-full">
               {cityOptions.map(city => (
                 <button
                   key={city.value}
                   onClick={() => handleCityChange(city.value)}
-                  className={`relative px-3.5 py-3 text-[12px] font-semibold whitespace-nowrap transition-colors ${
-                    selectedCity === city.value
+                  className={`relative px-3.5 py-3 text-[12px] font-semibold whitespace-nowrap transition-colors ${selectedCity === city.value
                       ? 'text-[#0f4c3a]'
                       : 'text-[#9ca3af] hover:text-[#6b7280]'
-                  }`}
+                    }`}
                 >
                   {city.label}
                   {selectedCity === city.value && (
@@ -205,15 +203,14 @@ const Properties = () => {
                 </p>
               )}
             </div>
-            {/* Right controls — desktop only. On mobile, Filters+Sort live in the sticky bar. */}
+            {/* Right controls- desktop only. On mobile, Filters+Sort live in the sticky bar. */}
             <div className="hidden md:flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setIsFilterOpen(true)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full border text-[12px] font-semibold whitespace-nowrap transition-all ${
-                  activeFilterCount > 0
+                className={`flex items-center gap-2 px-4 py-2 rounded-full border text-[12px] font-semibold whitespace-nowrap transition-all ${activeFilterCount > 0
                     ? 'border-[#0f4c3a] bg-[#0f4c3a] text-white shadow-sm hover:bg-[#0a3a2b]'
                     : 'border-[#d1d5db] bg-white text-[#111827] shadow-sm hover:border-[#0f4c3a]/40'
-                }`}
+                  }`}
               >
                 <SlidersHorizontal size={13} className={activeFilterCount > 0 ? 'text-white' : 'text-[#6b7280]'} />
                 Filters
