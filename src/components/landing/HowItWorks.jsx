@@ -34,51 +34,55 @@ const steps = [
 const HowItWorks = () => {
   const navigate = useNavigate();
   return (
-    <section className="py-24 bg-white relative overflow-hidden">
-      {/* Decorative background element */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-7xl pointer-events-none opacity-5">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#0f4c3a] rounded-full blur-[100px]"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#186b53] rounded-full blur-[100px]"></div>
+    <section className="py-28 bg-gradient-to-b from-[#f7f9f8] to-white relative overflow-hidden">
+      {/* Decorative background */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+        <div className="absolute top-[10%] right-[5%] w-72 h-72 bg-[#0f4c3a]/[0.03] rounded-full blur-[100px]" />
+        <div className="absolute bottom-[10%] left-[5%] w-60 h-60 bg-[#D4A017]/[0.04] rounded-full blur-[80px]" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
+        {/* Section Header */}
         <div className="text-center mb-16">
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#0f4c3a] mb-4"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#0f4c3a]/15 bg-[#0f4c3a]/[0.04] mb-5"
           >
-            Streamlined Process
-          </motion.p>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0f4c3a]" />
+            <span className="text-[11px] font-semibold text-[#0f4c3a] tracking-[0.12em] uppercase">Streamlined Process</span>
+          </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl font-bold text-gray-900"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900"
           >
-            How it <span className="text-[#0f4c3a]">Works</span>
+            How it <span className="bg-gradient-to-r from-[#0f4c3a] to-[#186b53] bg-clip-text text-transparent">Works</span>
           </motion.h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        {/* Steps Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {steps.map((step, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+              transition={{ delay: index * 0.12, duration: 0.5 }}
               className="relative group h-full"
             >
-              {/* Step Number - Elevated and prominent on the left */}
-              <div className="absolute top-6 left-8 text-6xl font-serif font-black text-[#0f4c3a]/20 select-none transition-all duration-300 group-hover:text-[#0f4c3a]/40 z-20">
+              {/* Step Number */}
+              <div className="absolute top-5 left-6 text-[4.5rem] font-serif font-black text-[#0f4c3a]/20 select-none transition-all duration-500 group-hover:text-[#0f4c3a]/45 z-20 leading-none">
                 0{index + 1}
               </div>
 
-              <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 hover:border-[#0f4c3a]/20 transition-all duration-300 h-full flex flex-col items-start gap-6 relative z-10 hover:shadow-xl hover:shadow-[#0f4c3a]/5 hover:-translate-y-1">
-                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#0f4c3a] transition-transform duration-500 group-hover:rotate-12 shrink-0 border border-gray-50 self-end">
+              <div className="bg-white p-8 rounded-3xl border border-gray-100 hover:border-[#0f4c3a]/15 transition-all duration-500 h-full flex flex-col items-start gap-6 relative z-10 landing-card-hover group-hover:shadow-[0_20px_60px_rgba(15,76,58,0.08)]">
+                {/* Icon */}
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0f4c3a]/5 to-[#186b53]/10 flex items-center justify-center text-[#0f4c3a] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shrink-0 self-end border border-[#0f4c3a]/5">
                   {step.icon}
                 </div>
 
@@ -89,9 +93,10 @@ const HowItWorks = () => {
                   </p>
                 </div>
 
+                {/* Connector line on desktop */}
                 {index < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/3 -right-4 translate-x-1/2 z-20">
-                    <div className="w-8 h-[2px] bg-gradient-to-r from-[#0f4c3a]/20 to-transparent"></div>
+                  <div className="hidden lg:block absolute top-1/3 -right-3 translate-x-1/2 z-20">
+                    <div className="w-6 h-[2px] bg-gradient-to-r from-[#0f4c3a]/20 to-transparent rounded-full" />
                   </div>
                 )}
               </div>
@@ -99,7 +104,7 @@ const HowItWorks = () => {
           ))}
         </div>
 
-        {/* New Detailed CTA Button */}
+        {/* CTA Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -109,10 +114,10 @@ const HowItWorks = () => {
         >
           <button
             onClick={() => navigate('/how-it-works')}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full border-2 border-[#0f4c3a] text-[#0f4c3a] font-bold hover:bg-[#0f4c3a] hover:text-white transition-all duration-300 group"
+            className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-[13.5px] font-semibold px-5 py-2.5 rounded-xl border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200"
           >
+            <ArrowRight size={15} className="text-[#0f4c3a]" />
             Take a Tour
-            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </button>
         </motion.div>
       </div>

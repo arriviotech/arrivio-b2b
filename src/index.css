@@ -234,3 +234,67 @@ body.mobile-map-open [data-mobile-nav] {
   margin-bottom: 10px !important;
   text-decoration: none !important;
 }
+
+/* ─── Landing Page Restyle Animations ─── */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(15, 76, 58, 0.15); }
+  50% { box-shadow: 0 0 40px rgba(15, 76, 58, 0.3); }
+}
+
+@keyframes shimmer-btn {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes border-slide {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.animate-shimmer-btn {
+  background-size: 200% auto;
+  animation: shimmer-btn 3s linear infinite;
+}
+
+.landing-card-hover {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.landing-card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(15, 76, 58, 0.12);
+}
+
+.dark-glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.light-glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+

@@ -65,8 +65,12 @@ const LocationsSection = () => {
   };
 
   return (
-    <section className="py-24 bg-[#f4f7f6] relative overflow-hidden" id="cities">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-28 relative overflow-hidden bg-[#f4f7f6]" id="cities">
+      {/* Background accents */}
+      <div className="absolute top-[15%] left-[5%] w-72 h-72 bg-[#0f4c3a]/4 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[15%] right-[8%] w-56 h-56 bg-[#D4A017]/4 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
@@ -88,17 +92,17 @@ const LocationsSection = () => {
               </p>
             </motion.div>
 
-            {/* List of Cities */}
+            {/* City Buttons */}
             <div className="grid grid-cols-2 gap-3 mb-10">
               {locations.map((city) => (
                 <button
                   key={city.id}
                   onClick={() => setActiveCityId(city.id)}
                   className={`
-                    px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-between group border
+                    px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-between group border
                     ${activeCityId === city.id
-                      ? 'bg-[#0f4c3a] text-white border-[#0f4c3a] shadow-lg scale-105'
-                      : 'bg-white border-gray-200 text-[#0f4c3a]/70 hover:border-[#0f4c3a]/30 hover:bg-white/50'
+                      ? 'bg-[#0f4c3a] text-white border-[#0f4c3a] shadow-lg scale-[1.02]'
+                      : 'bg-white border-gray-200 text-[#0f4c3a]/70 hover:border-[#0f4c3a]/30 hover:bg-white/80'
                     }
                   `}
                 >
@@ -120,7 +124,7 @@ const LocationsSection = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="bg-white/40 backdrop-blur-sm p-10 rounded-[2.5rem] border border-white/60 shadow-sm"
+                className="bg-white/60 backdrop-blur-sm p-10 rounded-3xl border border-white/80 shadow-sm"
               >
                 <div className="flex justify-between items-start mb-10">
                   <div>
@@ -147,7 +151,7 @@ const LocationsSection = () => {
 
           {/* RIGHT: Map Portal */}
           <div className="order-1 lg:order-2 relative h-[500px] lg:h-[600px] w-full">
-            <div className="absolute inset-0 bg-[#1A1A1A] rounded-[2.5rem] overflow-hidden shadow-2xl border-[6px] border-white">
+            <div className="absolute inset-0 bg-[#0a1a13] rounded-3xl overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.5)] border border-white/[0.06]">
 
               {/* --- IMAGE POP ANIMATION --- */}
               <AnimatePresence mode="wait">
@@ -175,9 +179,6 @@ const LocationsSection = () => {
                   "
                   />
 
-
-
-
                   {locations.map((loc) => (
                     <motion.div
                       key={loc.id}
@@ -187,16 +188,16 @@ const LocationsSection = () => {
                     >
                       {activeCityId === loc.id ? (
                         <div className="relative flex items-center justify-center group">
-                          <div className="absolute w-10 h-10 bg-[#D4A017]/20 rounded-full animate-ping"></div>
+                          <div className="absolute w-10 h-10 bg-[#D4A017]/20 rounded-full animate-ping" />
                           <div className="relative transition-transform duration-300 group-hover:scale-110">
                             <MapPin size={32} className="text-[#D4A017] fill-[#D4A017] drop-shadow-[0_0_10px_rgba(212,160,23,0.4)]" />
                           </div>
                         </div>
                       ) : (
                         <div className="group relative">
-                          <div className="w-2 h-2 bg-white/40 rounded-full hover:bg-white hover:scale-150 transition-all duration-300 shadow-[0_0_5px_rgba(255,255,255,0.2)]"></div>
+                          <div className="w-2.5 h-2.5 bg-white/30 rounded-full hover:bg-[#D4A017] hover:scale-[2] transition-all duration-300 shadow-[0_0_8px_rgba(255,255,255,0.15)]" />
                           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                            <span className="text-[10px] text-white font-medium bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full whitespace-nowrap">
+                            <span className="text-[10px] text-white font-medium bg-black/50 backdrop-blur-md px-2.5 py-1 rounded-full whitespace-nowrap border border-white/10">
                               {loc.name}
                             </span>
                           </div>
@@ -237,4 +238,3 @@ const LocationsSection = () => {
 };
 
 export default LocationsSection;
-
