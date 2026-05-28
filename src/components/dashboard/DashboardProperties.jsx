@@ -26,7 +26,7 @@ const PropertyCardItem = ({ property, navigate }) => {
 
     return (
         <div
-            onClick={() => navigate(`/dashboard/properties/${property.id}`)}
+            onClick={() => navigate(`/property/${property.slug || property.id}`)}
             className="bg-white rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group overflow-hidden flex flex-col h-full"
         >
             {/* Image — compact 16:9 */}

@@ -3,9 +3,11 @@ import {
   CreditCard, Clock, CheckCircle2, ArrowUpRight, Calendar, 
   FileText, Download, ShieldCheck, ChevronRight, ToggleLeft, ToggleRight, Sparkles 
 } from 'lucide-react';
+import TopUpModal from '../../components/dashboard/TopUpModal';
 
 const Billing = () => {
   const [autoRefill, setAutoRefill] = useState(true);
+  const [isTopUpOpen, setIsTopUpOpen] = useState(false);
   
   // Load credits from localStorage
   const storedCredits = localStorage.getItem('arrivio_credits');
@@ -13,8 +15,9 @@ const Billing = () => {
   
   const activePlan = {
     name: 'Enterprise Dashboard SaaS',
-    yearlyStandardPrice: 3000,
-    yearlyPromoPrice: 1499,
+    yearlyStandardPrice: 2500,
+    yearlyPromoPrice: 1250,
+    validTill: 'Mar 2027',
     nextBilling: 'April 10, 2026',
     seatsUsed: 48,
     seatsLimit: 100,
@@ -24,10 +27,10 @@ const Billing = () => {
 
   // Mock corporate transaction invoices
   const [invoices] = useState([
-    { id: '#INV-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€1,499.00', status: 'Paid' },
-    { id: '#INV-2026-002', date: 'Feb 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,499.00', status: 'Paid' },
-    { id: '#INV-2026-001', date: 'Jan 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,850.00', status: 'Paid' },
-    { id: '#INV-2025-012', date: 'Dec 10, 2025', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Paid' }
+    { id: '#INV-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€2,500.00', status: 'Paid' },
+    { id: '#INV-2026-002', date: 'Feb 10, 2026', type: 'Arrivio Balance Top-up', amount: '€1,499.00', status: 'Paid' },
+    { id: '#INV-2026-001', date: 'Jan 10, 2026', type: 'Arrivio Balance Top-up', amount: '€1,850.00', status: 'Paid' },
+    { id: '#INV-2026-012', date: 'Dec 10, 2026', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Paid' }
   ]);
 
   return (
@@ -60,7 +63,7 @@ const Billing = () => {
                   </span>
                   <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
                     <Calendar size={10} />
-                    Active till 2027
+                    Valid till {activePlan.validTill}
                   </span>
                 </div>
               </div>
@@ -71,6 +74,7 @@ const Billing = () => {
                   <span className="text-3xl font-serif font-semibold text-gray-900">€{activePlan.yearlyPromoPrice}</span>
                   <span className="text-xs text-gray-500 font-bold">/ first year</span>
                 </div>
+                <p className="text-[10px] text-[#0f4c3a] font-bold mt-1">50% early-partner discount</p>
               </div>
             </div>
 
@@ -82,7 +86,7 @@ const Billing = () => {
               <div>
                 <p className="font-bold text-gray-900 text-xs">Special B2B Promo Offer Activated</p>
                 <p className="text-gray-500 mt-0.5 leading-relaxed">
-                  For your first year, standard pricing of <span className="line-through font-semibold text-gray-450">€3,000</span> is discounted to just <span className="text-[#0f4c3a] font-extrabold">€1,499</span>. The standard B2B rate of €3,000/year will apply thereafter.
+                  For your first year, standard pricing of <span className="line-through font-semibold text-gray-450">€2,500</span> is discounted to just <span className="text-[#0f4c3a] font-extrabold">€1,250</span>. The standard B2B rate of €2,500/year will apply thereafter.
                 </p>
               </div>
             </div>
@@ -138,7 +142,7 @@ const Billing = () => {
             <div className="absolute -right-10 -top-10 w-28 h-28 bg-white/5 rounded-full blur-xl pointer-events-none" />
             
             <span className="text-[9px] font-black text-emerald-300 uppercase tracking-[0.25em] mb-3 block">
-              Pre-paid Services Balance
+              Arrivio Balance
             </span>
             <div className="mb-6">
               <p className="text-3xl font-serif font-semibold tracking-tight">
@@ -154,8 +158,10 @@ const Billing = () => {
               <div className="text-[10px] text-gray-250 font-medium leading-relaxed p-3.5 bg-white/5 border border-white/10 rounded-2xl shadow-inner">
                 Arrivio Credits are used to procure relocation services like Airport Pickups, Anmeldung, and Tax Setups for your employees.
               </div>
-              <button className="w-full py-3 bg-white text-[#0f4c3a] hover:bg-gray-50 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all active:scale-[0.98] cursor-pointer shadow-sm">
-                Top Up Balance
+              <button 
+                onClick={() => setIsTopUpOpen(true)}
+                className="w-full py-3 bg-white text-[#0f4c3a] hover:bg-gray-50 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all active:scale-[0.98] cursor-pointer shadow-sm">
+                Top Up Arrivio Balance
               </button>
             </div>
           </div>
@@ -205,6 +211,15 @@ const Billing = () => {
 
       </div>
 
+      <TopUpModal 
+        isOpen={isTopUpOpen} 
+        onClose={() => setIsTopUpOpen(false)}
+        onConfirm={(amount) => {
+          const current = parseFloat(localStorage.getItem('arrivio_credits') || "3500");
+          localStorage.setItem('arrivio_credits', (current + amount).toString());
+          window.location.reload();
+        }}
+      />
     </div>
   );
 };

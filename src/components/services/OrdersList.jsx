@@ -30,17 +30,66 @@ function getServiceIcon(serviceName) {
   if (name.includes("insurance") || name.includes("health") || name.includes("tk")) return Shield;
   if (name.includes("tax") || name.includes("steuer") || name.includes("id")) return FileText;
   if (name.includes("moving") || name.includes("relocation") || name.includes("delivery") || name.includes("transport")) return Truck;
-  if (name.includes("work") || name.includes("visa") || name.includes("permit") || name.includes("job")) return Briefcase;
+  if (name.includes('work') || name.includes('visa') || name.includes('permit') || name.includes('job')) return Briefcase;
   return HelpCircle;
 }
 
-export default function OrdersList({ 
-  orders, 
-  loading, 
-  canCancel, 
-  onCancel, 
-  onPay, 
-  onOpenChat, 
+function getTrackingSteps(serviceName, serviceCategory, isTransportFlag) {
+  const name = (serviceName || '').toLowerCase();
+
+  if (name.includes('airport') || name.includes('pickup') || name.includes('transfer') || isTransportFlag) {
+    return ['Confirmed', 'Driver Assigned', 'On the Way', 'Dropped Off'];
+  }
+  if (name.includes('anmeldung')) {
+    return ['Docs Prep', 'Appt Booked', 'Office Visit', 'Registered'];
+  }
+  if (name.includes('bank')) {
+    return ['Bank Selected', 'Form Filled', 'ID Verified', 'Account Open'];
+  }
+  if (name.includes('krankenkasse')) {
+    return ['Provider Chosen', 'Applied', 'Processing', 'Cert Issued'];
+  }
+  if (name.includes('sim') || name.includes('mobile')) {
+    return ['Carrier Picked', 'SIM Ordered', 'Delivered', 'Activated'];
+  }
+  if (name.includes('utilities') || name.includes('broadband')) {
+    return ['Providers Picked', 'Contracts Sent', 'Processing', 'Connected'];
+  }
+  if (name.includes('liability') || name.includes('insurance')) {
+    return ['Intro Made', 'Quote Rcvd', 'Signed', 'Policy Active'];
+  }
+  if (name.includes('steuer') || name.includes('finanzamt')) {
+    return ['Data Collected', 'App Submitted', 'Processing', 'Tax ID Rcvd'];
+  }
+  if (name.includes('language')) {
+    return ['Level Check', 'School Found', 'Enrolled', 'Course Started'];
+  }
+  if (name.includes('school')) {
+    return ['Consultation', 'School Search', 'Applied', 'Place Secured'];
+  }
+  if (name.includes('kita')) {
+    return ['Docs Gathered', 'Youth Office', 'Processing', 'Voucher Rcvd'];
+  }
+  if (name.includes('city orientation')) {
+    return ['Consultation', 'Itinerary Set', 'Tour Active', 'Tour Completed'];
+  }
+  if (name.includes('buddy') || name.includes('integration')) {
+    return ['Matched', 'Intro Call', 'Program Active', 'Completed'];
+  }
+  if (name.includes('consultant') || name.includes('retainer')) {
+    return ['Requested', 'Assigned', 'In Progress', 'Completed'];
+  }
+  
+  return ['Assigned', 'Documents', 'Under Review', 'Completed'];
+}
+
+export default function OrdersList({
+  orders,
+  loading,
+  canCancel,
+  onCancel,
+  onPay,
+  onOpenChat,
   refresh,
   isCartMode = false,
   selectedOrderIds = [],
@@ -88,29 +137,28 @@ export default function OrdersList({
         const selectedEmp = selectedEmployeeMap[o.id] || employees[0] || null;
 
         return (
-          <div 
-            key={o.id} 
+          <div
+            key={o.id}
             onClick={() => setExpandedId((cur) => (cur === o.id ? null : o.id))}
             className="bg-white hover:bg-gradient-to-r hover:from-emerald-50/10 hover:to-white border border-gray-100/80 rounded-[24px] p-5 sm:p-6 transition-all duration-300 hover:shadow-md active:border-emerald-100/80 flex flex-col gap-4 relative overflow-hidden group shadow-[0_2px_15px_rgba(0,0,0,0.015)] cursor-pointer select-none"
           >
             {/* Main Row Content */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-              
+
               {/* Left Column: Icon + Service Details */}
               <div className="flex items-center gap-4 flex-1 min-w-0">
                 {isCartMode && (
-                  <div 
+                  <div
                     onClick={(e) => {
                       e.stopPropagation(); // Avoid card expansion
                       onToggleSelectOrder?.(o.id);
                     }}
                     className="pr-1 flex items-center justify-center shrink-0 cursor-pointer"
                   >
-                    <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
-                      selectedOrderIds.includes(o.id)
+                    <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${selectedOrderIds.includes(o.id)
                         ? "bg-[#0f4c3a] border-transparent text-white shadow-sm"
                         : "border-gray-300 hover:border-gray-400 bg-white"
-                    }`}>
+                      }`}>
                       {selectedOrderIds.includes(o.id) && (
                         <svg className="w-3.5 h-3.5 stroke-[3.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3.5" d="M5 13l4 4L19 7" />
@@ -131,7 +179,7 @@ export default function OrdersList({
                       {o.status}
                     </span>
                   </div>
-                  
+
                   {/* Subtitle details */}
                   <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-gray-400 font-medium">
                     <span>{formatDate(o.orderedAt)}</span>
@@ -155,7 +203,7 @@ export default function OrdersList({
 
               {/* Right Column: Make Payment / Paid Tag + Price + Chevron */}
               <div className="flex items-center gap-4 shrink-0 justify-end pt-4 md:pt-0 border-t md:border-t-0 border-gray-50">
-                
+
                 {/* Paid Tag or Make Payment Button */}
                 {o.paymentStatus === "paid" ? (
                   <span className="inline-flex items-center gap-1.5 px-4.5 h-9 bg-emerald-50 text-emerald-700 text-[10px] font-extrabold uppercase tracking-wider rounded-xl border border-emerald-100/60 shadow-sm shrink-0 select-none">
@@ -209,10 +257,10 @@ export default function OrdersList({
             {isExpanded && (
               <div className="pt-5 border-t border-gray-100 animate-in slide-in-from-top-4 duration-300">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-                  
+
                   {/* Left Column (col-span 2): Timeline & Employee Selection */}
                   <div className="lg:col-span-2 space-y-5 flex flex-col justify-between">
-                    
+
                     {/* ── REAL-TIME RELOCATION TRACKING TIMELINE ── */}
                     {o.paymentStatus === "paid" && (o.status === "active" || o.status === "pending") && (
                       <div key={selectedEmp} className="bg-gray-50/50 border border-gray-100 rounded-2xl p-5 flex-1 flex flex-col justify-center animate-in fade-in slide-in-from-top-2 duration-300">
@@ -224,15 +272,12 @@ export default function OrdersList({
 
                         {o.status === "cancelled" ? (
                           <div className="text-center py-4 text-xs text-gray-400 font-bold uppercase tracking-wider">
-                            🚫 Service Cancelled — Tracking Suspended
+                            🚫 Service Cancelled- Tracking Suspended
                           </div>
                         ) : (
                           (() => {
-                            const isTransport = o.serviceCategory === "transport" || o.isTransport;
-                            const steps = isTransport
-                              ? ["Confirmed", "Driver Reached", "On the Way", "Dropped Off"]
-                              : ["Assigned", "Documents", "Under Review", "Completed"];
-                            
+                            const steps = getTrackingSteps(o.serviceName, o.serviceCategory, o.isTransport);
+
                             // Resolve current step for selectedEmp
                             let currentStep = 0;
                             if (o.status === "delivered") {
@@ -252,8 +297,8 @@ export default function OrdersList({
                               <div className="relative flex items-center justify-between mt-5 mb-3 px-3">
                                 {/* Background connector line */}
                                 <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[3px] bg-gray-100 z-0 rounded-full">
-                                  <div 
-                                    className="h-full bg-[#0f4c3a] transition-all duration-500 rounded-full" 
+                                  <div
+                                    className="h-full bg-[#0f4c3a] transition-all duration-500 rounded-full"
                                     style={{ width: `${(currentStep / 3) * 100}%` }}
                                   />
                                 </div>
@@ -262,24 +307,22 @@ export default function OrdersList({
                                 {steps.map((label, idx) => {
                                   const isDone = idx < currentStep;
                                   const isActive = idx === currentStep;
-                                  
+
                                   return (
                                     <div
                                       key={label}
                                       className="flex flex-col items-center gap-2 relative z-10 select-none animate-in fade-in duration-300"
                                     >
-                                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-all border ${
-                                        isDone 
-                                          ? "bg-[#0f4c3a] text-white border-[#0f4c3a] shadow-sm" 
-                                          : isActive 
-                                          ? "bg-white text-[#0f4c3a] border-[#0f4c3a] ring-4 ring-[#0f4c3a]/15 shadow-sm" 
-                                          : "bg-white text-gray-400 border-gray-200 shadow-sm"
-                                      }`}>
+                                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-all border ${isDone
+                                          ? "bg-[#0f4c3a] text-white border-[#0f4c3a] shadow-sm"
+                                          : isActive
+                                            ? "bg-white text-[#0f4c3a] border-[#0f4c3a] ring-4 ring-[#0f4c3a]/15 shadow-sm"
+                                            : "bg-white text-gray-400 border-gray-200 shadow-sm"
+                                        }`}>
                                         {isDone ? "✓" : idx + 1}
                                       </div>
-                                      <span className={`text-[9px] font-extrabold uppercase tracking-wider whitespace-nowrap ${
-                                        isActive ? "text-[#0f4c3a]" : "text-gray-400"
-                                      }`}>
+                                      <span className={`text-[9px] font-extrabold uppercase tracking-wider whitespace-nowrap ${isActive ? "text-[#0f4c3a]" : "text-gray-400"
+                                        }`}>
                                         {label}
                                       </span>
                                     </div>
@@ -303,14 +346,11 @@ export default function OrdersList({
                             Select an employee below to view their specific progress timeline
                           </p>
                         </div>
-                        
+
                         <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-1.5 arrivio-scrollbar">
                           {employees.map((name) => {
-                            const isTransport = o.serviceCategory === "transport" || o.isTransport;
-                            const steps = isTransport
-                              ? ["Confirmed", "Driver Reached", "On the Way", "Dropped Off"]
-                              : ["Assigned", "Documents", "Under Review", "Completed"];
-                            
+                            const steps = getTrackingSteps(o.serviceName, o.serviceCategory, o.isTransport);
+
                             let stepIdx = 0;
                             if (o.status === "delivered") {
                               stepIdx = 3;
@@ -345,28 +385,26 @@ export default function OrdersList({
                             const isSelected = selectedEmp === name;
 
                             return (
-                              <div 
+                              <div
                                 key={name}
                                 onClick={(e) => {
                                   e.stopPropagation(); // Avoid card close
                                   setSelectedEmployeeMap(prev => ({ ...prev, [o.id]: name }));
                                 }}
-                                className={`h-9 rounded-full px-4 flex items-center gap-2.5 transition-all cursor-pointer border select-none ${
-                                  isSelected 
-                                    ? "bg-[#0f4c3a] text-white border-transparent shadow-md scale-102 font-bold" 
+                                className={`h-9 rounded-full px-4 flex items-center gap-2.5 transition-all cursor-pointer border select-none ${isSelected
+                                    ? "bg-[#0f4c3a] text-white border-transparent shadow-md scale-102 font-bold"
                                     : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-350 font-semibold"
-                                }`}
+                                  }`}
                               >
                                 <span className="text-xs truncate max-w-[120px]">
                                   {name}
                                 </span>
-                                
+
                                 <span
-                                  className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider transition-all shrink-0 select-none ${
-                                    isSelected
+                                  className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider transition-all shrink-0 select-none ${isSelected
                                       ? "bg-white/20 text-white border border-white/30"
                                       : getBadgeStyles(stepIdx) + " border"
-                                  }`}
+                                    }`}
                                 >
                                   {statusText}
                                 </span>
@@ -407,30 +445,30 @@ export default function OrdersList({
 
                   {/* Right Column (col-span 1): Driver/Specialist Profile & Notes */}
                   <div className="lg:col-span-1 space-y-5 flex flex-col justify-between">
-                    
+
                     {/* ── DRIVER / SPECIALIST PROFILE CARD ── */}
                     {o.paymentStatus === "paid" && (o.status === "active" || o.status === "pending") && (() => {
-                      const isTransport = o.serviceCategory === "transport" || o.isTransport;
-                      const name = isTransport ? "Thomas Miller" : "Elena Rostova";
-                      const avatar = isTransport ? "TM" : "ER";
-                      
+                      const isTransportType = getTrackingSteps(o.serviceName, o.serviceCategory, o.isTransport).includes('Driver Assigned');
+                      const name = isTransportType ? "Thomas Miller" : "Elena Rostova";
+                      const avatar = isTransportType ? "TM" : "ER";
+
                       return (
                         <div className="bg-white border border-gray-200 rounded-3xl p-5 flex flex-col items-center text-center justify-between gap-5 shadow-sm hover:border-[#0f4c3a]/25 transition-colors duration-300 animate-in fade-in duration-300 flex-1 min-h-[220px]">
                           <div className="flex flex-col items-center">
                             <div className="w-14 h-14 rounded-2xl bg-[#0f4c3a]/10 border border-[#0f4c3a]/15 text-[#0f4c3a] flex items-center justify-center font-black text-base shadow-sm mb-3">
                               {avatar}
                             </div>
-                            
+
                             <h4 className="text-base font-extrabold text-gray-900 leading-none">{name}</h4>
-                            
+
                             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[8px] font-black uppercase tracking-wider border border-emerald-100/40 mt-2 select-none">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                              {isTransport ? "Driver" : "Specialist"} Online
+                              {isTransportType ? "Driver" : "Specialist"} Online
                             </span>
-                            
+
                             <p className="text-xs text-gray-500 mt-3 font-semibold leading-relaxed max-w-[200px]">
-                              {isTransport 
-                                ? "Toyota Camry (Black) • Plate: M-AV 8820 • ⭐ 4.9" 
+                              {isTransportType
+                                ? "Toyota Camry (Black) • Plate: M-AV 8820 • ⭐ 4.9"
                                 : "Dedicated Arrivio Senior Relocation Manager"
                               }
                             </p>
@@ -444,7 +482,7 @@ export default function OrdersList({
                                 e.stopPropagation();
                                 onOpenChat?.({
                                   name,
-                                  category: isTransport ? "transport" : "consultancy",
+                                  category: isTransportType ? "transport" : "consultancy",
                                   serviceName: o.serviceName
                                 });
                               }}
@@ -459,7 +497,7 @@ export default function OrdersList({
                                 e.stopPropagation();
                                 onOpenChat?.({
                                   name,
-                                  category: isTransport ? "transport" : "consultancy",
+                                  category: isTransportType ? "transport" : "consultancy",
                                   serviceName: o.serviceName
                                 });
                               }}

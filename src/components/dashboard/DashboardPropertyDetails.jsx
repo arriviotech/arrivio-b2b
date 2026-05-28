@@ -37,30 +37,81 @@ const DashboardPropertyDetails = () => {
     const [statusFilter, setStatusFilter] = useState('All');
 
     // Find the property from Supabase data
-    const { properties, loading } = useProperties();
-    const property = properties.find(p => p.id === id);
+    const mockContracts = [
+        {
+            id: 'CT-7041',
+            property: 'Berlin Central Hub',
+            location: 'Mitte, Berlin',
+            image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=400',
+            checkIn: 'Dec 15, 2026',
+            checkOut: 'Dec 15, 2027',
+            units: [
+                { type: 'Shared Room', quantity: 5 }
+            ],
+            status: 'Active',
+            totalPrice: '€13,200'
+        },
+        {
+            id: 'CT-5921',
+            property: 'Frankfurt Sachsenhausen',
+            location: 'Sachsenhausen, Frankfurt',
+            image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=400',
+            checkIn: 'Oct 12, 2026',
+            checkOut: 'Oct 12, 2027',
+            units: [
+                { type: 'Studio Apartment', quantity: 8 },
+                { type: 'Shared Room', quantity: 7 }
+            ],
+            status: 'Active',
+            totalPrice: '€11,200'
+        },
+        {
+            id: 'CT-4102',
+            property: 'Frankfurt Single Living',
+            location: 'Central, Frankfurt',
+            image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&q=80&w=400',
+            checkIn: 'Nov 01, 2026',
+            checkOut: 'Nov 01, 2027',
+            units: [
+                { type: 'Individual Unit', quantity: 9 }
+            ],
+            status: 'Active',
+            totalPrice: '€8,100'
+        }
+    ];
 
-    // Generate mock unit data based on the property's breakdown
+    const contract = mockContracts.find(c => c.id === id);
+    const { properties, loading } = useProperties();
+    const dbProperty = properties.find(p => p.name === contract?.property);
+
+    // Derived display property
+    const displayProperty = dbProperty || (contract ? {
+        name: contract.property,
+        city: contract.location.split(', ')[1] || contract.location,
+        neighborhood: contract.location.split(', ')[0] || contract.location,
+        image: contract.image
+    } : null);
+
+    // Generate mock unit data based on the contract's units
     const mockUnits = useMemo(() => {
-        if (!property) return [];
+        if (!contract) return [];
         const units = [];
         let unitCounter = 1;
 
-        Object.entries(property.breakdown).forEach(([type, count]) => {
-            for (let i = 0; i < count; i++) {
+        contract.units.forEach(({ type, quantity }) => {
+            for (let i = 0; i < quantity; i++) {
                 // Determine a fixed status based on counter so it doesn't change on re-renders, but looks varied
                 const statusType = unitCounter % 4 === 0 ? 'vacant' : (unitCounter % 7 === 0 ? 'maintenance' : 'occupied');
 
                 // Mocks for details
                 const isShared = type.toLowerCase().includes('shared');
-                const isApt2 = type.toLowerCase() === 'apartment2';
-                const isApt3 = type.toLowerCase() === 'apartment3';
+                const isApt2 = type.toLowerCase().includes('apartment2') || type.toLowerCase().includes('2-bedroom');
+                const isApt3 = type.toLowerCase().includes('apartment3') || type.toLowerCase().includes('3-bedroom');
 
-                let readableType = type.charAt(0).toUpperCase() + type.slice(1);
-                if (isApt2) readableType = "2-Room Apartment";
-                if (isApt3) readableType = "3-Room Apartment";
+                let readableType = type;
+                const rawType = type.toLowerCase();
 
-                const rent = isApt3 ? 1800 : (isApt2 ? 1400 : (type.toLowerCase().includes('studio') ? 1200 : 850));
+                const rent = isApt3 ? 1800 : (isApt2 ? 1400 : (rawType.includes('studio') ? 1200 : 850));
 
                 let rooms = [];
                 if (isShared) {
@@ -72,9 +123,9 @@ const DashboardPropertyDetails = () => {
                             id: r + 1,
                             name: roomTypes[r],
                             status: isOccupied ? 'occupied' : 'vacant',
-                            resident: isOccupied ? `Resident ${unitCounter}-${r + 1}` : null,
-                            moveInDate: isOccupied ? '2023-09-01' : null,
-                            phone: isOccupied ? `+49 151 2345 67${unitCounter}${r + 1}` : null,
+                            resident: isOccupied ? `Employee 1-${r + 1}` : null,
+                            moveInDate: isOccupied ? '2026-09-01' : null,
+                            phone: isOccupied ? `+49 151 2345 671${r + 1}` : null,
                         });
                     }
                 }
@@ -87,35 +138,35 @@ const DashboardPropertyDetails = () => {
                 } else if (isApt2 || isApt3) {
                     if (statusType === 'occupied') {
                         const tenantCount = isApt2 ? 2 : 3;
-                        residentString = `${tenantCount} Residents`;
+                        residentString = `${tenantCount} Employees`;
                         for (let t = 0; t < tenantCount; t++) {
                             tenants.push({
                                 id: `t-${unitCounter}-${t}`,
-                                name: `Resident ${unitCounter}-${t + 1}`,
+                                name: `Employee ${unitCounter}-${t + 1}`,
                                 phone: `+49 151 2345 67${unitCounter}${t}`,
-                                email: `resident${unitCounter}.${t + 1}@example.com`,
-                                initials: `R${t + 1}`,
+                                email: `employee${unitCounter}.${t + 1}@example.com`,
+                                initials: `E${t + 1}`,
                                 status: 'Verified',
-                                moveInDate: '2023-09-01'
+                                moveInDate: '2026-09-01'
                             });
                         }
                     } else if (statusType === 'vacant') {
                         residentString = 'Unassigned';
                     }
                 } else {
-                    residentString = statusType === 'occupied' ? `Resident ${unitCounter}` : null;
+                    residentString = statusType === 'occupied' ? `Employee ${unitCounter}` : null;
                 }
 
                 units.push({
                     id: `u-${unitCounter}`,
-                    number: `${type.charAt(0).toUpperCase().substring(0, 1)}-${100 + unitCounter}`,
+                    number: `S-${100 + unitCounter}`,
                     type: readableType,
-                    rawType: type,
+                    rawType: rawType,
                     status: statusType,
                     resident: residentString,
                     tenants: tenants,
-                    moveInDate: statusType === 'occupied' ? '2023-09-01' : null,
-                    leaseEnd: statusType === 'occupied' ? '2024-08-31' : null,
+                    moveInDate: statusType === 'occupied' ? '2026-09-01' : null,
+                    leaseEnd: statusType === 'occupied' ? '2027-08-31' : null,
                     rent: rent,
                     phone: statusType === 'occupied' ? `+49 151 2345 67${unitCounter.toString().padStart(2, '0')}` : null,
                     tickets: statusType === 'occupied' && unitCounter % 3 === 0 ? 1 : 0,
@@ -128,7 +179,7 @@ const DashboardPropertyDetails = () => {
             }
         });
         return units;
-    }, [property]);
+    }, [contract]);
 
     // Apply filters
     const filteredUnits = useMemo(() => {
@@ -171,15 +222,15 @@ const DashboardPropertyDetails = () => {
         );
     }
 
-    if (!property) {
+    if (!displayProperty || !contract) {
         return (
             <div className="max-w-6xl mx-auto text-center py-20">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Property Not Found</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Contract Not Found</h2>
                 <button
-                    onClick={() => navigate('/dashboard/properties')}
+                    onClick={() => navigate('/dashboard/contracts')}
                     className="text-[#0f4c3a] font-medium hover:underline flex items-center justify-center gap-2 mx-auto"
                 >
-                    <ArrowLeft size={16} /> Back to Properties
+                    <ArrowLeft size={16} /> Back to Contracts
                 </button>
             </div>
         );
@@ -187,9 +238,9 @@ const DashboardPropertyDetails = () => {
 
     // Mock Ticket Data
     const mockTickets = [
-        { id: 'TKT-1049', title: 'Heating issue in living room', status: 'open', date: 'Oct 24, 2023', priority: 'high', unit: 'S-104' },
-        { id: 'TKT-1042', title: 'Window blind mechanism stuck', status: 'in-progress', date: 'Oct 20, 2023', priority: 'low', unit: 'S-102' },
-        { id: 'TKT-1028', title: 'Keycard access intermittent', status: 'resolved', date: 'Oct 12, 2023', priority: 'medium', unit: 'I-108' }
+        { id: 'TKT-1049', title: 'Heating issue in living room', status: 'open', date: 'Oct 24, 2026', priority: 'high', unit: 'S-104' },
+        { id: 'TKT-1042', title: 'Window blind mechanism stuck', status: 'in-progress', date: 'Oct 20, 2026', priority: 'low', unit: 'S-102' },
+        { id: 'TKT-1028', title: 'Keycard access intermittent', status: 'resolved', date: 'Oct 12, 2026', priority: 'medium', unit: 'I-108' }
     ];
 
     const getStatusBadge = (status) => {
@@ -240,29 +291,29 @@ const DashboardPropertyDetails = () => {
         <div className="max-w-6xl mx-auto pb-12">
             {/* Nav & Header */}
             <button
-                onClick={() => navigate('/dashboard/properties')}
+                onClick={() => navigate('/dashboard/contracts')}
                 className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-medium mb-8 transition-colors group"
             >
                 <div className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center group-hover:bg-gray-50 group-hover:border-gray-300 transition-colors shadow-sm">
                     <ArrowLeft size={16} />
                 </div>
-                Back to all properties
+                Back to all contracts
             </button>
 
             <div className="bg-white rounded-2xl overflow-hidden border border-[#e5e7eb] shadow-sm mb-8">
                 <div className="h-64 relative">
-                    <img src={property.image} alt={property.name} className="w-full h-full object-cover" />
+                    <img src={displayProperty.image} alt={displayProperty.name} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
                     <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end">
                         <div>
                             <div className="flex items-center gap-2 text-white/80 font-bold text-sm mb-3 uppercase tracking-wider">
                                 <span className="bg-[#0f4c3a] text-white px-3 py-1 rounded-full text-xs">Active Contract</span>
                                 <span className="flex items-center gap-1 drop-shadow-md pb-0.5">
-                                    <MapPin size={14} /> {property.neighborhood}, {property.city}
+                                    <MapPin size={14} /> {displayProperty.neighborhood}, {displayProperty.city}
                                 </span>
                             </div>
                             <h1 className="text-4xl font-bold tracking-tight pb-1" style={{ color: '#d4c3a3', textShadow: '0 2px 14px rgba(0,0,0,1), 0 0 4px rgba(0,0,0,0.8)' }}>
-                                {property.name}
+                                {displayProperty.name}
                             </h1>
                         </div>
                         <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 text-white text-center min-w-[120px] shadow-lg">
@@ -296,10 +347,6 @@ const DashboardPropertyDetails = () => {
                     <div>
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-xl font-bold text-gray-900">Reserved Units ({filteredUnits.length})</h2>
-                            <div className="flex gap-2">
-                                <button className="px-4 py-2 border border-gray-200 text-gray-700 font-bold rounded-xl text-sm hover:bg-gray-50 transition-colors">Export List</button>
-                                <button className="px-4 py-2 bg-[#0f4c3a] text-white font-bold rounded-xl text-sm hover:bg-[#0a3a2b] transition-colors shadow-sm">Assign Residents</button>
-                            </div>
                         </div>
 
                         <div className="overflow-x-auto">
@@ -337,7 +384,7 @@ const DashboardPropertyDetails = () => {
                                                 <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                                             </div>
                                         </th>
-                                        <th className="py-4 px-4 font-bold">Resident</th>
+                                        <th className="py-4 px-4 font-bold">Employee</th>
                                         <th className="py-4 px-4 font-bold">Lease End</th>
                                         <th className="py-4 px-4 font-bold text-right">Details</th>
                                     </tr>
@@ -374,7 +421,7 @@ const DashboardPropertyDetails = () => {
                                                 <td className="py-4 px-4 text-gray-600 text-sm">{unit.leaseEnd || '-'}</td>
                                                 <td className="py-4 px-4 text-right">
                                                     <button className="text-[#0f4c3a] flex items-center justify-end w-full gap-1.5 font-bold text-sm hover:underline transition-opacity">
-                                                        <Eye size={16} /> View
+                                                        <Users size={16} /> Manage Employee
                                                     </button>
                                                 </td>
                                             </tr>
@@ -539,7 +586,7 @@ const DashboardPropertyDetails = () => {
                                     ) : selectedUnit.status === 'occupied' ? (
                                         <div className="space-y-4">
                                             <h4 className="font-bold text-gray-900 flex items-center gap-2 mb-2">
-                                                <Users size={16} className="text-[#0f4c3a]" /> {selectedUnit.tenants.length > 0 ? `Resident Details (${selectedUnit.tenants.length})` : 'Tenant Information'}
+                                                <Users size={16} className="text-[#0f4c3a]" /> {selectedUnit.tenants.length > 0 ? `Employee Details (${selectedUnit.tenants.length})` : 'Employee Information'}
                                             </h4>
 
                                             {selectedUnit.tenants.length > 0 ? (
@@ -572,7 +619,7 @@ const DashboardPropertyDetails = () => {
                                                                 </div>
                                                             </div>
                                                             <div className="flex items-center pl-4 border-l border-gray-50">
-                                                                <button className="p-2.5 text-gray-400 hover:text-[#0f4c3a] hover:bg-emerald-50 rounded-xl transition-all shadow-sm border border-transparent hover:border-emerald-100" title="Message Resident">
+                                                                <button className="p-2.5 text-gray-400 hover:text-[#0f4c3a] hover:bg-emerald-50 rounded-xl transition-all shadow-sm border border-transparent hover:border-emerald-100" title="Message Employee">
                                                                     <MessageSquare size={18} />
                                                                 </button>
                                                             </div>
@@ -584,7 +631,7 @@ const DashboardPropertyDetails = () => {
                                                     <div className="space-y-5 flex-1">
                                                         <div className="flex items-center gap-4">
                                                             <div className="w-14 h-14 rounded-full bg-[#0f4c3a]/10 flex items-center justify-center text-[#0f4c3a] text-xl font-bold shadow-sm">
-                                                                {selectedUnit.resident ? selectedUnit.resident.split(' ').map(n => n[0]).join('') : 'R'}
+                                                                {selectedUnit.resident ? selectedUnit.resident.split(' ').map(n => n[0]).join('') : 'E'}
                                                             </div>
                                                             <div>
                                                                 <p className="font-bold text-gray-900 text-lg">{selectedUnit.resident}</p>
@@ -618,7 +665,7 @@ const DashboardPropertyDetails = () => {
                                         </div>
                                     ) : selectedUnit.status === 'vacant' ? (
                                         <div className="space-y-4">                                            <h4 className="font-bold text-gray-900 flex items-center gap-2 mb-2">
-                                                <Mail size={16} className="text-[#0f4c3a]" /> Allocate Tenant
+                                                <Mail size={16} className="text-[#0f4c3a]" /> Allocate Employee
                                             </h4>
                                             <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)]">
                                                 {allocationSuccess ? (

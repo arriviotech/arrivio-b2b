@@ -1,8 +1,22 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Building2, Clock, Heart, ArrowRight, Home } from 'lucide-react';
 
 const Contracts = () => {
     const contracts = [
+        {
+            id: 'CT-7041',
+            property: 'Berlin Central Hub',
+            location: 'Mitte, Berlin',
+            image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=400',
+            checkIn: 'Dec 15, 2026',
+            checkOut: 'Dec 15, 2027',
+            units: [
+                { type: 'Shared Room', quantity: 5 }
+            ],
+            status: 'Active',
+            totalPrice: '€13,200'
+        },
         {
             id: 'CT-5921',
             property: 'Frankfurt Sachsenhausen',
@@ -29,19 +43,6 @@ const Contracts = () => {
             ],
             status: 'Active',
             totalPrice: '€8,100'
-        },
-        {
-            id: 'CT-7041',
-            property: 'Berlin Central Hub',
-            location: 'Mitte, Berlin',
-            image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=400',
-            checkIn: 'Dec 15, 2026',
-            checkOut: 'Dec 15, 2027',
-            units: [
-                { type: 'Premium Studio', quantity: 12 }
-            ],
-            status: 'Active',
-            totalPrice: '€13,200'
         }
     ];
 
@@ -55,10 +56,11 @@ const Contracts = () => {
 
     // Card subcomponent for local states like wishlist heart
     const ContractCard = ({ contract }) => {
-        const [isWishlisted, setIsWishlisted] = useState(false);
+        const navigate = useNavigate();
 
         return (
             <div
+                onClick={() => navigate(`/dashboard/contracts/${contract.id}`)}
                 className="bg-white rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group overflow-hidden flex flex-col h-full"
             >
                 {/* Image Aspect Box */}
@@ -146,7 +148,7 @@ const Contracts = () => {
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-20">
             <div>
-                <h1 className="text-3xl font-bold text-[#0f4c3a] mb-2">Contracts</h1>
+                <h1 className="text-3xl font-bold text-[#0f4c3a] mb-2">Active Contracts</h1>
                 <p className="text-gray-550 text-sm font-medium">Active and past housing contracts held by your company.</p>
             </div>
 

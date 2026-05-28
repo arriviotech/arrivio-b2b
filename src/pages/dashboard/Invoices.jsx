@@ -6,7 +6,7 @@ const Invoices = () => {
         { id: '#INV-2026-003', date: 'Mar 10, 2026', amount: '€1,499.00', status: 'Paid', method: 'Visa ending 4242' },
         { id: '#INV-2026-002', date: 'Feb 10, 2026', amount: '€1,499.00', status: 'Paid', method: 'Visa ending 4242' },
         { id: '#INV-2026-001', date: 'Jan 10, 2026', amount: '€1,850.00', status: 'Paid', method: 'Visa ending 4242' },
-        { id: '#INV-2025-012', date: 'Dec 10, 2025', amount: '€1,850.00', status: 'Paid', method: 'Bank Transfer' },
+        { id: '#INV-2026-012', date: 'Dec 10, 2026', amount: '€1,850.00', status: 'Paid', method: 'Bank Transfer' },
     ];
 
     const getStatusStyles = (status) => {

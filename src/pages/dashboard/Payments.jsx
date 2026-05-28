@@ -1,45 +1,29 @@
 import React, { useState } from 'react';
 import { Wallet, Plus, CreditCard, ArrowDownLeft, ArrowUpRight, CheckCircle2, MoreHorizontal, History } from 'lucide-react';
+import TopUpModal from '../../components/dashboard/TopUpModal';
 
 const Payments = () => {
+    const [isTopUpOpen, setIsTopUpOpen] = useState(false);
+    
     // Load credits and transactions from localStorage
     const storedCredits = localStorage.getItem('arrivio_credits');
     const creditsVal = storedCredits !== null ? parseFloat(storedCredits) : 3500.00;
 
     const storedTx = localStorage.getItem('arrivio_transactions');
     const transactions = storedTx ? JSON.parse(storedTx) : [
-        { id: '#TRX-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€1,499.00', status: 'Completed', logo: '✦' },
-        { id: '#TRX-2026-002', date: 'Feb 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,499.00', status: 'Completed', logo: '↑' },
-        { id: '#TRX-2026-001', date: 'Jan 10, 2026', type: 'Pre-paid Service Credits Top-up', amount: '€1,850.00', status: 'Completed', logo: '↑' },
-        { id: '#TRX-2025-012', date: 'Dec 10, 2025', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Completed', logo: '✦' },
+        { id: '#TRX-2026-003', date: 'Mar 10, 2026', type: 'Annual Subscription Renewal', amount: '€2,500.00', status: 'Completed', logo: '✦' },
+        { id: '#TRX-2026-002', date: 'Feb 10, 2026', type: 'Arrivio Balance Top-up', amount: '€1,499.00', status: 'Completed', logo: '↑' },
+        { id: '#TRX-2026-001', date: 'Jan 10, 2026', type: 'Arrivio Balance Top-up', amount: '€1,850.00', status: 'Completed', logo: '↑' },
+        { id: '#TRX-2026-012', date: 'Dec 10, 2026', type: 'Platform Setup Fee', amount: '€1,850.00', status: 'Completed', logo: '✦' },
     ];
 
     const balances = [
-        { label: 'Next Payment', value: '€1,499.00', date: 'April 10, 2026', icon: CreditCard, color: 'indigo' },
-        { label: 'Unused Credits', value: `€${creditsVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, date: 'Non-expiring', icon: Wallet, color: 'emerald' },
+        { label: 'Next Payment', value: '€2,500.00', discounted: '€1,250.00', date: 'April 10, 2026', icon: CreditCard, color: 'indigo' },
+        { label: 'Arrivio Balance', value: `€${creditsVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, date: 'Non-expiring', icon: Wallet, color: 'emerald' },
     ];
 
     const handleAddCredits = () => {
-        const amountStr = prompt("Enter the amount of credits to purchase (€):", "1000");
-        if (amountStr) {
-            const amount = parseFloat(amountStr);
-            if (!isNaN(amount) && amount > 0) {
-                const nextBal = creditsVal + amount;
-                localStorage.setItem('arrivio_credits', nextBal.toString());
-                
-                const newTrx = {
-                    id: `#TRX-${Math.floor(10000 + Math.random() * 90000)}`,
-                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                    type: 'Capacity Top-up',
-                    amount: `€${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-                    status: 'Completed',
-                    logo: '↑'
-                };
-                const nextTx = [newTrx, ...transactions];
-                localStorage.setItem('arrivio_transactions', JSON.stringify(nextTx));
-                window.location.reload(); // Refresh to reflect changes
-            }
-        }
+        setIsTopUpOpen(true);
     };
 
     return (
@@ -54,7 +38,7 @@ const Payments = () => {
                     className="px-5 py-2.5 bg-[#0f4c3a] hover:bg-[#0a3a2b] text-white rounded-xl font-bold transition-all shadow-sm active:scale-95 flex items-center gap-2 text-sm cursor-pointer"
                 >
                     <Plus size={16} />
-                    Add Credits
+                    Top Up Arrivio Balance
                 </button>
             </div>
 
@@ -70,7 +54,15 @@ const Payments = () => {
                         </div>
                         <div className="relative z-10 flex items-baseline justify-between">
                             <div>
-                                <h3 className="text-3xl font-serif font-semibold text-gray-900 leading-none">{item.value}</h3>
+                                {item.discounted ? (
+                                    <>
+                                        <span className="text-xs text-gray-400 line-through font-bold block">{item.value}</span>
+                                        <h3 className="text-3xl font-serif font-semibold text-gray-900 leading-none">{item.discounted}</h3>
+                                        <p className="text-[10px] text-[#0f4c3a] font-bold mt-1">50% early-partner discount</p>
+                                    </>
+                                ) : (
+                                    <h3 className="text-3xl font-serif font-semibold text-gray-900 leading-none">{item.value}</h3>
+                                )}
                                 <p className="text-[10px] text-gray-400 font-medium mt-2">{item.date}</p>
                             </div>
                             <ArrowUpRight className="text-gray-100 group-hover:text-gray-300 transition-colors animate-pulse" size={24} />
@@ -148,6 +140,27 @@ const Payments = () => {
                     </div>
                 </div>
             </div>
+            <TopUpModal 
+              isOpen={isTopUpOpen} 
+              onClose={() => setIsTopUpOpen(false)}
+              onConfirm={(amount) => {
+                const current = parseFloat(localStorage.getItem('arrivio_credits') || "3500");
+                localStorage.setItem('arrivio_credits', (current + amount).toString());
+                
+                const newTrx = {
+                    id: `#TRX-${Math.floor(10000 + Math.random() * 90000)}`,
+                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    type: 'Capacity Top-up',
+                    amount: `€${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                    status: 'Completed',
+                    logo: '↑'
+                };
+                const nextTx = [newTrx, ...transactions];
+                localStorage.setItem('arrivio_transactions', JSON.stringify(nextTx));
+                
+                window.location.reload();
+              }}
+            />
         </div>
     );
 };

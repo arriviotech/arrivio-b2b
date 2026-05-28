@@ -27,7 +27,7 @@ const Dashboard = () => {
                 <Routes>
                     <Route index element={<DashboardHome />} />
                     <Route path="properties" element={<DashboardProperties />} />
-                    <Route path="properties/:id" element={<DashboardPropertyDetails />} />
+                    <Route path="contracts/:id" element={<DashboardPropertyDetails />} />
                     <Route path="contracts" element={<Contracts />} />
                     <Route path="employees" element={<Employee />} />
                     <Route path="services" element={<Services />} />
