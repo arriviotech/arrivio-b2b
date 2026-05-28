@@ -28,7 +28,7 @@ const RELOCATION_SERVICES = [
     label: 'Airport Pickup',
     desc: 'Private transfer from the airport to the new home.',
     scalable: true,
-    priceEur: 95,
+    priceEur: 100,
     details: [
       { label: "Vehicle", value: "Sedan or similar with luggage space" },
       { label: "Pricing", value: "Distance-based fare + fixed pickup fee" },
@@ -41,7 +41,7 @@ const RELOCATION_SERVICES = [
     label: 'Airport Drop-off',
     desc: 'Private transfer from home to the airport.',
     scalable: true,
-    priceEur: 95,
+    priceEur: 100,
     details: [
       { label: "Vehicle", value: "Private sedan with luggage space" },
       { label: "Pricing", value: "Distance-based fare + airport surcharge" },
@@ -54,7 +54,7 @@ const RELOCATION_SERVICES = [
     label: 'Bank Account Setup',
     desc: 'Guided setup for expat-friendly bank accounts.',
     scalable: true,
-    priceEur: 49,
+    priceEur: 150,
     details: [
       { label: "Agent", value: "Jonas, banking advisor" },
       { label: "Experience", value: "Local bank onboarding for expats" },
@@ -67,7 +67,7 @@ const RELOCATION_SERVICES = [
     label: 'Insurance Setup',
     desc: 'Consultation for mandatory health and liability insurance.',
     scalable: true,
-    priceEur: 49,
+    priceEur: 100,
     details: [
       { label: "Agent", value: "Lena, insurance expert" },
       { label: "Experience", value: "5 years helping clients choose German insurance" },
@@ -80,7 +80,7 @@ const RELOCATION_SERVICES = [
     label: 'SIM Card Setup',
     desc: 'Pre-activated local SIM loaded with high-speed data.',
     scalable: true,
-    priceEur: 25,
+    priceEur: 50,
     details: [
       { label: "Plan", value: "Pre-activated local SIM" },
       { label: "Support", value: "Activation and plan setup included" },
@@ -93,7 +93,7 @@ const RELOCATION_SERVICES = [
     label: 'Anmeldung Support',
     desc: 'Accompanied translator and appointment assistance.',
     scalable: false,
-    priceEur: 149,
+    priceEur: 150,
     details: [
       { label: "Specialist", value: "Nina, registration consultant" },
       { label: "Expertise", value: "Local Anmeldung support and government filing" },
@@ -106,7 +106,7 @@ const RELOCATION_SERVICES = [
     label: 'Tax ID Support',
     desc: 'Steuer-ID tracking and tax class optimization.',
     scalable: false,
-    priceEur: 49,
+    priceEur: 150,
     details: [
       { label: "Specialist", value: "Marcus, tax liaison" },
       { label: "Expertise", value: "Tax ID and tax office guidance" },
@@ -119,7 +119,7 @@ const RELOCATION_SERVICES = [
     label: 'City Integration Guide',
     desc: 'Neighborhood tour and settling-in welcome call.',
     scalable: false,
-    priceEur: 199,
+    priceEur: 450,
     details: [
       { label: "Specialist", value: "Sarah, integration expert" },
       { label: "Tour Duration", value: "Half-day neighborhood orientation" },

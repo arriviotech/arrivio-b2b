@@ -86,14 +86,13 @@ const UnitBox = ({
     <div className="sticky top-28">
       <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden">
 
-        {/* Unit type identity — lead with TYPE, sample is secondary */}
+        {/* Unit type identity- lead with TYPE, sample is secondary */}
         <div className="px-7 pt-7 pb-5 border-b border-gray-100">
           <div className="flex items-start justify-between gap-3 mb-1">
             <h2 className="text-xl font-serif font-bold text-[#111827] leading-tight">{formattedTitle}</h2>
             {unit?.tier && unit.tier !== 'standard' && (
-              <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest shrink-0 ${
-                unit.tier === 'premium' ? 'bg-gradient-to-r from-[#B8860B] to-[#DAA520] text-white' : 'bg-[#0f4c3a] text-white'
-              }`}>
+              <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest shrink-0 ${unit.tier === 'premium' ? 'bg-gradient-to-r from-[#B8860B] to-[#DAA520] text-white' : 'bg-[#0f4c3a] text-white'
+                }`}>
                 {unit.tier}
               </span>
             )}
@@ -129,7 +128,7 @@ const UnitBox = ({
           </div>
         )}
 
-        {/* Price block — muted when unavailable */}
+        {/* Price block- muted when unavailable */}
         <div className={`px-7 pt-6 pb-3 ${isUnavailable ? 'opacity-50' : ''}`}>
           <div className="flex items-baseline gap-2 mb-1">
             <span className="text-3xl font-bold text-[#111827]">€{unitPrice.toLocaleString()}</span>
@@ -151,7 +150,7 @@ const UnitBox = ({
           </div>
         </div>
 
-        {/* Availability — small pill when available; bold stamp when fully booked */}
+        {/* Availability- small pill when available; bold stamp when fully booked */}
         {!isUnavailable && (
           <div className="px-7 pt-2 pb-5">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-bold bg-emerald-50 text-emerald-700 border-emerald-100">
@@ -182,7 +181,7 @@ const UnitBox = ({
           </div>
         )}
 
-        {/* Stepper + CTA — only when available */}
+        {/* Stepper + CTA- only when available */}
         {!isUnavailable && (
           <div className="px-7 pb-7 space-y-4">
             <div className="border border-gray-200 bg-[#fbfbfb] rounded-2xl p-4">
@@ -225,15 +224,14 @@ const UnitBox = ({
             <button
               onClick={handleClick}
               disabled={buttonDisabled}
-              className={`w-full py-4 rounded-xl font-bold text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2 ${
-                wantsToRemove
+              className={`w-full py-4 rounded-xl font-bold text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2 ${wantsToRemove
                   ? 'border border-red-300 text-red-600 hover:bg-red-50'
                   : isSaved
                     ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default'
                     : wantsToAdd || wantsToUpdate
                       ? 'bg-[#0f4c3a] hover:bg-[#0a3a2b] text-white shadow-lg shadow-[#0f4c3a]/10'
                       : 'bg-[#e5e4e0] text-gray-400 cursor-not-allowed'
-              }`}
+                }`}
             >
               {wantsToRemove ? (
                 <>
@@ -256,7 +254,7 @@ const UnitBox = ({
               <p className="text-center text-xs text-gray-400">Select at least 1 unit to continue</p>
             )}
 
-            {/* Arix entry point — gold text link, only after the user has picked at least 1 unit */}
+            {/* Arix entry point- gold text link, only after the user has picked at least 1 unit */}
             {ARIX_ENABLED && quantity > 0 && (
               <button
                 onClick={handleOpenArix}
@@ -269,7 +267,7 @@ const UnitBox = ({
           </div>
         )}
 
-        {/* Unavailable state — actionable */}
+        {/* Unavailable state- actionable */}
         {isUnavailable && (
           <div className="px-7 pb-7 space-y-2">
             <p className="text-[11px] text-gray-500 text-center mb-4">

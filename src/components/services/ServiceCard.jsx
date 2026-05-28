@@ -7,70 +7,13 @@ function getIconComponent(iconKey) {
 }
 
 function getServiceDetails(service) {
-  const transportDetails = [
-    { label: "Vehicle", value: "Sedan or similar" },
-    { label: "Pricing", value: "Distance-based fare + fixed pickup fee" },
-    { label: "Support", value: "Professional driver with airport assistance" },
-  ];
-
-  switch (service.id) {
-    case "seed-airport-pickup":
-      return [
-        { label: "Vehicle", value: "Sedan or similar with luggage space" },
-        { label: "Pricing", value: "Distance-based fare + fixed pickup fee" },
-        { label: "Support", value: "Driver meets you at arrivals and assists with luggage" },
-      ];
-    case "seed-airport-dropoff":
-      return [
-        { label: "Vehicle", value: "Private sedan with luggage space" },
-        { label: "Pricing", value: "Distance-based fare + airport surcharge" },
-        { label: "Support", value: "Real-time flight coordination and drop-off planning" },
-      ];
-    case "seed-housing":
-      return [
-        { label: "Agent", value: "Elena, relocation specialist" },
-        { label: "Experience", value: "7 years helping new arrivals secure housing" },
-        { label: "Benefit", value: "Personalized housing search and landlord introductions" },
-      ];
-    case "seed-bank":
-      return [
-        { label: "Agent", value: "Jonas, banking advisor" },
-        { label: "Experience", value: "Local bank onboarding for expats" },
-        { label: "Benefit", value: "Document preparation and branch appointment support" },
-      ];
-    case "seed-insurance":
-      return [
-        { label: "Agent", value: "Elena, insurance expert" }, // Elena/Lena
-        { label: "Experience", value: "5 years helping clients choose German insurance" },
-        { label: "Benefit", value: "Coverage review for health, liability, and rental protection" },
-      ];
-    case "seed-sim":
-      return [
-        { label: "Plan", value: "Pre-activated local SIM" },
-        { label: "Support", value: "Activation and plan setup included" },
-        { label: "Benefit", value: "Data-ready on arrival with trusted local provider" },
-      ];
-    case "seed-anmeldung-housing":
-      return [
-        { label: "Specialist", value: "Nina, registration consultant" },
-        { label: "Expertise", value: "Local Anmeldung support and government filing" },
-        { label: "Benefit", value: "Fast guidance through address registration steps" },
-      ];
-    case "seed-tax-id":
-      return [
-        { label: "Specialist", value: "Marcus, tax liaison" },
-        { label: "Expertise", value: "Tax ID and tax office guidance" },
-        { label: "Benefit", value: "Assistance with forms and local authority requirements" },
-      ];
-    case "seed-city-guide":
-      return [
-        { label: "Specialist", value: "Sarah, integration expert" },
-        { label: "Tour Duration", value: "Half-day neighborhood orientation" },
-        { label: "Benefit", value: "1-on-1 welcome consultation call and local integration guide" },
-      ];
-    default:
-      return transportDetails;
+  if (service.features && service.features.length > 0) {
+    return service.features;
   }
+  return [
+    { label: "Pricing", value: `EUR ${service.priceEur} + VAT` },
+    { label: "Details", value: service.description || "Custom service details" }
+  ];
 }
 
 export default function ServiceCard({ service, onRequest, variant = "default" }) {

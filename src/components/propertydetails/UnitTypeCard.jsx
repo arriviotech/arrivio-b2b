@@ -24,7 +24,7 @@ const UnitTypeCard = ({
   const totalUnits = units.length;
   const ratio = totalUnits > 0 ? maxAvailable / totalUnits : 0;
 
-  // Availability badge — green when any available, red when none
+  // Availability badge- green when any available, red when none
   const isAvailable = maxAvailable > 0;
   const availabilityTone = isAvailable
     ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
@@ -73,7 +73,7 @@ const UnitTypeCard = ({
     <div className="bg-white rounded-2xl shadow-sm border border-[#e5e7eb] overflow-hidden">
       {/* Header */}
       <div className="flex flex-col sm:flex-row gap-4 p-5">
-        {/* Image block — real photo if available, otherwise icon fallback */}
+        {/* Image block- real photo if available, otherwise icon fallback */}
         <div className="w-full sm:w-32 h-32 rounded-xl bg-gradient-to-br from-[#0f4c3a]/10 to-[#0f4c3a]/5 flex items-center justify-center shrink-0 overflow-hidden">
           {finalImage ? (
             <img src={finalImage} alt={title} className="w-full h-full object-cover" />
@@ -131,7 +131,7 @@ const UnitTypeCard = ({
         </div>
       </div>
 
-      {/* Quick add — primary action */}
+      {/* Quick add- primary action */}
       <div className="px-5 pb-4">
         <QuickAddBar
           property={property}
@@ -141,7 +141,7 @@ const UnitTypeCard = ({
         />
       </div>
 
-      {/* Browse specific units (collapsed by default) — shown even when none are available */}
+      {/* Browse specific units (collapsed by default)- shown even when none are available */}
       {units.length > 0 && (
         <>
           <button
@@ -179,11 +179,10 @@ const UnitTypeCard = ({
                     </span>
                     {unit.tier && unit.tier !== 'standard' && (
                       <span
-                        className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
-                          unit.tier === 'premium'
+                        className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${unit.tier === 'premium'
                             ? 'bg-gradient-to-r from-[#B8860B] to-[#DAA520] text-white'
                             : 'bg-[#0f4c3a] text-white'
-                        }`}
+                          }`}
                       >
                         {unit.tier}
                       </span>

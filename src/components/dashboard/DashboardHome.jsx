@@ -7,12 +7,75 @@ const DashboardHome = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState('name'); // 'name' or 'progress'
 
-    // Mock data for booked properties
+    // Mock data – substepStatuses shows parallel work across phases
     const propertiesData = [
-        { id: 1, name: 'Frankfurt Sachsenhausen', onboardingStep: 8, moveInDate: 'Oct 12, 2026' },
-        { id: 2, name: 'Frankfurt Single Living', onboardingStep: 4, moveInDate: 'Nov 01, 2026' },
-        { id: 3, name: 'Berlin Central Hub', onboardingStep: 0, moveInDate: 'Dec 15, 2026' },
+        {
+            id: 1,
+            name: 'Frankfurt Sachsenhausen',
+            moveInDate: 'Oct 12, 2026',
+            substepStatuses: {
+                // Handover – done
+                key_handover: 'done',
+                // Renovation – done + one in progress
+                painting: 'done',
+                kitchen_construction: 'done',
+                kitchen_installation: 'active',   // 🔄 still ongoing
+                // Furnishing – partially done + one active (parallel with renovation!)
+                kitchen_delivery: 'done',
+                furniture_delivery: 'active',     // 🔄 happening at same time
+                furniture_assembly: 'pending',
+                // Utilities – also started in parallel
+                gas_electricity: 'active',        // 🔄 parallel too
+                internet_registration: 'pending',
+                lighting_setup: 'pending',
+                // Final check – not started
+                cleaning: 'pending',
+                final_inspection: 'pending',
+                move_in: 'pending',
+            },
+        },
+        {
+            id: 2,
+            name: 'Frankfurt Single Living',
+            moveInDate: 'Nov 01, 2026',
+            substepStatuses: {
+                key_handover: 'done',
+                painting: 'done',
+                kitchen_construction: 'done',
+                kitchen_installation: 'done',
+                kitchen_delivery: 'done',
+                furniture_delivery: 'done',
+                furniture_assembly: 'done',
+                gas_electricity: 'done',
+                internet_registration: 'active',
+                lighting_setup: 'active',
+                cleaning: 'pending',
+                final_inspection: 'pending',
+                move_in: 'pending',
+            },
+        },
+        {
+            id: 3,
+            name: 'Berlin Central Hub',
+            moveInDate: 'Dec 15, 2026',
+            substepStatuses: {
+                key_handover: 'active',           // 🔄 just received keys
+                painting: 'pending',
+                kitchen_construction: 'pending',
+                kitchen_installation: 'pending',
+                kitchen_delivery: 'pending',
+                furniture_delivery: 'pending',
+                furniture_assembly: 'pending',
+                gas_electricity: 'pending',
+                internet_registration: 'pending',
+                lighting_setup: 'pending',
+                cleaning: 'pending',
+                final_inspection: 'pending',
+                move_in: 'pending',
+            },
+        },
     ];
+
 
     const filteredAndSortedProperties = useMemo(() => {
         return propertiesData
@@ -21,7 +84,9 @@ const DashboardHome = () => {
                 if (sortBy === 'name') {
                     return a.name.localeCompare(b.name);
                 } else if (sortBy === 'progress') {
-                    return b.onboardingStep - a.onboardingStep;
+                    const doneA = Object.values(a.substepStatuses || {}).filter(s => s === 'done').length;
+                    const doneB = Object.values(b.substepStatuses || {}).filter(s => s === 'done').length;
+                    return doneB - doneA;
                 }
                 return 0;
             });
