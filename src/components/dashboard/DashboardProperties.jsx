@@ -171,8 +171,8 @@ const DashboardProperties = () => {
         <div className="max-w-6xl mx-auto pb-12">
             <header className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6 mb-10 pb-2">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">Your Properties</h1>
-                    <p className="text-gray-550 mt-2 font-medium text-sm">Manage and view the properties you have reserved capacity in.</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">All Properties</h1>
+                    <p className="text-gray-550 mt-2 font-medium text-sm">Browse all available properties in Arrivio to secure housing for your employees.</p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
@@ -230,7 +230,7 @@ const DashboardProperties = () => {
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900 mb-3">No properties found</h2>
                     <p className="text-gray-550 mb-8 max-w-md text-center text-sm font-medium">
-                        {searchQuery ? `We couldn't find any properties matching "${searchQuery}".` : "Your reserved properties will appear here. Browse our available catalog to secure housing."}
+                        {searchQuery ? `We couldn't find any properties matching "${searchQuery}".` : "Properties will appear here. Browse our available catalog to secure housing."}
                     </p>
                     {searchQuery && (
                         <button
