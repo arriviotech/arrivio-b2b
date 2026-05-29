@@ -51,7 +51,7 @@ const TargetAudience = () => {
           </p>
         </motion.div>
 
-        {/* Cards */}
+        {/* Cards - restored back to normal 3-column card grid */}
         <div className="grid md:grid-cols-3 gap-6">
           {audiences.map((audience, index) => (
             <motion.div
@@ -78,7 +78,6 @@ const TargetAudience = () => {
 
       </div>
     </section>
-
   );
 };
 

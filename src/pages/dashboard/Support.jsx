@@ -42,7 +42,7 @@ const Support = () => {
   const [tickets, setTickets] = useState([
     {
       id: 'TK-8492',
-      subject: 'Missing capacity for Berlin property',
+      subject: 'Requesting additional studio capacity for new hires in Berlin',
       status: 'In Progress',
       priority: 'urgent',
       date: 'Mar 14, 2026',
@@ -50,7 +50,7 @@ const Support = () => {
     },
     {
       id: 'TK-8210',
-      subject: 'Payment receipt not generated',
+      subject: 'Can we download billing receipt as a consolidated PDF?',
       status: 'Resolved',
       priority: 'normal',
       date: 'Mar 10, 2026',
@@ -177,7 +177,7 @@ const Support = () => {
                           {ticket.status}
                         </span>
                       </div>
-                      <h4 className="font-bold text-gray-900 text-sm truncate pr-4">{ticket.subject}</h4>
+                      <h4 className="font-bold text-gray-900 text-sm leading-snug break-words pr-4">{ticket.subject}</h4>
                     </div>
                     
                     <div className="text-left sm:text-right shrink-0 flex sm:flex-col gap-x-2 gap-y-0.5 text-xs text-gray-400 font-medium">
@@ -345,7 +345,7 @@ const Support = () => {
                     <div key={t.id} className="px-5 py-3.5 hover:bg-gray-50/50 transition-colors">
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="text-xs font-bold text-gray-900 truncate">{t.subject}</p>
+                          <p className="text-xs font-bold text-gray-900 leading-snug break-words">{t.subject}</p>
                           <p className="text-[10px] text-gray-400 font-medium mt-0.5">{t.id} · {t.date}</p>
                         </div>
                         <span className={`shrink-0 px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider border ${
@@ -485,7 +485,7 @@ const Support = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-900 text-xs truncate">{ticket.subject}</h4>
+                        <h4 className="font-bold text-gray-900 text-xs leading-snug break-words">{ticket.subject}</h4>
                         <p className="text-[9px] text-gray-405 mt-1 font-semibold">{ticket.date} • {ticket.time}</p>
                       </div>
                     </div>

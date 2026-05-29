@@ -9,14 +9,14 @@ const Help = () => {
     const [previousTickets] = useState([
         {
             id: 'TK-8492',
-            subject: 'Missing capacity for Berlin property',
+            subject: 'Requesting additional studio capacity for new hires in Berlin',
             status: 'In Progress',
             date: 'Mar 14, 2026',
             time: '10:30 AM'
         },
         {
             id: 'TK-8210',
-            subject: 'Payment receipt not generated',
+            subject: 'Can we download billing receipt as a consolidated PDF?',
             status: 'Resolved',
             date: 'Mar 10, 2026',
             time: '02:15 PM'
