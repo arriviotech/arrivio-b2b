@@ -11,7 +11,7 @@ const ScheduleTeaser = () => {
   return (
     <section
       id="schedule"
-      className="bg-[#f4f7f6] py-16 md:py-24 px-6 md:px-12"
+      className="bg-[#f5f5f3] py-16 md:py-24 px-6 md:px-12"
     >
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-3xl p-8 md:p-12 lg:p-16 shadow-xl border border-white/60 text-center">
@@ -46,10 +46,10 @@ const ScheduleTeaser = () => {
 
           <button
             onClick={() => navigate('/schedule')}
-            className="inline-flex items-center justify-center gap-2 bg-[#0f4c3a] hover:bg-[#1A2E22] text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 group"
+            className="inline-flex items-center justify-center gap-2 bg-[#0f4c3a] hover:bg-[#186b53] text-white px-8 py-4 rounded-full font-semibold text-[11px] transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 uppercase tracking-[0.15em] group"
           >
             Schedule a call
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </button>
 
           <p className="text-[11px] text-gray-400 mt-5">

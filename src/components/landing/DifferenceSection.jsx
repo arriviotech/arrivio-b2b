@@ -4,7 +4,7 @@ import housingCapacityImg from '../../assets/housing-capacity.jpg';
 
 const DifferenceSection = () => {
   return (
-    <section id="difference" className="py-28 bg-white relative overflow-hidden">
+    <section id="difference" className="py-28 bg-[#f5f5f3] relative overflow-hidden">
       {/* Background accent */}
       <div className="absolute top-[20%] right-0 w-96 h-96 bg-[#0f4c3a]/[0.02] rounded-full blur-[120px] pointer-events-none" />
 
@@ -18,17 +18,18 @@ const DifferenceSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#0f4c3a]/15 bg-[#0f4c3a]/[0.04] mb-7">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0f4c3a]" />
-              <span className="text-[11px] font-semibold text-[#0f4c3a] tracking-[0.12em] uppercase">The Difference</span>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="h-px w-8 bg-gray-300" />
+              <span className="text-[11px] font-semibold text-gray-400 tracking-[0.2em] uppercase">The Difference</span>
+              <span className="h-px w-8 bg-gray-300" />
             </div>
 
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-7 leading-tight">
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-normal text-gray-900 mb-7 leading-tight">
               Reserve Housing Capacity{' '}
-              <span className="bg-gradient-to-r from-[#0f4c3a] to-[#186b53] bg-clip-text text-transparent">Before Hiring</span>
+              <em className="italic font-serif text-[#0f4c3a]">Before Hiring.</em>
             </h2>
 
-            <p className="text-lg text-gray-500 mb-10 leading-relaxed">
+            <p className="text-base md:text-lg text-gray-500 mb-10 leading-relaxed">
               Unlike traditional housing platforms where you search for individual apartments at the last minute, Arrivio allows companies to reserve housing capacity in advance for upcoming hires.
             </p>
 

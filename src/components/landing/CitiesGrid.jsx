@@ -65,7 +65,7 @@ const LocationsSection = () => {
   };
 
   return (
-    <section className="py-28 relative overflow-hidden bg-[#f4f7f6]" id="cities">
+    <section className="py-28 relative overflow-hidden bg-[#f5f5f3]" id="cities">
       {/* Background accents */}
       <div className="absolute top-[15%] left-[5%] w-72 h-72 bg-[#0f4c3a]/4 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[15%] right-[8%] w-56 h-56 bg-[#D4A017]/4 rounded-full blur-[100px] pointer-events-none" />
@@ -82,12 +82,17 @@ const LocationsSection = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-5xl font-serif font-bold text-[#0f4c3a] mb-6 leading-tight">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="h-px w-8 bg-gray-300" />
+                <span className="text-[11px] font-semibold text-gray-400 tracking-[0.2em] uppercase">Our Locations</span>
+                <span className="h-px w-8 bg-gray-300" />
+              </div>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-normal text-gray-900 mb-6 leading-tight">
                 Explore our <br />
-                <span className="italic text-[#D4A017]">prime locations</span>
+                <em className="italic font-serif text-[#0f4c3a]">Prime Locations.</em>
               </h2>
 
-              <p className="text-[#5C5C50] font-sans text-lg mb-8 leading-relaxed max-w-md">
+              <p className="text-gray-500 font-sans text-base md:text-lg mb-8 leading-relaxed max-w-md">
                 Secure high-quality housing for your expanding workforce.
               </p>
             </motion.div>
@@ -140,9 +145,9 @@ const LocationsSection = () => {
                 </div>
 
                 <Link to={`/properties?city=${activeLocation.name}`}>
-                  <button className="w-full h-16 bg-[#F3F2EE] hover:bg-[#EAE9E4] text-[#0f4c3a] rounded-2xl font-bold font-sans uppercase tracking-[0.1em] text-xs transition-all duration-300 flex items-center justify-center gap-3 border border-white/50 group">
+                  <button className="w-full h-14 bg-[#F3F2EE] hover:bg-[#EAE9E4] text-[#0f4c3a] rounded-full font-semibold uppercase tracking-[0.15em] text-[11px] transition-all duration-300 flex items-center justify-center gap-2 border border-white/50 group">
                     View Homes in {activeLocation.name}
-                    <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                    <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
                   </button>
                 </Link>
               </motion.div>

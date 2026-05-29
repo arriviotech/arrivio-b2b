@@ -54,13 +54,11 @@ const Schedule = () => {
                                 {/* ── LEFT: Context + trust signals ── */}
                                 <div className="flex flex-col justify-center">
 
-                                    {/* Section badge */}
-                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#0f4c3a]/15 bg-[#0f4c3a]/[0.04] mb-7 self-start">
-                                        <span className="relative flex h-1.5 w-1.5 shrink-0">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0f4c3a] opacity-50" />
-                                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#0f4c3a]" />
-                                        </span>
-                                        <span className="text-[11px] font-semibold text-[#0f4c3a] tracking-[0.12em] uppercase">Let's Talk</span>
+                                    {/* Section tag */}
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <span className="h-px w-8 bg-gray-300" />
+                                        <span className="text-[11px] font-semibold text-gray-400 tracking-[0.2em] uppercase">Let's Talk</span>
+                                        <span className="h-px w-8 bg-gray-300" />
                                     </div>
 
                                     <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] text-gray-900 mb-5 leading-tight">
