@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as Icons from 'lucide-react';
 import PropertiesNavbar from '../components/layout/PropertiesNavbar';
 import Footer from '../components/layout/Footer';
 import { useReservation } from '../context/ReservationContext';
-import { ArrowLeft, Building2, Plane, Search, Landmark, ShieldCheck, Smartphone, FileText, Receipt, Check, Minus, Plus, X, Compass, Home, BadgeInfo, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Building2, Search, Receipt, Check, Minus, Plus, X, Home, BadgeInfo, ChevronDown } from 'lucide-react';
 import { generateNativePDF } from '../components/proposal/Pdf';
 import Summary from '../components/proposal/Summary';
 import FeesAndInclusions from '../components/proposal/FeesAndInclusions';
@@ -12,6 +13,8 @@ import PropertyListWithDrawer from '../components/proposal/PropertyListWithDrawe
 import { supabase } from '../supabase/client';
 import { toB2BUnitType } from '../utils/unitType';
 import { ARIX_ENABLED } from '../App';
+import { useServices } from '../supabase/hooks/useServices';
+import { SERVICE_CATEGORIES } from '../data/servicesData';
 
 // Reverse map: formatted display label → raw DB unit_type
 // Used to look up availability for cart items added before unitTypeKey was stored.
@@ -20,113 +23,6 @@ const UNIT_TYPE_KEY_BY_LABEL = {
   'Single Room': 'one_bedroom',
   'Shared Room': 'shared_room',
 };
-
-const RELOCATION_SERVICES = [
-  {
-    id: 'airport_pickup',
-    icon: Plane,
-    label: 'Airport Pickup',
-    desc: 'Private transfer from the airport to the new home.',
-    scalable: true,
-    priceEur: 100,
-    details: [
-      { label: "Vehicle", value: "Sedan or similar with luggage space" },
-      { label: "Pricing", value: "Distance-based fare + fixed pickup fee" },
-      { label: "Support", value: "Driver meets you at arrivals and assists with luggage" }
-    ]
-  },
-  {
-    id: 'airport_dropoff',
-    icon: Plane,
-    label: 'Airport Drop-off',
-    desc: 'Private transfer from home to the airport.',
-    scalable: true,
-    priceEur: 100,
-    details: [
-      { label: "Vehicle", value: "Private sedan with luggage space" },
-      { label: "Pricing", value: "Distance-based fare + airport surcharge" },
-      { label: "Support", value: "Real-time flight coordination and drop-off planning" }
-    ]
-  },
-  {
-    id: 'bank_account',
-    icon: Landmark,
-    label: 'Bank Account Setup',
-    desc: 'Guided setup for expat-friendly bank accounts.',
-    scalable: true,
-    priceEur: 150,
-    details: [
-      { label: "Agent", value: "Jonas, banking advisor" },
-      { label: "Experience", value: "Local bank onboarding for expats" },
-      { label: "Benefit", value: "Document preparation and branch appointment support" }
-    ]
-  },
-  {
-    id: 'insurance',
-    icon: ShieldCheck,
-    label: 'Insurance Setup',
-    desc: 'Consultation for mandatory health and liability insurance.',
-    scalable: true,
-    priceEur: 100,
-    details: [
-      { label: "Agent", value: "Lena, insurance expert" },
-      { label: "Experience", value: "5 years helping clients choose German insurance" },
-      { label: "Benefit", value: "Coverage review for health, liability, and rental protection" }
-    ]
-  },
-  {
-    id: 'sim_card',
-    icon: Smartphone,
-    label: 'SIM Card Setup',
-    desc: 'Pre-activated local SIM loaded with high-speed data.',
-    scalable: true,
-    priceEur: 50,
-    details: [
-      { label: "Plan", value: "Pre-activated local SIM" },
-      { label: "Support", value: "Activation and plan setup included" },
-      { label: "Benefit", value: "Data-ready on arrival with trusted local provider" }
-    ]
-  },
-  {
-    id: 'anmeldung',
-    icon: FileText,
-    label: 'Anmeldung Support',
-    desc: 'Accompanied translator and appointment assistance.',
-    scalable: false,
-    priceEur: 150,
-    details: [
-      { label: "Specialist", value: "Nina, registration consultant" },
-      { label: "Expertise", value: "Local Anmeldung support and government filing" },
-      { label: "Benefit", value: "Fast guidance through address registration steps" }
-    ]
-  },
-  {
-    id: 'tax_id',
-    icon: BadgeInfo,
-    label: 'Tax ID Support',
-    desc: 'Steuer-ID tracking and tax class optimization.',
-    scalable: false,
-    priceEur: 150,
-    details: [
-      { label: "Specialist", value: "Marcus, tax liaison" },
-      { label: "Expertise", value: "Tax ID and tax office guidance" },
-      { label: "Benefit", value: "Assistance with forms and local authority requirements" }
-    ]
-  },
-  {
-    id: 'city_guide',
-    icon: Compass,
-    label: 'City Integration Guide',
-    desc: 'Neighborhood tour and settling-in welcome call.',
-    scalable: false,
-    priceEur: 450,
-    details: [
-      { label: "Specialist", value: "Sarah, integration expert" },
-      { label: "Tour Duration", value: "Half-day neighborhood orientation" },
-      { label: "Benefit", value: "1-on-1 welcome consultation call and local integration guide" }
-    ]
-  }
-];
 
 const SectionHeader = ({ number, title, subtitle }) => (
   <div className="flex items-baseline gap-3 mb-5">
@@ -180,6 +76,28 @@ const Proposal = () => {
   const [additionalNotes, setAdditionalNotes] = useState('');
   // { [serviceId]: quantity } — scalable services use the qty, toggle ones use 1.
   const [selectedServices, setSelectedServices] = useState({});
+
+  // Pull services from the same source as the Dashboard Services page,
+  // so prices and the full catalogue stay in sync automatically.
+  const { services: rawServices, loading: servicesLoading } = useServices();
+  const mappedServices = useMemo(() => {
+    return (rawServices || []).map((s) => ({
+      id: s.id,
+      icon: Icons[s.iconKey] || Icons.Package,
+      label: s.name,
+      desc: s.description || '',
+      category: s.category,
+      scalable: true,
+      priceEur: s.priceEur || 0,
+      details: s.features || [],
+    }));
+  }, [rawServices]);
+
+  const [serviceCategory, setServiceCategory] = useState('all');
+  const filteredServices = useMemo(() => {
+    if (serviceCategory === 'all') return mappedServices;
+    return mappedServices.filter((s) => s.category === serviceCategory);
+  }, [mappedServices, serviceCategory]);
   const [hoveredServiceId, setHoveredServiceId] = useState(null);
 
   const toggleService = (id) => {
@@ -207,7 +125,7 @@ const Proposal = () => {
   // Services are one-time charges. For scalable services qty = employee count;
   // for non-scalable qty is always 1.
   const servicesTotal = Object.entries(selectedServices).reduce((sum, [id, qty]) => {
-    const svc = RELOCATION_SERVICES.find((s) => s.id === id);
+    const svc = mappedServices.find((s) => s.id === id);
     if (!svc || !svc.priceEur) return sum;
     return sum + svc.priceEur * (svc.scalable ? qty : 1);
   }, 0);
@@ -349,7 +267,7 @@ const Proposal = () => {
   const estimatedMonthlyTotalWithAddons = estimatedMonthlyCost + furnitureAddOnTotal;
 
   const resolvedServices = Object.entries(selectedServices).map(([id, qty]) => {
-    const svc = RELOCATION_SERVICES.find((s) => s.id === id);
+    const svc = mappedServices.find((s) => s.id === id);
     return { id, label: svc?.label || id, qty, scalable: !!svc?.scalable };
   });
 
@@ -398,7 +316,7 @@ const Proposal = () => {
           : '';
         const servicesLine = selectedServiceCount > 0
           ? `Requested relocation services:\n${Object.entries(selectedServices).map(([id, qty]) => {
-              const svc = RELOCATION_SERVICES.find(s => s.id === id);
+              const svc = mappedServices.find(s => s.id === id);
               return `• ${svc?.label}${svc?.scalable ? ` (x${qty})` : ''}`;
             }).join('\n')}\n\n`
           : '';
@@ -502,9 +420,27 @@ const Proposal = () => {
               {hasItems && (
                 <section>
                   <SectionHeader number="3" title="Relocation Services" subtitle="(Optional)" />
-                  <p className="text-sm text-gray-500 -mt-2 mb-3">
+                  <p className="text-sm text-gray-500 -mt-2 mb-4">
                     Add-ons our team can bundle with this proposal. Final pricing on the call.
                   </p>
+
+                  <div className="flex flex-wrap items-center gap-1.5 bg-gray-100/40 border border-gray-200/50 p-1 rounded-2xl w-max max-w-full mb-4 shadow-inner">
+                    {SERVICE_CATEGORIES.map((c) => {
+                      const active = serviceCategory === c.key;
+                      return (
+                        <button
+                          key={c.key}
+                          onClick={() => setServiceCategory(c.key)}
+                          className={`h-8 px-4 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer select-none active:scale-95 ${active
+                            ? 'bg-[#0f4c3a] text-white shadow-sm'
+                            : 'text-gray-500 hover:text-[#0f4c3a] hover:bg-[#0f4c3a]/5'
+                            }`}
+                        >
+                          {c.label}
+                        </button>
+                      );
+                    })}
+                  </div>
 
                   {selectedServiceCount > 0 && (
                     <div className="mb-4 flex items-center justify-between">
@@ -521,7 +457,11 @@ const Proposal = () => {
                     </div>
                   )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {RELOCATION_SERVICES.map(({ id, icon: Icon, label, desc, scalable, priceEur, details }) => {
+                    {servicesLoading ? (
+                      <div className="col-span-full py-8 text-sm text-gray-400 text-center">Loading services…</div>
+                    ) : filteredServices.length === 0 ? (
+                      <div className="col-span-full py-8 text-sm text-gray-400 text-center">No services in this category.</div>
+                    ) : filteredServices.map(({ id, icon: Icon, label, desc, scalable, priceEur, details }) => {
                       const qty = selectedServices[id] || 0;
                       const isSelected = qty > 0;
 
