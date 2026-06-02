@@ -28,6 +28,34 @@
     scroll-padding-top: 6rem;
   }
 
+  /* Global Premium Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #fdfdfd;
+    border-left: 1px solid rgba(229, 231, 235, 0.5);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(15, 76, 58, 0.25);
+    border-radius: 99px;
+    border: 2px solid #fdfdfd;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(15, 76, 58, 0.6);
+  }
+
+  /* Firefox support */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(15, 76, 58, 0.25) transparent;
+  }
+
   :root {
     font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
