@@ -22,7 +22,7 @@ const TargetAudience = () => {
   ];
 
   return (
-    <section id="audience" className="py-28 relative overflow-hidden bg-[#f7f9f8]">
+    <section id="audience" className="py-28 relative overflow-hidden bg-[#f5f5f3]">
       {/* Decorative orbs */}
       <div className="absolute top-[10%] right-[10%] w-80 h-80 bg-[#0f4c3a]/4 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[10%] left-[5%] w-60 h-60 bg-[#D4A017]/4 rounded-full blur-[100px] pointer-events-none" />
@@ -36,32 +36,22 @@ const TargetAudience = () => {
           viewport={{ once: true }}
           className="text-center max-w-2xl mx-auto mb-20 flex flex-col items-center"
         >
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#0f4c3a]/15 bg-[#0f4c3a]/[0.04] mb-6"
-          >
-            <span className="relative flex h-1.5 w-1.5 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0f4c3a] opacity-50" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#0f4c3a]" />
-            </span>
-            <span className="text-[11px] font-semibold text-[#0f4c3a] tracking-[0.12em] uppercase">
-              Target Audience
-            </span>
-          </motion.div>
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <span className="h-px w-8 bg-gray-300" />
+            <span className="text-[11px] font-semibold text-gray-400 tracking-[0.2em] uppercase">Target Audience</span>
+            <span className="h-px w-8 bg-gray-300" />
+          </div>
 
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Built for{' '}
-            <span className="bg-gradient-to-r from-[#0f4c3a] to-[#186b53] bg-clip-text text-transparent">Global Organisations</span>
+            <span className="font-bold text-[#0f4c3a]">Global Organisations</span>
           </h2>
-          <p className="text-lg text-gray-500 leading-relaxed">
+          <p className="text-base md:text-lg text-gray-500 leading-relaxed max-w-xl mx-auto">
             The platform supports different partner types with role-specific dashboards, tailored to your organizational structure.
           </p>
         </motion.div>
 
-        {/* Cards */}
+        {/* Cards - restored back to normal 3-column card grid */}
         <div className="grid md:grid-cols-3 gap-6">
           {audiences.map((audience, index) => (
             <motion.div
@@ -70,17 +60,14 @@ const TargetAudience = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.12 }}
-              className="group p-8 rounded-3xl bg-white border border-gray-100 hover:border-[#0f4c3a]/15 transition-all duration-500 relative overflow-hidden landing-card-hover"
+              className="relative group h-full"
             >
-              {/* Background hover effect */}
-              <div className="absolute top-0 right-0 w-40 h-40 bg-[#0f4c3a]/[0.03] rounded-full translate-x-1/2 -translate-y-1/2 transition-all duration-700 group-hover:scale-[2] group-hover:bg-[#0f4c3a]/[0.05]" />
-              
-              <div className="relative z-10">
-                {/* Icon */}
-                <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-8 text-[#0f4c3a] transition-all duration-500 group-hover:scale-110 group-hover:bg-emerald-100">
+              <div className="bg-white rounded-2xl p-8 transition-all duration-500 flex flex-col items-center text-center landing-card-hover h-full">
+                <div className="w-14 h-14 rounded-full border border-gray-300 flex items-center justify-center mb-6 text-gray-600 group-hover:bg-[#0f4c3a] group-hover:border-[#0f4c3a] group-hover:text-white transition-all duration-500">
                   {audience.icon}
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{audience.title}</h3>
+                <h3 className="font-heading text-2xl font-semibold text-gray-900 mb-3">{audience.title}</h3>
+                <div className="w-8 h-px bg-gray-300 mb-3" />
                 <p className="text-gray-500 leading-relaxed text-sm md:text-base">
                   {audience.description}
                 </p>
@@ -91,7 +78,6 @@ const TargetAudience = () => {
 
       </div>
     </section>
-
   );
 };
 

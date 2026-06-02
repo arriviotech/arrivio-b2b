@@ -24,7 +24,7 @@ const Shortlist = () => {
     }, []);
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#f2f2f2] font-sans text-gray-900">
+        <div className="min-h-screen flex flex-col bg-background-neutral font-sans text-gray-900">
             <PropertiesNavbar isHidden={isNavHidden} />
 
             <main className="flex-grow pt-28 pb-20 px-4 md:px-12">

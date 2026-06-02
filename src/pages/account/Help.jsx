@@ -9,14 +9,14 @@ const Help = () => {
     const [previousTickets] = useState([
         {
             id: 'TK-8492',
-            subject: 'Missing capacity for Berlin property',
+            subject: 'Requesting additional studio capacity for new hires in Berlin',
             status: 'In Progress',
             date: 'Mar 14, 2026',
             time: '10:30 AM'
         },
         {
             id: 'TK-8210',
-            subject: 'Payment receipt not generated',
+            subject: 'Can we download billing receipt as a consolidated PDF?',
             status: 'Resolved',
             date: 'Mar 10, 2026',
             time: '02:15 PM'
@@ -33,7 +33,7 @@ const Help = () => {
         <AccountLayout>
             <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-20">
                 <div>
-                    <h1 className="text-3xl font-serif text-[#0f4c3a] mb-2 font-medium">Help & Support</h1>
+                    <h1 className="text-3xl font-sans font-bold text-[#0f4c3a] mb-2">Help & Support</h1>
                     <p className="text-gray-500 text-sm">We're here to help you with any questions or issues.</p>
                 </div>
 

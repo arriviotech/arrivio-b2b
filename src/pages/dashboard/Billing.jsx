@@ -71,7 +71,7 @@ const Billing = () => {
               <div className="text-left sm:text-right shrink-0">
                 <span className="text-xs text-gray-400 line-through font-bold block">€{activePlan.yearlyStandardPrice} / year</span>
                 <div className="flex items-baseline justify-start sm:justify-end gap-1 mt-0.5">
-                  <span className="text-3xl font-serif font-semibold text-gray-900">€{activePlan.yearlyPromoPrice}</span>
+                  <span className="text-3xl font-sans font-extrabold text-gray-900">€{activePlan.yearlyPromoPrice}</span>
                   <span className="text-xs text-gray-500 font-bold">/ first year</span>
                 </div>
                 <p className="text-[10px] text-[#0f4c3a] font-bold mt-1">50% early-partner discount</p>
@@ -145,7 +145,7 @@ const Billing = () => {
               Arrivio Balance
             </span>
             <div className="mb-6">
-              <p className="text-3xl font-serif font-semibold tracking-tight">
+              <p className="text-3xl font-sans font-extrabold tracking-tight">
                 €{creditsVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
               <p className="text-emerald-350 text-[10px] mt-1.5 font-bold flex items-center gap-1">
