@@ -33,7 +33,7 @@ const Help = () => {
         <AccountLayout>
             <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-20">
                 <div>
-                    <h1 className="text-3xl font-serif text-[#0f4c3a] mb-2 font-medium">Help & Support</h1>
+                    <h1 className="text-3xl font-sans font-bold text-[#0f4c3a] mb-2">Help & Support</h1>
                     <p className="text-gray-500 text-sm">We're here to help you with any questions or issues.</p>
                 </div>
 

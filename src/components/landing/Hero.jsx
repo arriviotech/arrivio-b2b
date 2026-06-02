@@ -44,11 +44,11 @@ const Hero = () => {
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
                transition={{ duration: 0.6, delay: 0.1 }}
-               className="font-serif text-[2.6rem] md:text-[3.2rem] lg:text-[3.6rem] font-normal leading-[1.1] tracking-tight text-gray-900 mb-5"
+               className="font-heading text-[2.6rem] md:text-[3.2rem] lg:text-[3.6rem] font-bold leading-[1.1] tracking-tight text-gray-900 mb-5"
              >
                Simplifying
                <br />
-               <em className="italic font-serif text-[#0f4c3a]">Global Relocation.</em>
+               <span className="font-bold text-[#0f4c3a]">Global Relocation.</span>
              </motion.h1>
 
              {/* Subtitle */}

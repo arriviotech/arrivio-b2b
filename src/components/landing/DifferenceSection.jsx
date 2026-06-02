@@ -24,9 +24,9 @@ const DifferenceSection = () => {
               <span className="h-px w-8 bg-gray-300" />
             </div>
 
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-normal text-gray-900 mb-7 leading-tight">
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-7 leading-tight">
               Reserve Housing Capacity{' '}
-              <em className="italic font-serif text-[#0f4c3a]">Before Hiring.</em>
+              <span className="font-bold text-[#0f4c3a]">Before Hiring.</span>
             </h2>
 
             <p className="text-base md:text-lg text-gray-500 mb-10 leading-relaxed">

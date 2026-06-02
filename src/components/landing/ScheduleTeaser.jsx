@@ -50,9 +50,9 @@ const ScheduleTeaser = () => {
             <span className="text-[11px] font-semibold text-gray-400 tracking-[0.2em] uppercase">Strategy Session</span>
             <span className="h-px w-8 bg-gray-300" />
           </div>
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-normal text-gray-900 mb-6 leading-tight">
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Ready to scale your global{' '}
-            <em className="italic font-serif text-[#0f4c3a]">Employee Housing?</em>
+            <span className="font-bold text-[#0f4c3a]">Employee Housing?</span>
           </h2>
           <p className="text-base md:text-lg text-gray-500 leading-relaxed max-w-xl mx-auto">
             Book a strategy call with our team. In three simple steps, we&rsquo;ll transition your organization to a fully structured, automated B2B housing platform.
@@ -105,7 +105,7 @@ const ScheduleTeaser = () => {
                 </div>
 
                 {/* Step Title */}
-                <h3 className="font-serif text-[17px] font-bold text-gray-900 mb-2 transition-colors duration-300 group-hover/step:text-[#0f4c3a]">
+                <h3 className="font-heading text-[17px] font-bold text-gray-900 mb-2 transition-colors duration-300 group-hover/step:text-[#0f4c3a]">
                   {step.title}
                 </h3>
 

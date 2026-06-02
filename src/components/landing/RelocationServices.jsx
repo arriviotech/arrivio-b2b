@@ -44,9 +44,9 @@ const RelocationServices = () => {
             <span className="text-[11px] font-semibold text-gray-400 tracking-[0.2em] uppercase">Popular Services</span>
             <span className="h-px w-8 bg-gray-300" />
           </div>
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-normal text-gray-900 mb-5 text-center">
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-5 text-center">
             Beyond Housing:{' '}
-            <em className="italic font-serif text-[#0f4c3a]">Complete Relocation Support.</em>
+            <span className="font-bold text-[#0f4c3a]">Complete Relocation Support.</span>
           </h2>
           <p className="text-base md:text-lg text-gray-500 max-w-2xl leading-relaxed mx-auto">
             We don't just provide apartments. We ensure your employees have everything they need to settle in smoothly from day one.
@@ -69,7 +69,7 @@ const RelocationServices = () => {
                 <div className="w-14 h-14 rounded-full border border-gray-300 flex items-center justify-center mb-6 text-gray-600 group-hover:bg-[#0f4c3a] group-hover:border-[#0f4c3a] group-hover:text-white transition-all duration-500">
                   {service.icon}
                 </div>
-                <h4 className="font-serif text-2xl font-normal text-gray-900 mb-3">{service.title}</h4>
+                <h4 className="font-heading text-2xl font-semibold text-gray-900 mb-3">{service.title}</h4>
                 <div className="w-8 h-px bg-gray-300 mb-3" />
                 <p className="text-gray-500 leading-relaxed text-sm md:text-base">
                   {service.description}

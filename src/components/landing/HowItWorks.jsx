@@ -54,8 +54,8 @@ const HowItWorks = () => {
             <span className="text-[11px] font-semibold text-gray-400 tracking-[0.2em] uppercase">Streamlined Process</span>
             <span className="h-px w-8 bg-gray-300" />
           </div>
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-normal text-gray-900 mb-6">
-            How it <em className="italic font-serif text-[#0f4c3a]">Works.</em>
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            How it <span className="font-bold text-[#0f4c3a]">Works.</span>
           </h2>
           <p className="text-base md:text-lg text-gray-500 leading-relaxed max-w-xl mx-auto">
             A streamlined, five-step journey from exploring properties to tracking your entire relocation spend in real time.
@@ -73,21 +73,23 @@ const HowItWorks = () => {
               transition={{ delay: index * 0.12, duration: 0.5 }}
               className="relative group h-full"
             >
-              {/* Step Number */}
-              <div className="absolute top-4 left-5 text-[4.5rem] font-serif font-black text-gray-200 select-none transition-all duration-500 group-hover:text-[#0f4c3a]/30 z-20 leading-none">
-                0{index + 1}
-              </div>
+              <div className="bg-white p-6 rounded-2xl transition-all duration-500 h-full flex flex-col relative z-10 landing-card-hover">
 
-              <div className="bg-white p-8 rounded-2xl transition-all duration-500 h-full flex flex-col items-center text-center relative z-10 landing-card-hover">
-                {/* Icon */}
-                <div className="w-14 h-14 rounded-full border border-gray-300 flex items-center justify-center mb-6 text-gray-600 group-hover:bg-[#0f4c3a] group-hover:border-[#0f4c3a] group-hover:text-white transition-all duration-500 shrink-0 self-end">
-                  {step.icon}
+                {/* Top row: number left, icon right */}
+                <div className="flex items-center justify-between w-full mb-6">
+                  <span className="text-[3.5rem] font-heading font-black text-gray-200 leading-none select-none transition-all duration-500 group-hover:text-[#0f4c3a]/25">
+                    0{index + 1}
+                  </span>
+                  <div className="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 group-hover:bg-[#0f4c3a] group-hover:border-[#0f4c3a] group-hover:text-white transition-all duration-500 shrink-0">
+                    {step.icon}
+                  </div>
                 </div>
 
-                <div className="text-center mt-auto">
-                  <h3 className="font-serif text-2xl font-normal text-gray-900 mb-3">{step.title}</h3>
-                  <div className="w-8 h-px bg-gray-300 mx-auto mb-3" />
-                  <p className="text-gray-500 leading-relaxed text-sm md:text-base">
+                {/* Content */}
+                <div>
+                  <h3 className="font-heading text-base font-bold text-gray-900 mb-2">{step.title}</h3>
+                  <div className="w-6 h-px bg-gray-200 mb-3" />
+                  <p className="text-gray-500 leading-relaxed text-sm">
                     {step.description}
                   </p>
                 </div>

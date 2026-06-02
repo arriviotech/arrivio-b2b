@@ -61,9 +61,9 @@ const Schedule = () => {
                                         <span className="h-px w-8 bg-gray-300" />
                                     </div>
 
-                                    <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-normal text-gray-900 mb-5 leading-tight">
+                                    <h2 className="font-heading text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-gray-900 mb-5 leading-tight">
                                         Housing at scale,{' '}
-                                        <em className="italic font-serif text-[#0f4c3a]">done right.</em>
+                                        <span className="font-bold text-[#0f4c3a]">done right.</span>
                                     </h2>
 
                                     <p className="text-gray-500 text-[15px] leading-relaxed mb-10 max-w-md">
@@ -78,7 +78,7 @@ const Schedule = () => {
                                             { value: '30 min', label: 'Avg. Call' },
                                         ].map((stat) => (
                                             <div key={stat.label} className="bg-white/80 rounded-2xl px-4 py-4 border border-gray-200/60 shadow-sm">
-                                                <p className="font-serif font-bold text-2xl text-gray-900 mb-0.5">{stat.value}</p>
+                                                <p className="font-heading font-bold text-2xl text-gray-900 mb-0.5">{stat.value}</p>
                                                 <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider leading-tight">{stat.label}</p>
                                             </div>
                                         ))}
@@ -100,9 +100,9 @@ const Schedule = () => {
                                                 <Calendar className="w-6 h-6 text-white" />
                                             </div>
 
-                                            <h3 className="font-serif text-2xl md:text-3xl font-normal text-white mb-3 leading-snug">
+                                            <h3 className="font-heading text-2xl md:text-3xl font-bold text-white mb-3 leading-snug">
                                                 Book a Strategy{' '}
-                                                <em className="italic font-serif text-[#7dd5a8]">Call</em>
+                                                <span className="font-bold text-[#7dd5a8]">Call</span>
                                             </h3>
 
                                             <p className="text-white/60 text-sm leading-relaxed mb-8">
@@ -147,11 +147,11 @@ const Schedule = () => {
                         <div className="w-full relative z-10">
                             {/* HEADER */}
                             <div className="text-center mb-8 md:mb-12">
-                                <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-normal text-gray-900 mb-3 md:mb-4">
+                                <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 md:mb-4">
                                     <span>Schedule a Meeting with </span>
-                                    <em className="italic font-serif text-[#0f4c3a]">
+                                    <span className="font-bold text-[#0f4c3a]">
                                         Arrivio
-                                    </em>
+                                    </span>
                                 </h2>
 
                                 <p className="font-sans text-sm md:text-base text-gray-500 max-w-2xl mx-auto leading-relaxed">
@@ -200,9 +200,9 @@ const Schedule = () => {
                                     </div>
                                 </div>
 
-                                <h3 className="text-3xl font-serif font-normal text-gray-900 mb-4 leading-tight">
+                                <h3 className="text-3xl font-heading font-bold text-gray-900 mb-4 leading-tight">
                                     Better Convenience <br />
-                                    <em className="italic font-serif text-[#0f4c3a]">Awaits You</em>
+                                    <span className="font-bold text-[#0f4c3a]">Awaits You</span>
                                 </h3>
 
                                 <p className="text-gray-500 mb-10 text-lg leading-relaxed font-sans">

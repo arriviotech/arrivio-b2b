@@ -42,9 +42,9 @@ const TargetAudience = () => {
             <span className="h-px w-8 bg-gray-300" />
           </div>
 
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-normal text-gray-900 mb-6 leading-tight">
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Built for{' '}
-            <em className="italic font-serif text-[#0f4c3a]">Global Organisations.</em>
+            <span className="font-bold text-[#0f4c3a]">Global Organisations.</span>
           </h2>
           <p className="text-base md:text-lg text-gray-500 leading-relaxed max-w-xl mx-auto">
             The platform supports different partner types with role-specific dashboards, tailored to your organizational structure.
@@ -66,7 +66,7 @@ const TargetAudience = () => {
                 <div className="w-14 h-14 rounded-full border border-gray-300 flex items-center justify-center mb-6 text-gray-600 group-hover:bg-[#0f4c3a] group-hover:border-[#0f4c3a] group-hover:text-white transition-all duration-500">
                   {audience.icon}
                 </div>
-                <h3 className="font-serif text-2xl font-normal text-gray-900 mb-3">{audience.title}</h3>
+                <h3 className="font-heading text-2xl font-semibold text-gray-900 mb-3">{audience.title}</h3>
                 <div className="w-8 h-px bg-gray-300 mb-3" />
                 <p className="text-gray-500 leading-relaxed text-sm md:text-base">
                   {audience.description}

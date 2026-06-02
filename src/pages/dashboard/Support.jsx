@@ -217,7 +217,7 @@ const Support = () => {
                 <div className="min-w-0">
                   <h4 className="font-extrabold text-sm text-white">Sarah Davies</h4>
                   <p className="text-xs text-emerald-350 mt-0.5 font-bold">Dedicated B2B Success Partner</p>
-                  <p className="text-[9px] text-gray-300 mt-1 font-medium italic">Priority Support Line Active</p>
+                  <p className="text-[9px] text-gray-300 mt-1 font-medium">Priority Support Line Active</p>
                 </div>
               </div>
 
@@ -424,7 +424,7 @@ const Support = () => {
                     );
                   })
                 ) : (
-                  <div className="py-12 text-center text-gray-400 font-bold italic text-xs">
+                  <div className="py-12 text-center text-gray-400 font-bold text-xs">
                     No FAQs match your search query. Try another term.
                   </div>
                 )}
@@ -491,7 +491,7 @@ const Support = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="p-6 text-center text-gray-400 font-bold italic text-xs">
+                  <div className="p-6 text-center text-gray-400 font-bold text-xs">
                     No support tickets raised yet.
                   </div>
                 )}

@@ -432,7 +432,7 @@ const DashboardPropertyDetails = () => {
                                                             <span className="font-medium text-gray-900">{unit.resident}</span>
                                                         </div>
                                                     ) : (
-                                                        <span className="text-gray-400 text-sm italic">Unassigned</span>
+                                                        <span className="text-gray-400 text-sm">Unassigned</span>
                                                     )}
                                                 </td>
                                                 <td className="py-4 px-4 text-gray-600 text-sm">{unit.leaseEnd || '-'}</td>
@@ -588,7 +588,7 @@ const DashboardPropertyDetails = () => {
                                                                     </div>
                                                                 </div>
                                                             ) : (
-                                                                <div className="mt-2 text-sm text-gray-400 italic flex items-center gap-1.5"><Mail size={14} /> Available to allocate</div>
+                                                                <div className="mt-2 text-sm text-gray-400 flex items-center gap-1.5"><Mail size={14} /> Available to allocate</div>
                                                             )}
                                                         </div>
                                                         <div className="flex items-center justify-end sm:border-l border-gray-50 sm:pl-5 pt-4 sm:pt-0 mt-3 sm:mt-0 min-w-[120px]">
