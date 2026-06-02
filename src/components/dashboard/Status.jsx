@@ -149,7 +149,7 @@ const ChipPortal = ({ phase, substepStatuses, anchorRect, popupRef }) => {
         flexDirection: 'column-reverse',
         gap: '6px',
         alignItems: 'stretch',
-        // pointer arrow via pseudo- we'll do a triangle via box
+        pointerEvents: 'none',
     };
 
     return ReactDOM.createPortal(
@@ -180,7 +180,7 @@ const ChipPortal = ({ phase, substepStatuses, anchorRect, popupRef }) => {
 };
 
 // ─── Phase Node ───────────────────────────────────────────────────────────────
-const PhaseNode = ({ phase, substepStatuses, isActive, onToggle, isLast, buttonRef }) => {
+const PhaseNode = ({ phase, substepStatuses, isActive, onMouseEnter, onMouseLeave, onToggle, isLast, buttonRef }) => {
     const Icon = phase.icon;
     const statuses = phase.substeps.map(s => substepStatuses[s.id] || 'pending');
     const allDone = statuses.every(s => s === 'done');
@@ -202,8 +202,10 @@ const PhaseNode = ({ phase, substepStatuses, isActive, onToggle, isLast, buttonR
             {/* Main phase circle + label */}
             <button
                 ref={buttonRef}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
                 onClick={onToggle}
-                className="relative z-10 flex flex-col items-center gap-2 outline-none focus:outline-none"
+                className="relative z-10 flex flex-col items-center gap-2 outline-none focus:outline-none cursor-pointer"
             >
                 <div
                     className="relative w-11 h-11 rounded-full flex items-center justify-center cursor-pointer"
@@ -382,7 +384,7 @@ const Status = ({ property }) => {
                     <div className="flex items-center justify-between mb-10">
                         <div>
                             <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Onboarding Progress</p>
-                            <p className="text-[10px] text-gray-400 mt-0.5 font-medium">Click a phase to see its tasks</p>
+                            <p className="text-[10px] text-gray-400 mt-0.5 font-medium">Hover over a phase to see its tasks</p>
                         </div>
                         <p className="text-xs font-bold text-[#0f4c3a]">{doneCount} of {TOTAL} Milestones done</p>
                     </div>
@@ -398,6 +400,17 @@ const Status = ({ property }) => {
                                 phase={phase}
                                 substepStatuses={substepStatuses}
                                 isActive={activePhase === phase.id}
+                                onMouseEnter={() => {
+                                    const btn = buttonRefs.current[phase.id];
+                                    if (btn) {
+                                        setAnchorRect(btn.getBoundingClientRect());
+                                        setActivePhase(phase.id);
+                                    }
+                                }}
+                                onMouseLeave={() => {
+                                    setActivePhase(null);
+                                    setAnchorRect(null);
+                                }}
                                 onToggle={() => {
                                     const btn = buttonRefs.current[phase.id];
                                     if (activePhase === phase.id) {

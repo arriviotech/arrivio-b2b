@@ -20,7 +20,7 @@ const PropertiesNavbar = ({ searchTerm = '', onSearchChange, isHidden = false })
   const totalUnits = reservations.reduce((acc, curr) => acc + curr.quantity, 0);
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-[100] h-16 md:h-20 px-4 md:px-12 bg-[#f2f2f2]/90 backdrop-blur-xl shadow-md transition-transform duration-300 ease-out ${isHidden ? '-translate-y-full' : 'translate-y-0'}`}>
+    <nav className={`fixed top-0 left-0 w-full z-[100] h-16 md:h-20 px-4 md:px-12 bg-background-neutral/90 backdrop-blur-xl shadow-md transition-transform duration-300 ease-out ${isHidden ? '-translate-y-full' : 'translate-y-0'}`}>
       <div className="max-w-7xl mx-auto h-full flex items-center justify-between gap-4">
         {/* Logo */}
         <Link to="/" className="shrink-0 flex items-center">

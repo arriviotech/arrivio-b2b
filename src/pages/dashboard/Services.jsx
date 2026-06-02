@@ -441,7 +441,7 @@ export default function Services() {
                       </div>
                     ) : (
                       <div className="py-8 text-center bg-gray-50/50 rounded-2xl border border-dashed border-gray-250">
-                        <p className="text-sm text-gray-400 font-bold italic">No services selected</p>
+                        <p className="text-sm text-gray-400 font-bold">No services selected</p>
                         <p className="text-[11px] text-gray-400 font-medium mt-1 leading-snug max-w-[200px] mx-auto">
                           Check boxes on the left to select services to pay.
                         </p>

@@ -5,27 +5,27 @@ import { Search, Users, CreditCard, LayoutDashboard, BarChart3, ArrowRight } fro
 
 const steps = [
   {
-    icon: <Search className="w-6 h-6" />,
+    icon: <Search className="w-7 h-7" />,
     title: "View Properties",
     description: "Explore our curated selection of premium enterprise housing solutions."
   },
   {
-    icon: <Users className="w-6 h-6" />,
+    icon: <Users className="w-7 h-7" />,
     title: "Meeting",
     description: "Connect with our team to discuss your specific requirements and scaling needs."
   },
   {
-    icon: <CreditCard className="w-6 h-6" />,
+    icon: <CreditCard className="w-7 h-7" />,
     title: "Payment",
     description: "Hassle-free enterprise-grade payment processing and flexible billing."
   },
   {
-    icon: <LayoutDashboard className="w-6 h-6" />,
+    icon: <LayoutDashboard className="w-7 h-7" />,
     title: "Allocate & Manage",
     description: "Assign employees to units and coordinate essential relocation services through a centralized hub."
   },
   {
-    icon: <BarChart3 className="w-6 h-6" />,
+    icon: <BarChart3 className="w-7 h-7" />,
     title: "Track & Report",
     description: "Monitor occupancy rate, service status, and total relocation spend in real-time."
   }
@@ -34,7 +34,7 @@ const steps = [
 const HowItWorks = () => {
   const navigate = useNavigate();
   return (
-    <section className="py-28 bg-gradient-to-b from-[#f7f9f8] to-white relative overflow-hidden">
+    <section className="py-28 bg-[#f5f5f3] relative overflow-hidden">
       {/* Decorative background */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div className="absolute top-[10%] right-[5%] w-72 h-72 bg-[#0f4c3a]/[0.03] rounded-full blur-[100px]" />
@@ -43,26 +43,24 @@ const HowItWorks = () => {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#0f4c3a]/15 bg-[#0f4c3a]/[0.04] mb-5"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0f4c3a]" />
-            <span className="text-[11px] font-semibold text-[#0f4c3a] tracking-[0.12em] uppercase">Streamlined Process</span>
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900"
-          >
-            How it <span className="bg-gradient-to-r from-[#0f4c3a] to-[#186b53] bg-clip-text text-transparent">Works</span>
-          </motion.h2>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16 max-w-2xl mx-auto"
+        >
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <span className="h-px w-8 bg-gray-300" />
+            <span className="text-[11px] font-semibold text-gray-400 tracking-[0.2em] uppercase">Streamlined Process</span>
+            <span className="h-px w-8 bg-gray-300" />
+          </div>
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            How it <span className="font-bold text-[#0f4c3a]">Works</span>
+          </h2>
+          <p className="text-base md:text-lg text-gray-500 leading-relaxed max-w-xl mx-auto">
+            A streamlined, five-step journey from exploring properties to tracking your entire relocation spend in real time.
+          </p>
+        </motion.div>
 
         {/* Steps Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
@@ -75,20 +73,23 @@ const HowItWorks = () => {
               transition={{ delay: index * 0.12, duration: 0.5 }}
               className="relative group h-full"
             >
-              {/* Step Number */}
-              <div className="absolute top-5 left-6 text-[4.5rem] font-serif font-black text-[#0f4c3a]/20 select-none transition-all duration-500 group-hover:text-[#0f4c3a]/45 z-20 leading-none">
-                0{index + 1}
-              </div>
+              <div className="bg-white p-6 rounded-2xl transition-all duration-500 h-full flex flex-col relative z-10 landing-card-hover">
 
-              <div className="bg-white p-8 rounded-3xl border border-gray-100 hover:border-[#0f4c3a]/15 transition-all duration-500 h-full flex flex-col items-start gap-6 relative z-10 landing-card-hover group-hover:shadow-[0_20px_60px_rgba(15,76,58,0.08)]">
-                {/* Icon */}
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0f4c3a]/5 to-[#186b53]/10 flex items-center justify-center text-[#0f4c3a] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shrink-0 self-end border border-[#0f4c3a]/5">
-                  {step.icon}
+                {/* Top row: number left, icon right */}
+                <div className="flex items-center justify-between w-full mb-6">
+                  <span className="text-[3.5rem] font-heading font-black text-gray-200 leading-none select-none transition-all duration-500 group-hover:text-[#0f4c3a]/25">
+                    0{index + 1}
+                  </span>
+                  <div className="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 group-hover:bg-[#0f4c3a] group-hover:border-[#0f4c3a] group-hover:text-white transition-all duration-500 shrink-0">
+                    {step.icon}
+                  </div>
                 </div>
 
-                <div className="text-left">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">
+                {/* Content */}
+                <div>
+                  <h3 className="font-heading text-base font-bold text-gray-900 mb-2">{step.title}</h3>
+                  <div className="w-6 h-px bg-gray-200 mb-3" />
+                  <p className="text-gray-500 leading-relaxed text-sm">
                     {step.description}
                   </p>
                 </div>
@@ -114,10 +115,10 @@ const HowItWorks = () => {
         >
           <button
             onClick={() => navigate('/how-it-works')}
-            className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-[13.5px] font-semibold px-5 py-2.5 rounded-xl border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200"
+            className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-[11px] font-semibold px-6 py-3 rounded-full border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 uppercase tracking-[0.15em]"
           >
-            <ArrowRight size={15} className="text-[#0f4c3a]" />
             Take a Tour
+            <ArrowRight size={14} className="text-[#0f4c3a]" />
           </button>
         </motion.div>
       </div>

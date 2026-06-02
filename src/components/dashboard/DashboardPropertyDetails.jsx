@@ -36,6 +36,29 @@ const DashboardPropertyDetails = () => {
     const [typeFilter, setTypeFilter] = useState('All');
     const [statusFilter, setStatusFilter] = useState('All');
 
+    // Mock Ticket Data based on Contract ID
+    const mockTickets = useMemo(() => {
+        if (id === 'CT-7041') {
+            return [
+                { id: 'TKT-1049', title: 'Request to upgrade cleaning package to weekly deep-cleans', status: 'open', date: 'Oct 24, 2026', priority: 'high', unit: 'S-104' },
+                { id: 'TKT-1042', title: 'Can we customize the workspace furniture layout for this studio?', status: 'in-progress', date: 'Oct 20, 2026', priority: 'low', unit: 'S-102' },
+                { id: 'TKT-1028', title: 'Can we schedule keycard collection for new employee arrivals on Monday?', status: 'resolved', date: 'Oct 12, 2026', priority: 'medium', unit: 'I-108' }
+            ];
+        } else if (id === 'CT-5921') {
+            return [
+                { id: 'TKT-2049', title: 'Inquiry about adding monthly flower service delivery to the lobby', status: 'open', date: 'Oct 25, 2026', priority: 'high', unit: 'S-101' },
+                { id: 'TKT-2042', title: 'Can we request a second bike storage key for the garage?', status: 'in-progress', date: 'Oct 21, 2026', priority: 'low', unit: 'S-105' },
+                { id: 'TKT-2028', title: 'Request to adjust high-speed internet tier for remote workers', status: 'resolved', date: 'Oct 15, 2026', priority: 'medium', unit: 'I-102' }
+            ];
+        } else {
+            return [
+                { id: 'TKT-3049', title: 'Inquiry about extra laundry service packages for our corporate tenants', status: 'open', date: 'Oct 26, 2026', priority: 'high', unit: 'S-106' },
+                { id: 'TKT-3042', title: 'Can we coordinate a guided tour of the local community spaces?', status: 'in-progress', date: 'Oct 22, 2026', priority: 'low', unit: 'S-108' },
+                { id: 'TKT-3028', title: 'Request for carbon offset reporting data on our building energy usage', status: 'resolved', date: 'Oct 18, 2026', priority: 'medium', unit: 'I-104' }
+            ];
+        }
+    }, [id]);
+
     // Find the property from Supabase data
     const mockContracts = [
         {
@@ -236,12 +259,6 @@ const DashboardPropertyDetails = () => {
         );
     }
 
-    // Mock Ticket Data
-    const mockTickets = [
-        { id: 'TKT-1049', title: 'Heating issue in living room', status: 'open', date: 'Oct 24, 2026', priority: 'high', unit: 'S-104' },
-        { id: 'TKT-1042', title: 'Window blind mechanism stuck', status: 'in-progress', date: 'Oct 20, 2026', priority: 'low', unit: 'S-102' },
-        { id: 'TKT-1028', title: 'Keycard access intermittent', status: 'resolved', date: 'Oct 12, 2026', priority: 'medium', unit: 'I-108' }
-    ];
 
     const getStatusBadge = (status) => {
         switch (status) {
@@ -415,7 +432,7 @@ const DashboardPropertyDetails = () => {
                                                             <span className="font-medium text-gray-900">{unit.resident}</span>
                                                         </div>
                                                     ) : (
-                                                        <span className="text-gray-400 text-sm italic">Unassigned</span>
+                                                        <span className="text-gray-400 text-sm">Unassigned</span>
                                                     )}
                                                 </td>
                                                 <td className="py-4 px-4 text-gray-600 text-sm">{unit.leaseEnd || '-'}</td>
@@ -453,12 +470,18 @@ const DashboardPropertyDetails = () => {
                             <div className="space-y-4">
                                 {mockTickets.map((ticket) => (
                                     <div key={ticket.id} className="border border-gray-100 rounded-2xl p-5 hover:border-gray-250 hover:shadow-md transition-all bg-white cursor-pointer group">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <div className="flex items-center gap-3">
-                                                {getTicketStatusIcon(ticket.status)}
-                                                <h3 className="font-bold text-gray-900 group-hover:text-[#0f4c3a] transition-colors">{ticket.title}</h3>
+                                        <div className="flex justify-between items-start gap-4 mb-2">
+                                            <div className="flex items-start gap-3 flex-1 min-w-0 pt-0.5">
+                                                <div className="shrink-0 mt-0.5">
+                                                    {getTicketStatusIcon(ticket.status)}
+                                                </div>
+                                                <h3 className="font-bold text-gray-900 group-hover:text-[#0f4c3a] transition-colors leading-snug break-words">
+                                                    {ticket.title}
+                                                </h3>
                                             </div>
-                                            <span className="text-xs font-bold text-gray-400 bg-gray-50 px-2.5 py-1 rounded-md border border-gray-100">{ticket.id}</span>
+                                            <span className="text-xs font-bold text-gray-400 bg-gray-50 px-2.5 py-1 rounded-md border border-gray-100 shrink-0">
+                                                {ticket.id}
+                                            </span>
                                         </div>
                                         <div className="flex items-center gap-4 text-sm text-gray-500 mt-3 ml-7">
                                             <span className="flex items-center gap-1"><Building2 size={14} /> Unit {ticket.unit}</span>
@@ -565,7 +588,7 @@ const DashboardPropertyDetails = () => {
                                                                     </div>
                                                                 </div>
                                                             ) : (
-                                                                <div className="mt-2 text-sm text-gray-400 italic flex items-center gap-1.5"><Mail size={14} /> Available to allocate</div>
+                                                                <div className="mt-2 text-sm text-gray-400 flex items-center gap-1.5"><Mail size={14} /> Available to allocate</div>
                                                             )}
                                                         </div>
                                                         <div className="flex items-center justify-end sm:border-l border-gray-50 sm:pl-5 pt-4 sm:pt-0 mt-3 sm:mt-0 min-w-[120px]">

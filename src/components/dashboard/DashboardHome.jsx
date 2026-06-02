@@ -149,7 +149,7 @@ const DashboardHome = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-white p-6 rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300">
                     <h3 className="text-gray-400 font-black tracking-wide text-[9px] uppercase mb-2">Active Properties</h3>
-                    <p className="text-3xl font-serif font-bold text-gray-900 leading-tight">3</p>
+                    <p className="text-3xl font-sans font-extrabold text-gray-900 leading-tight">3</p>
                     <div className="mt-4 text-xs font-bold text-[#0f4c3a] flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>+2 from last month</span>
@@ -157,7 +157,7 @@ const DashboardHome = () => {
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300">
                     <h3 className="text-gray-400 font-black tracking-wide text-[9px] uppercase mb-2">Total Employees</h3>
-                    <p className="text-3xl font-serif font-bold text-gray-900 leading-tight">48</p>
+                    <p className="text-3xl font-sans font-extrabold text-gray-900 leading-tight">48</p>
                     <div className="mt-4 text-xs font-bold text-[#0f4c3a] flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>+5 new arrivals</span>
@@ -165,7 +165,7 @@ const DashboardHome = () => {
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-[#e5e7eb] hover:border-[#0f4c3a]/20 shadow-sm hover:shadow-md transition-all duration-300">
                     <h3 className="text-gray-400 font-black tracking-wide text-[9px] uppercase mb-2">Monthly Spend</h3>
-                    <p className="text-3xl font-serif font-bold text-gray-900 leading-tight">€28,000</p>
+                    <p className="text-3xl font-sans font-extrabold text-gray-900 leading-tight">€28,000</p>
                     <div className="mt-4 text-xs font-bold text-gray-505 flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
                         <span>Projected for March</span>

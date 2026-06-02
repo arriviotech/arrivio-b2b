@@ -15,7 +15,7 @@ const PropertyDetails = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#f2f2f2]">
+      <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-background-neutral">
         <PropertiesNavbar />
         <main className="flex-grow pt-40 pb-32 flex items-center justify-center px-6">
           <div className="text-center">
@@ -30,7 +30,7 @@ const PropertyDetails = () => {
 
   if (!property) {
     return (
-      <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#f2f2f2]">
+      <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-background-neutral">
         <PropertiesNavbar />
         <main className="flex-grow pt-40 pb-32 flex items-center justify-center px-6">
           <div className="bg-white rounded-3xl p-10 md:p-14 text-center shadow-sm border border-gray-100 max-w-md w-full">
@@ -96,7 +96,7 @@ const PropertyDetails = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#f2f2f2]">
+    <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-background-neutral">
       <PropertiesNavbar />
 
       <main className="flex-grow pt-28 pb-24">

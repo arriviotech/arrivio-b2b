@@ -52,26 +52,22 @@ const Schedule = () => {
                             <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
                                 {/* ── LEFT: Context + trust signals ── */}
-                                <div className="flex flex-col justify-center">
+                                 <div className="flex flex-col justify-center">
 
-                                    {/* Section badge */}
-                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#0f4c3a]/15 bg-[#0f4c3a]/[0.04] mb-7 self-start">
-                                        <span className="relative flex h-1.5 w-1.5 shrink-0">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0f4c3a] opacity-50" />
-                                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#0f4c3a]" />
-                                        </span>
-                                        <span className="text-[11px] font-semibold text-[#0f4c3a] tracking-[0.12em] uppercase">Let's Talk</span>
+                                    {/* Section tag */}
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <span className="h-px w-8 bg-gray-300" />
+                                        <span className="text-[11px] font-semibold text-gray-400 tracking-[0.2em] uppercase">Let's Talk</span>
+                                        <span className="h-px w-8 bg-gray-300" />
                                     </div>
 
-                                    <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] text-gray-900 mb-5 leading-tight">
+                                    <h2 className="font-heading text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-gray-900 mb-5 leading-tight">
                                         Housing at scale,{' '}
-                                        <span className="italic bg-gradient-to-r from-[#0f4c3a] to-[#186b53] bg-clip-text text-transparent">
-                                            done right.
-                                        </span>
+                                        <span className="font-bold text-[#0f4c3a]">done right.</span>
                                     </h2>
 
                                     <p className="text-gray-500 text-[15px] leading-relaxed mb-10 max-w-md">
-                                        From reserving capacity before your employees arrive, to managing their day-to-day housing- Arrivio handles it all. Book a 30-minute strategy call to see how.
+                                        From reserving capacity before your employees arrive, to managing their day-to-day housing—Arrivio handles it all. Book a 30-minute strategy call to see how.
                                     </p>
 
                                     {/* Trust stats */}
@@ -81,9 +77,9 @@ const Schedule = () => {
                                             { value: '8', label: 'Cities Active' },
                                             { value: '30 min', label: 'Avg. Call' },
                                         ].map((stat) => (
-                                            <div key={stat.label} className="bg-[#f4f7f6] rounded-2xl px-4 py-4 border border-gray-100">
-                                                <p className="font-bold text-xl text-gray-900 mb-0.5">{stat.value}</p>
-                                                <p className="text-[11px] text-gray-400 font-medium leading-tight">{stat.label}</p>
+                                            <div key={stat.label} className="bg-white/80 rounded-2xl px-4 py-4 border border-gray-200/60 shadow-sm">
+                                                <p className="font-heading font-bold text-2xl text-gray-900 mb-0.5">{stat.value}</p>
+                                                <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider leading-tight">{stat.label}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -100,17 +96,17 @@ const Schedule = () => {
                                         <div className="absolute top-7 right-7 w-2 h-2 rounded-full bg-[#D4A017]" />
 
                                         <div className="relative z-10">
-                                            <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center mb-6">
+                                            <div className="w-12 h-12 rounded-full bg-white/10 border border-white/15 flex items-center justify-center mb-6">
                                                 <Calendar className="w-6 h-6 text-white" />
                                             </div>
 
-                                            <h3 className="font-serif text-2xl md:text-3xl text-white mb-3 leading-snug">
+                                            <h3 className="font-heading text-2xl md:text-3xl font-bold text-white mb-3 leading-snug">
                                                 Book a Strategy{' '}
-                                                <span className="italic text-[#7dd5a8]">Call</span>
+                                                <span className="font-bold text-[#7dd5a8]">Call</span>
                                             </h3>
 
                                             <p className="text-white/60 text-sm leading-relaxed mb-8">
-                                                Speak directly with our team- a focused conversation about your housing needs, no sales scripts.
+                                                Speak directly with our team—a focused conversation about your housing needs, no sales scripts.
                                             </p>
 
                                             {/* What to expect */}
@@ -131,13 +127,13 @@ const Schedule = () => {
 
                                             <button
                                                 onClick={handleScheduleClick}
-                                                className="w-full bg-white hover:bg-gray-50 text-[#0f4c3a] font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.15)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 flex items-center justify-center gap-2.5 group text-[15px]"
+                                                className="w-full bg-white hover:bg-gray-50 text-[#0f4c3a] font-bold py-4 px-6 rounded-full transition-all duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.15)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 flex items-center justify-center gap-2.5 group text-xs uppercase tracking-[0.2em]"
                                             >
                                                 Schedule a Meeting
                                                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                             </button>
 
-                                            <p className="text-center text-white/35 text-[11px] mt-4 font-medium tracking-wide">
+                                            <p className="text-center text-white/35 text-[10px] mt-4 font-semibold tracking-widest uppercase">
                                                 Free &nbsp;·&nbsp; 30 minutes &nbsp;·&nbsp; No commitment
                                             </p>
                                         </div>
@@ -151,10 +147,10 @@ const Schedule = () => {
                         <div className="w-full relative z-10">
                             {/* HEADER */}
                             <div className="text-center mb-8 md:mb-12">
-                                <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-3 md:mb-4">
+                                <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 md:mb-4">
                                     <span>Schedule a Meeting with </span>
-                                    <span className="italic bg-gradient-to-r from-[#0f4c3a] to-[#186b53] bg-clip-text text-transparent">
-                                        ARRIVIO
+                                    <span className="font-bold text-[#0f4c3a]">
+                                        Arrivio
                                     </span>
                                 </h2>
 
@@ -204,9 +200,9 @@ const Schedule = () => {
                                     </div>
                                 </div>
 
-                                <h3 className="text-3xl font-serif font-bold text-gray-900 mb-4 leading-tight">
+                                <h3 className="text-3xl font-heading font-bold text-gray-900 mb-4 leading-tight">
                                     Better Convenience <br />
-                                    <span className="italic bg-gradient-to-r from-[#0f4c3a] to-[#186b53] bg-clip-text text-transparent">Awaits You</span>
+                                    <span className="font-bold text-[#0f4c3a]">Awaits You</span>
                                 </h3>
 
                                 <p className="text-gray-500 mb-10 text-lg leading-relaxed font-sans">
@@ -216,7 +212,7 @@ const Schedule = () => {
                                 <div className="flex flex-col gap-4">
                                     <button
                                         onClick={() => navigate('/properties')}
-                                        className="bg-gradient-to-r from-[#0f4c3a] to-[#186b53] hover:from-[#186b53] hover:to-[#1e8f6e] text-white py-4 px-8 rounded-2xl font-bold transition-all duration-300 shadow-[0_10px_30px_rgba(15,76,58,0.2)] hover:shadow-[0_15px_40px_rgba(15,76,58,0.3)] flex items-center justify-center gap-2 group"
+                                        className="bg-[#0f4c3a] hover:bg-[#186b53] text-white py-4 px-8 rounded-full font-bold uppercase tracking-[0.15em] text-[11px] transition-all duration-300 shadow-[0_10px_30px_rgba(15,76,58,0.2)] hover:shadow-[0_15px_40px_rgba(15,76,58,0.3)] flex items-center justify-center gap-2 group cursor-pointer"
                                     >
                                         View Properties
                                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -227,7 +223,7 @@ const Schedule = () => {
                                             setShowGatedModal(false);
                                             setIsUnlocked(true);
                                         }}
-                                        className="bg-gray-50 hover:bg-gray-100 text-gray-700 py-3.5 px-8 rounded-2xl font-bold transition-all duration-300 border border-gray-100"
+                                        className="bg-gray-50 hover:bg-gray-100 text-gray-700 py-3.5 px-8 rounded-full font-bold uppercase tracking-[0.15em] text-[11px] transition-all duration-300 border border-gray-200 cursor-pointer"
                                     >
                                         Directly Schedule
                                     </button>

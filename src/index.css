@@ -10,7 +10,7 @@
   /* Semantic aliases (kept for existing B2B component usage) */
   --color-primary-green: #0f4c3a;
   --color-primary-green-light: #186b53;
-  --color-background-neutral: #f2f2f2;
+  --color-background-neutral: #f5f5f3;
   --color-surface-white: #ffffff;
   --color-text-dark: #111827;
   --color-text-muted: #4b5563;
@@ -26,6 +26,34 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 6rem;
+  }
+
+  /* Global Premium Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #fdfdfd;
+    border-left: 1px solid rgba(229, 231, 235, 0.5);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(15, 76, 58, 0.25);
+    border-radius: 99px;
+    border: 2px solid #fdfdfd;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(15, 76, 58, 0.6);
+  }
+
+  /* Firefox support */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(15, 76, 58, 0.25) transparent;
   }
 
   :root {
@@ -370,4 +398,14 @@ body.mobile-map-open [data-mobile-nav] {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* ─── Dashboard: Professional Font Override ─── */
+/* Strips IBM Plex Sans / Playfair Display / any serif or italic
+   from ALL elements inside the dashboard shell.
+   The landing page retains its styled typography untouched. */
+#dashboard-root,
+#dashboard-root * {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif !important;
+  font-style: normal !important;
 }

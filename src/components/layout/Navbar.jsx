@@ -50,7 +50,7 @@ const Navbar = ({ minimal = false }) => {
         className={`fixed top-0 left-0 w-full z-[100] h-16 md:h-20 px-4 md:px-12 flex items-center transition-all duration-500
           ${isVisible ? 'translate-y-0' : '-translate-y-full'}
           ${isScrolled
-            ? 'bg-[#f2f2f2]/90 backdrop-blur-xl shadow-md'
+            ? 'bg-background-neutral/90 backdrop-blur-xl shadow-md'
             : 'bg-transparent'
           }`}
       >

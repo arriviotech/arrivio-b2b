@@ -54,9 +54,9 @@ const HeroVisual = () => {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-3 gap-4">
-        {/* Area Chart- spans 2 cols */}
-        <div className="col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+      <div className="grid grid-cols-5 gap-4">
+        {/* Area Chart- spans 3 of 5 cols */}
+        <div className="col-span-3 bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <div className="flex justify-between items-center mb-4">
             <div>
               <p className="font-bold text-gray-800 text-[13px]">Portfolio Growth</p>
@@ -107,13 +107,13 @@ const HeroVisual = () => {
         </div>
 
         {/* Bar Chart */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+        <div className="col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <p className="font-bold text-gray-800 text-[13px] mb-1">Top Cities</p>
           <p className="text-[11px] text-gray-400 mb-4">By capacity</p>
           <div className="h-[160px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={cityData} layout="vertical" margin={{ left: 0, right: 8, top: 0, bottom: 0 }}>
-                <XAxis type="number" hide />
+                <XAxis type="number" domain={[0, 'dataMax']} hide />
                 <YAxis
                   dataKey="name"
                   type="category"
@@ -135,7 +135,7 @@ const HeroVisual = () => {
                     fontSize: 12,
                   }}
                 />
-                <Bar dataKey="value" radius={[0, 5, 5, 0]} barSize={11}>
+                <Bar dataKey="value" radius={[0, 5, 5, 0]} barSize={18}>
                   {cityData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}

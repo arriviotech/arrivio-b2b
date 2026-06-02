@@ -107,11 +107,11 @@ const StepCard = ({ step, index, isEven }) => {
           </motion.div>
           <div>
             <div className="text-[10px] uppercase tracking-[0.3em] font-black text-[#0f4c3a] mb-1">Step 0{index + 1}</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-medium text-gray-900 group-hover:text-[#0f4c3a] transition-colors">{step.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 group-hover:text-[#0f4c3a] transition-colors">{step.title}</h2>
           </div>
         </div>
 
-        <p className="text-[#0f4c3a] font-medium mb-4 italic text-lg leading-relaxed">{step.subtitle}</p>
+        <p className="text-[#0f4c3a] font-semibold mb-4 text-lg leading-relaxed">{step.subtitle}</p>
         <p className="text-gray-500 text-lg leading-relaxed mb-10">{step.description}</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 pt-8 border-t border-gray-100/80">
@@ -124,7 +124,7 @@ const StepCard = ({ step, index, isEven }) => {
         </div>
 
         {/* Backdrop Number */}
-        <div className="absolute top-10 right-10 text-9xl font-serif font-black text-[#0f4c3a]/[0.03] select-none pointer-events-none group-hover:opacity-10 transition-opacity">
+        <div className="absolute top-10 right-10 text-9xl font-heading font-black text-[#0f4c3a]/[0.03] select-none pointer-events-none group-hover:opacity-10 transition-opacity">
           0{index + 1}
         </div>
       </div>
@@ -181,7 +181,7 @@ const DetailedHowItWorks = () => {
   const roadmapPathD = "M 500 0 C 950 300, 50 700, 500 1000 C 50 1300, 950 1700, 500 2000 C 950 2300, 50 2700, 500 3000 C 50 3300, 950 3700, 500 4000";
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#fdfdfd] selection:bg-[#0f4c3a]/10 overflow-x-hidden">
+    <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-background-neutral selection:bg-[#0f4c3a]/10 overflow-x-hidden">
       <Navbar />
 
       <main className="flex-grow pt-40 pb-32 relative" ref={containerRef}>
@@ -194,14 +194,14 @@ const DetailedHowItWorks = () => {
             <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="w-16 h-[2px] bg-[#0f4c3a]/30 origin-right"></motion.div>
           </div>
 
-          <h1 className="text-6xl md:text-8xl font-serif font-medium text-gray-900 mb-10 leading-[1.1] max-w-5xl tracking-tight">
+          <h1 className="text-6xl md:text-8xl font-heading font-bold text-gray-900 mb-10 leading-[1.1] max-w-5xl tracking-tight">
             {heroTitleWords.map((word, i) => (
               <motion.span
                 key={i}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1, duration: 0.8 }}
-                className={`${word === "Seamless" || word === "Relocation" ? 'italic text-[#0f4c3a]' : ''} inline-block mr-4 last:mr-0`}
+                className={`${word === "Seamless" || word === "Relocation" ? 'text-[#0f4c3a]' : ''} inline-block mr-4 last:mr-0`}
               >
                 {word}
               </motion.span>
@@ -311,9 +311,9 @@ const DetailedHowItWorks = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-5xl md:text-[6rem] font-serif text-[#0f4c3a] mb-8 relative z-10 leading-[1.05] tracking-tight"
+                className="text-5xl md:text-[6rem] font-heading font-bold text-[#0f4c3a] mb-8 relative z-10 leading-[1.05] tracking-tight"
               >
-                Craft your <span className="italic font-light text-[#1a7a5c]">extraordinary</span><br className="hidden md:block" /> relocation story.
+                Craft your <span className="text-[#1a7a5c]">extraordinary</span><br className="hidden md:block" /> relocation story.
               </motion.h2>
               
               <motion.p 

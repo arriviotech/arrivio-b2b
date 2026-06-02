@@ -57,11 +57,11 @@ const Payments = () => {
                                 {item.discounted ? (
                                     <>
                                         <span className="text-xs text-gray-400 line-through font-bold block">{item.value}</span>
-                                        <h3 className="text-3xl font-serif font-semibold text-gray-900 leading-none">{item.discounted}</h3>
+                                        <h3 className="text-3xl font-sans font-extrabold text-gray-900 leading-none">{item.discounted}</h3>
                                         <p className="text-[10px] text-[#0f4c3a] font-bold mt-1">50% early-partner discount</p>
                                     </>
                                 ) : (
-                                    <h3 className="text-3xl font-serif font-semibold text-gray-900 leading-none">{item.value}</h3>
+                                    <h3 className="text-3xl font-sans font-extrabold text-gray-900 leading-none">{item.value}</h3>
                                 )}
                                 <p className="text-[10px] text-gray-400 font-medium mt-2">{item.date}</p>
                             </div>
