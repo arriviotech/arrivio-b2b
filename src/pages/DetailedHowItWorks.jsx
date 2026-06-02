@@ -181,7 +181,7 @@ const DetailedHowItWorks = () => {
   const roadmapPathD = "M 500 0 C 950 300, 50 700, 500 1000 C 50 1300, 950 1700, 500 2000 C 950 2300, 50 2700, 500 3000 C 50 3300, 950 3700, 500 4000";
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#fdfdfd] selection:bg-[#0f4c3a]/10 overflow-x-hidden">
+    <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-background-neutral selection:bg-[#0f4c3a]/10 overflow-x-hidden">
       <Navbar />
 
       <main className="flex-grow pt-40 pb-32 relative" ref={containerRef}>

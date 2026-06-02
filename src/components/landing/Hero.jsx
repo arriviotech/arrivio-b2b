@@ -20,7 +20,7 @@ const Hero = () => {
       <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,_transparent_60%,_#f5f5f3_100%)]" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 lg:pt-32 pb-0">
-        <div className="grid lg:grid-cols-[1fr_1.4fr] gap-10 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-[1fr_1.7fr] gap-10 lg:gap-16 items-center">
 
           {/* ── LEFT ── */}
           <div className="flex flex-col">
@@ -48,7 +48,7 @@ const Hero = () => {
              >
                Simplifying
                <br />
-               <span className="font-bold text-[#0f4c3a]">Global Relocation.</span>
+               <span className="font-bold text-[#0f4c3a]">Global Relocation</span>
              </motion.h1>
 
              {/* Subtitle */}

@@ -5,7 +5,7 @@ import Footer from './Footer';
 
 const AccountLayout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-[#fcfcf9] flex flex-col">
+    <div className="min-h-screen bg-background-neutral flex flex-col">
       <Navbar />
       <div className="max-w-7xl mx-auto px-6 pt-32 pb-20 flex-1 w-full">
         <div className="flex gap-12">

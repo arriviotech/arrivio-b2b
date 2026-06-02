@@ -126,14 +126,14 @@ const Properties = () => {
     (selectedCity !== 'All' ? 1 : 0) + (hasPriceFilter ? 1 : 0) + (hasRoomTypeFilter ? 1 : 0);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#f2f2f2] relative">
+    <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-background-neutral relative">
       <PropertiesNavbar searchTerm={searchTerm} onSearchChange={setSearchTerm} isHidden={isNavHidden} />
 
       <main className="flex-grow pt-16 md:pt-20 pb-8">
 
         {/* ── STICKY NAV: city tabs (desktop) / filter-sort (mobile) ── */}
         {/* top animates between 64/80 (nav visible) and 0 (nav hidden) so the bar slides up to replace the navbar */}
-        <div className={`sticky z-30 bg-white/80 backdrop-blur-xl border-b border-[#e5e7eb] px-4 md:px-8 transition-[top] duration-300 ease-out ${isNavHidden ? 'top-0' : 'top-16 md:top-20'}`}>
+        <div className={`sticky z-30 bg-background-neutral/80 backdrop-blur-xl border-b border-[#e5e7eb] px-4 md:px-8 transition-[top] duration-300 ease-out ${isNavHidden ? 'top-0' : 'top-16 md:top-20'}`}>
           <div className="max-w-7xl mx-auto h-12 flex items-center">
 
             {/* MOBILE: Filters + Sort (cities live inside the drawer) */}

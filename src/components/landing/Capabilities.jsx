@@ -53,7 +53,7 @@ const Capabilities = () => {
           </div>
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
             Everything Managed in{' '}
-            <span className="font-bold text-[#0f4c3a]">One Platform.</span>
+            <span className="font-bold text-[#0f4c3a]">One Platform</span>
           </h2>
           <p className="text-base md:text-lg text-gray-500 leading-relaxed max-w-xl mx-auto">
             A comprehensive suite of tools designed to give HR teams full visibility and control over global employee housing.

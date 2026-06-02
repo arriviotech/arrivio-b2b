@@ -89,7 +89,7 @@ const LocationsSection = () => {
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-6 leading-tight">
                 Explore our <br />
-                <span className="font-bold text-[#0f4c3a]">Prime Locations.</span>
+                <span className="font-bold text-[#0f4c3a]">Prime Locations</span>
               </h2>
 
               <p className="text-gray-500 font-sans text-base md:text-lg mb-8 leading-relaxed max-w-md">

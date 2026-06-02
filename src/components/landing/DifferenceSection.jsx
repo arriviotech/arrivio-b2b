@@ -26,7 +26,7 @@ const DifferenceSection = () => {
 
             <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-7 leading-tight">
               Reserve Housing Capacity{' '}
-              <span className="font-bold text-[#0f4c3a]">Before Hiring.</span>
+              <span className="font-bold text-[#0f4c3a]">Before Hiring</span>
             </h2>
 
             <p className="text-base md:text-lg text-gray-500 mb-10 leading-relaxed">

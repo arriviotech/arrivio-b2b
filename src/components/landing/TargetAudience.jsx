@@ -44,7 +44,7 @@ const TargetAudience = () => {
 
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Built for{' '}
-            <span className="font-bold text-[#0f4c3a]">Global Organisations.</span>
+            <span className="font-bold text-[#0f4c3a]">Global Organisations</span>
           </h2>
           <p className="text-base md:text-lg text-gray-500 leading-relaxed max-w-xl mx-auto">
             The platform supports different partner types with role-specific dashboards, tailored to your organizational structure.

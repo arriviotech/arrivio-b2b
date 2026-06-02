@@ -45,8 +45,9 @@ const RelocationServices = () => {
             <span className="h-px w-8 bg-gray-300" />
           </div>
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-5 text-center">
-            Beyond Housing:{' '}
-            <span className="font-bold text-[#0f4c3a]">Complete Relocation Support.</span>
+            Beyond Housing{' '}
+            <br className="hidden md:block" />
+            <span className="font-bold text-[#0f4c3a]">Complete Relocation Support</span>
           </h2>
           <p className="text-base md:text-lg text-gray-500 max-w-2xl leading-relaxed mx-auto">
             We don't just provide apartments. We ensure your employees have everything they need to settle in smoothly from day one.
