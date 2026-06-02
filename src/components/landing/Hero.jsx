@@ -66,13 +66,13 @@ const Hero = () => {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.34 }}
-              className="flex flex-wrap items-center gap-3"
+              className="flex flex-wrap sm:flex-nowrap items-center gap-2"
             >
               <button
                 onClick={() => {
                   document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="inline-flex items-center gap-2 bg-[#0f4c3a] hover:bg-[#186b53] text-white text-[11px] font-semibold px-5 py-3 rounded-full border border-[#0f4c3a] shadow-sm hover:shadow-md transition-all duration-200 whitespace-nowrap uppercase tracking-[0.15em]"
+                className="inline-flex items-center gap-2 bg-[#0f4c3a] hover:bg-[#186b53] text-white text-[11px] font-semibold px-4 py-3 rounded-full border border-[#0f4c3a] shadow-sm hover:shadow-md transition-all duration-200 whitespace-nowrap uppercase tracking-[0.1em]"
               >
                 <Handshake size={14} className="text-white" />
                 Partner with Arrivio
@@ -80,7 +80,7 @@ const Hero = () => {
 
               <button
                 onClick={() => navigate('/properties')}
-                className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-[11px] font-semibold px-5 py-3 rounded-full border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 whitespace-nowrap uppercase tracking-[0.15em]"
+                className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-[11px] font-semibold px-4 py-3 rounded-full border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 whitespace-nowrap uppercase tracking-[0.1em]"
               >
                 <Building2 size={14} className="text-[#0f4c3a]" />
                 View Properties
@@ -89,7 +89,7 @@ const Hero = () => {
               <a
                 href="/arrivio-b2b-deck.pdf"
                 download="Arrivio_Company_Deck.pdf"
-                className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-[11px] font-semibold px-5 py-3 rounded-full border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 whitespace-nowrap uppercase tracking-[0.15em]"
+                className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-[11px] font-semibold px-4 py-3 rounded-full border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 whitespace-nowrap uppercase tracking-[0.1em]"
               >
                 <Download size={14} className="text-[#0f4c3a]" />
                 Download Deck
