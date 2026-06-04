@@ -61,9 +61,32 @@ export const ReservationProvider = ({ children }) => {
     return [];
   });
 
+  // Resolved relocation services [{ id, label, qty, scalable }] and the
+  // free-text note from the Proposal page. Persisted so the Schedule page
+  // can rebuild the IDENTICAL proposal PDF (these used to be local-only
+  // state on the Proposal page and were lost on navigation).
+  const [proposalServices, setProposalServices] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('arrivio_proposal_services')) || [];
+    } catch {
+      return [];
+    }
+  });
+  const [proposalNotes, setProposalNotes] = useState(
+    () => localStorage.getItem('arrivio_proposal_notes') || '',
+  );
+
   useEffect(() => {
     localStorage.setItem('arrivio_reservations', JSON.stringify(reservations));
   }, [reservations]);
+
+  useEffect(() => {
+    localStorage.setItem('arrivio_proposal_services', JSON.stringify(proposalServices));
+  }, [proposalServices]);
+
+  useEffect(() => {
+    localStorage.setItem('arrivio_proposal_notes', proposalNotes);
+  }, [proposalNotes]);
 
   // Re-run the label migration whenever reservations change. The migration is
   // idempotent — if nothing needs fixing it returns equivalent state and we
@@ -116,6 +139,8 @@ export const ReservationProvider = ({ children }) => {
   
   const clearReservations = () => {
     setReservations([]);
+    setProposalServices([]);
+    setProposalNotes('');
   }
 
   const value = {
@@ -123,7 +148,11 @@ export const ReservationProvider = ({ children }) => {
     addReservation,
     removeReservation,
     updateQuantity,
-    clearReservations
+    clearReservations,
+    proposalServices,
+    setProposalServices,
+    proposalNotes,
+    setProposalNotes,
   };
 
   return (

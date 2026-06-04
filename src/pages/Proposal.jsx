@@ -70,12 +70,25 @@ const StepIndicator = ({ current }) => {
 
 const Proposal = () => {
   const navigate = useNavigate();
-  const { reservations, removeReservation, updateQuantity } = useReservation();
+  const {
+    reservations,
+    removeReservation,
+    updateQuantity,
+    proposalServices,
+    setProposalServices,
+    proposalNotes,
+    setProposalNotes,
+  } = useReservation();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
-  const [additionalNotes, setAdditionalNotes] = useState('');
+  // Seed from the persisted proposal context so the note survives navigation
+  // (Proposal → Schedule → back) and the Schedule page can rebuild the PDF.
+  const [additionalNotes, setAdditionalNotes] = useState(proposalNotes);
   // { [serviceId]: quantity } — scalable services use the qty, toggle ones use 1.
-  const [selectedServices, setSelectedServices] = useState({});
+  // Seeded from the persisted resolved services.
+  const [selectedServices, setSelectedServices] = useState(() =>
+    Object.fromEntries((proposalServices || []).map((s) => [s.id, s.qty])),
+  );
 
   // Pull services from the same source as the Dashboard Services page,
   // so prices and the full catalogue stay in sync automatically.
@@ -216,7 +229,9 @@ const Proposal = () => {
   const estimatedMonthlyCost = useMemo(() => {
     return reservations.reduce((sum, r) => {
       if (r.isService || r.propertyId === 'services') return sum;
-      return sum + (r.unitPrice || 0) * (r.quantity || 0);
+      // Round per line — matches the Schedule page's housing total and the
+      // PDF's per-line subtotal rounding, so all three agree to the euro.
+      return sum + Math.round((r.unitPrice || 0) * (r.quantity || 0));
     }, 0);
   }, [reservations]);
 
@@ -271,6 +286,21 @@ const Proposal = () => {
     return { id, label: svc?.label || id, qty, scalable: !!svc?.scalable };
   });
 
+  // Persist resolved services + note into the reservation context so the
+  // Schedule page's "Download PDF" produces an identical document.
+  useEffect(() => {
+    setProposalServices(
+      Object.entries(selectedServices).map(([id, qty]) => {
+        const svc = mappedServices.find((s) => s.id === id);
+        return { id, label: svc?.label || id, qty, scalable: !!svc?.scalable };
+      }),
+    );
+  }, [selectedServices, mappedServices, setProposalServices]);
+
+  useEffect(() => {
+    setProposalNotes(additionalNotes);
+  }, [additionalNotes, setProposalNotes]);
+
   // Furniture add-ons per property (from Arix Designer selections).
   // One entry per unit-type slot that actually has items selected.
   const resolvedFurniture = !ARIX_ENABLED
@@ -300,45 +330,21 @@ const Proposal = () => {
     cityCounts,
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (reservations.length === 0) return;
     setIsProcessingCheckout(true);
-    try {
-      const blob = await generateNativePDF({ ...pdfPayload, asBlob: true });
-      const formData = new FormData();
-      formData.append('file', blob, `Arrivio_Proposal_${new Date().toISOString().slice(0, 10)}.pdf`);
-      const res = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (data.status === 'success') {
-        const fileUrl = data.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-        const notesLine = additionalNotes.trim()
-          ? `Additional notes from prospect:\n${additionalNotes.trim()}\n\n`
-          : '';
-        const servicesLine = selectedServiceCount > 0
-          ? `Requested relocation services:\n${Object.entries(selectedServices).map(([id, qty]) => {
-              const svc = mappedServices.find(s => s.id === id);
-              return `• ${svc?.label}${svc?.scalable ? ` (x${qty})` : ''}`;
-            }).join('\n')}\n\n`
-          : '';
-        const furnitureLine = resolvedFurniture.length > 0
-          ? `Furniture add-on (Arix Designer):\n${resolvedFurniture.map(f =>
-              `• ${f.propertyName} · ${f.unitLabel}: ${f.items.map(i => i.name).join(', ')} (+€${f.total}/mo)`
-            ).join('\n')}\n\n`
-          : '';
-        const notes = `${notesLine}${servicesLine}${furnitureLine}Here is my requested housing proposal:\n${fileUrl}\n(Note: Link expires in 60 minutes)`;
-        // Keep the reservation cart populated so the Schedule page sidebar can
-        // surface the proposal context. User can clear the cart manually after
-        // booking confirms.
-        navigate('/schedule', { state: { bookingNotes: notes } });
-      } else {
-        throw new Error('Upload failed');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Checkout failed! Could not generate or upload proposal.');
-    } finally {
-      setIsProcessingCheckout(false);
-    }
+    // NOTE: We intentionally do NOT generate/upload a PDF or attach a link
+    // here, and we pass NO booking notes to Cal.com. The proposal PDF is
+    // available on this page via the "Download PDF" button; the prospect
+    // simply proceeds to scheduling.
+    //
+    // Emailing the PDF as a real attachment alongside the meeting link is
+    // deferred until the Resend integration — see backlog_b2b.md,
+    // "Phase 2: email proposal PDF on booking (Resend + Cal.com webhook)".
+    //
+    // The reservation cart stays populated so the Schedule page sidebar can
+    // still surface the proposal context.
+    navigate('/schedule');
   };
 
   const handleDownloadPDF = async () => {
@@ -614,8 +620,11 @@ const Proposal = () => {
                 />
                 {hasItems && (
                   <FeesAndInclusions
-                    estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
-                    furnitureAddOnTotal={furnitureAddOnTotal}
+                    totalUnits={reservations.reduce(
+                      (s, r) =>
+                        r.isService || r.propertyId === 'services' ? s : s + (r.quantity || 0),
+                      0,
+                    )}
                   />
                 )}
               </div>

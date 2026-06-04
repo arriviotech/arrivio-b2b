@@ -13,12 +13,14 @@ import {
   Info,
   X,
   Plus,
+  Download,
 } from 'lucide-react';
 import PropertiesNavbar from '../components/layout/PropertiesNavbar';
 import Footer from '../components/layout/Footer';
 import { useReservation } from '../context/ReservationContext';
 import { useArixDesigner } from '../context/ArixDesignerContext';
 import { ARIX_ENABLED } from '../App';
+import { generateNativePDF } from '../components/proposal/Pdf';
 
 // Cities Arrivio currently operates in. Add to this list as coverage grows.
 const SUPPORTED_CITIES = ['Aachen', 'Berlin', 'Bonn', 'Hamburg'];
@@ -67,6 +69,7 @@ const SLOT_SUFFIX_BY_LABEL = { Studio: 'studio', 'Single Room': 'one_bedroom' };
 
 const ProposalSummary = ({ reservations }) => {
   const { getDesignForProperty, getSharedDesignForProperty } = useArixDesigner();
+  const { proposalServices, proposalNotes } = useReservation();
 
   const housing = reservations.filter((r) => r.propertyId !== 'services');
   const totalUnits = housing.reduce((acc, r) => acc + (r.quantity || 0), 0);
@@ -117,6 +120,70 @@ const ProposalSummary = ({ reservations }) => {
       currency: 'EUR',
       maximumFractionDigits: 0,
     }).format(n);
+
+  // ── Download PDF (same generator + same data as the Proposal page) ───
+  // Services + the free-text note are read from the persisted proposal
+  // context (see ReservationContext) so this PDF is identical to the one
+  // produced on the Proposal page.
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const handleDownloadPDF = async () => {
+    if (properties.length === 0) return;
+    setIsGeneratingPDF(true);
+    try {
+      const pdfFurniture = !ARIX_ENABLED
+        ? []
+        : properties.flatMap((prop) => {
+            const labels = [...new Set(prop.units.map((u) => u.unitType).filter(Boolean))];
+            return labels
+              .map((label) => {
+                const design =
+                  label === 'Shared Room'
+                    ? getSharedDesignForProperty(prop.id)
+                    : SLOT_SUFFIX_BY_LABEL[label]
+                      ? getDesignForProperty(`${prop.id}_${SLOT_SUFFIX_BY_LABEL[label]}`)
+                      : null;
+                return {
+                  propertyId: prop.id,
+                  propertyName: prop.name,
+                  unitLabel: label,
+                  items: (design?.selectedItems || []).map((it) => ({
+                    id: it.id,
+                    name: it.name,
+                    price: it.price || 0,
+                  })),
+                  total: design?.addOnTotal || 0,
+                };
+              })
+              .filter((f) => f.items.length > 0);
+          });
+      const cityCounts = Object.entries(
+        housing.reduce((acc, r) => {
+          if (r.propertyCity) acc[r.propertyCity] = (acc[r.propertyCity] || 0) + (r.quantity || 0);
+          return acc;
+        }, {}),
+      );
+      await generateNativePDF({
+        groupedProperties: properties.map((p) => ({
+          id: p.id,
+          name: p.name,
+          image: p.image,
+          city: p.city,
+          neighborhood: p.units[0]?.propertyNeighborhood,
+          units: p.units,
+        })),
+        services: proposalServices || [],
+        furniture: pdfFurniture,
+        additionalNotes: proposalNotes || '',
+        estimatedMonthlyCost: housingMonthly,
+        cityCounts,
+      });
+    } catch (error) {
+      console.error('PDF Error:', error);
+      alert('PDF generation failed: ' + error.message);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
@@ -230,6 +297,15 @@ const ProposalSummary = ({ reservations }) => {
           </span>
         </div>
       </div>
+
+      <button
+        onClick={handleDownloadPDF}
+        disabled={isGeneratingPDF}
+        className="mt-5 w-full flex items-center justify-center gap-2 rounded-xl border border-[#0f4c3a]/20 bg-white py-2.5 text-xs font-bold uppercase tracking-widest text-[#0f4c3a] transition-colors hover:bg-[#0f4c3a]/5 disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        <Download size={14} />
+        {isGeneratingPDF ? 'Generating…' : 'Download PDF'}
+      </button>
     </div>
   );
 };
