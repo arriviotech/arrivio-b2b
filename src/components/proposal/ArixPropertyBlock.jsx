@@ -6,7 +6,7 @@ import ArixSharedRoomCanvas from '../arix/ArixSharedRoomCanvas';
 import { ARIX_ENABLED } from '../../App';
 
 // Renders a separate Arix section per distinct unit type the property has.
-// Each unit type gets its own design slot — Studio, Single Room, and Shared
+// Each unit type gets its own design slot - Studio, Single Room, and Shared
 // Room are all independent so the user can customize each separately.
 // Slot storage keys:
 //   Studio:      state[`${propertyId}_studio`]
@@ -37,7 +37,7 @@ const variantFor = (unitLabel) => {
   if (unitLabel === 'Shared Room') return { variant: 'shared', suffix: 'shared' };
   if (unitLabel === 'Single Room') return { variant: 'regular', suffix: 'one_bedroom' };
   if (unitLabel === 'Studio') return { variant: 'regular', suffix: 'studio' };
-  // Fallback for any other label — treat as regular, derive a safe key.
+  // Fallback for any other label - treat as regular, derive a safe key.
   return { variant: 'regular', suffix: unitLabel.toLowerCase().replace(/\s+/g, '_') };
 };
 

@@ -66,7 +66,7 @@ const PropertyDetails = () => {
 
   // Group units by type for sections.
   // two_bedroom rows are remapped to shared_room at the service layer, so they're
-  // already counted in `sharedUnits` below — no separate section needed.
+  // already counted in `sharedUnits` below - no separate section needed.
   const units = property.units || [];
   const studioUnits = units.filter(u => u.unit_type === 'studio');
   const sharedUnits = units.filter(u => u.unit_type === 'shared_room');
