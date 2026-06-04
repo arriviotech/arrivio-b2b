@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { MoreHorizontal, Home, MapPin, Mail, Phone, Calendar, Shield, Briefcase, FileText, CheckCircle2, X, User } from 'lucide-react';
 import { MOCK_EMPLOYEES } from '../../../data/mockEmployees';
 
@@ -6,6 +6,18 @@ const EmployeeList = ({ searchTerm }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const ITEMS_PER_PAGE = 8;
+
+    // Manage body scroll lock when employee inspector modal is open
+    useEffect(() => {
+        if (selectedEmployee !== null) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [selectedEmployee]);
 
     // Reset pagination to page 1 when search term changes
     useMemo(() => {
@@ -81,13 +93,19 @@ const EmployeeList = ({ searchTerm }) => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex flex-col gap-0.5">
-                                            <div className="flex items-center gap-1.5 text-sm text-gray-700 font-bold">
-                                                <Home size={14} className="text-[#0f4c3a]" />
-                                                {emp.property}
-                                            </div>
-                                            <div className="flex items-center gap-1.5 text-xs text-gray-500 ml-5 font-medium">
-                                                Unit {emp.unit}
-                                            </div>
+                                            {emp.property ? (
+                                                <>
+                                                    <div className="flex items-center gap-1.5 text-sm text-gray-700 font-bold">
+                                                        <Home size={14} className="text-[#0f4c3a]" />
+                                                        {emp.property}
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 text-xs text-gray-500 ml-5 font-medium">
+                                                        Unit {emp.unit}
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <span className="text-gray-400 text-xs font-semibold italic">Unassigned</span>
+                                            )}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
@@ -147,7 +165,7 @@ const EmployeeList = ({ searchTerm }) => {
             {selectedEmployee && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
                     <div className="fixed inset-0 bg-black/40 backdrop-blur-md transition-opacity duration-300" onClick={() => setSelectedEmployee(null)} />
-                    <div className="relative w-full max-w-[380px] bg-white/95 rounded-[24px] shadow-2xl border border-gray-100 overflow-hidden transform transition-all p-5 animate-in zoom-in-95 duration-200">
+                    <div className="relative w-full max-w-[460px] bg-white/95 rounded-[24px] shadow-2xl border border-gray-100 overflow-hidden transform transition-all p-5 animate-in zoom-in-95 duration-200">
                         
                         {/* Absolute Close Button */}
                         <button 
@@ -210,20 +228,37 @@ const EmployeeList = ({ searchTerm }) => {
                                     <Home size={10} className="text-[#0f4c3a]" />
                                     Staged Housing Details
                                 </h3>
-                                <div className="border border-gray-150 rounded-xl p-2.5 flex items-center justify-between bg-white shadow-sm hover:border-[#0f4c3a]/20 transition-colors">
-                                    <div className="min-w-0">
-                                        <p className="text-[11px] font-bold text-gray-900 truncate">{selectedEmployee.property}</p>
-                                        <p className="text-[9px] text-gray-500 font-medium mt-0.5 truncate">
-                                            Unit {selectedEmployee.unit} · {selectedEmployee.property.toLowerCase().includes('residences') ? 'Private Studio' : 'Shared Room'}
-                                        </p>
+                                {selectedEmployee.property ? (
+                                    <div className="border border-gray-150 rounded-xl p-2.5 flex items-center justify-between bg-white shadow-sm hover:border-[#0f4c3a]/20 transition-colors">
+                                        <div className="min-w-0">
+                                            <p className="text-[11px] font-bold text-gray-900 truncate">{selectedEmployee.property}</p>
+                                            <p className="text-[9px] text-gray-500 font-medium mt-0.5 truncate">
+                                                Unit {selectedEmployee.unit} · {selectedEmployee.property.toLowerCase().includes('residences') ? 'Private Studio' : 'Shared Room'}
+                                            </p>
+                                        </div>
+                                        <div className="shrink-0 ml-2">
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-[9px] font-extrabold rounded-full border border-emerald-100">
+                                                <CheckCircle2 size={9} />
+                                                Ready
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div className="shrink-0 ml-2">
-                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-[9px] font-extrabold rounded-full border border-emerald-100">
-                                            <CheckCircle2 size={9} />
-                                            Ready
-                                        </span>
+                                ) : (
+                                    <div className="border border-gray-150 rounded-xl p-2.5 flex items-center justify-between bg-white shadow-sm hover:border-[#0f4c3a]/20 transition-colors">
+                                        <div className="min-w-0">
+                                            <p className="text-[11px] font-bold text-gray-400 italic">No housing assigned yet</p>
+                                            <p className="text-[9px] text-gray-500 font-medium mt-0.5">
+                                                Pending allocation by HR
+                                            </p>
+                                        </div>
+                                        <div className="shrink-0 ml-2">
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-amber-50 text-amber-700 text-[9px] font-extrabold rounded-full border border-amber-100">
+                                                <Clock size={9} />
+                                                Pending
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
 
                             {/* Administrative Checklist */}
@@ -254,7 +289,7 @@ const EmployeeList = ({ searchTerm }) => {
                                     <div className="px-3 py-2 bg-white flex items-center justify-between gap-3 hover:bg-gray-50/50 transition-colors">
                                         <div className="flex items-center gap-2 font-semibold text-gray-700">
                                             <FileText size={11} className="text-gray-400" />
-                                            Health Insurance Verification
+                                            Health Insurance
                                         </div>
                                         <span className="text-[8px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
                                             TK Enrolled

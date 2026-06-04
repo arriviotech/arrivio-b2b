@@ -4,7 +4,7 @@ import { ArrowRight, CalendarRange, Sparkles, Rocket } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 // Marketing-page teaser for the scheduling flow. Replaces the embedded
-// Cal.com iframe that used to live on Landing — keeps the page light and
+// Cal.com iframe that used to live on Landing - keeps the page light and
 // pushes users into the structured /schedule flow (picker → brief → iframe).
 const ScheduleTeaser = () => {
   const navigate = useNavigate();

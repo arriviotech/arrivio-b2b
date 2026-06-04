@@ -34,7 +34,7 @@ const FeesAndInclusions = ({ estimatedMonthlyCost = 0, furnitureAddOnTotal = 0 }
         </span>
       </div>
 
-      {/* Brokerage fee — single card with toggle */}
+      {/* Brokerage fee - single card with toggle */}
       <div className="mb-6">
         <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">
           Housing brokerage fee
@@ -70,22 +70,20 @@ const FeesAndInclusions = ({ estimatedMonthlyCost = 0, furnitureAddOnTotal = 0 }
           <button
             type="button"
             onClick={() => setWhoPays('org')}
-            className={`text-[11px] font-bold py-1.5 rounded-md transition-all ${
-              isOrg
+            className={`text-[11px] font-bold py-1.5 rounded-md transition-all ${isOrg
                 ? 'bg-white text-[#0f4c3a] shadow-sm'
                 : 'text-gray-500 hover:text-gray-900'
-            }`}
+              }`}
           >
             Your organization
           </button>
           <button
             type="button"
             onClick={() => setWhoPays('resident')}
-            className={`text-[11px] font-bold py-1.5 rounded-md transition-all ${
-              !isOrg
+            className={`text-[11px] font-bold py-1.5 rounded-md transition-all ${!isOrg
                 ? 'bg-white text-[#0f4c3a] shadow-sm'
                 : 'text-gray-500 hover:text-gray-900'
-            }`}
+              }`}
           >
             The resident
           </button>

@@ -17,7 +17,7 @@ const LABEL_MIGRATION = {
   'Private Studio': 'Studio',
   '1-Bedroom Apartment': 'Single Room',
   '2-Bedroom Apartment': 'Shared Room',
-  // Interim label from earlier today's pass — map back to the full "Shared Room"
+  // Interim label from earlier today's pass - map back to the full "Shared Room"
   Shared: 'Shared Room',
 };
 const UNIT_TYPE_KEY_MIGRATION = {
@@ -66,7 +66,7 @@ export const ReservationProvider = ({ children }) => {
   }, [reservations]);
 
   // Re-run the label migration whenever reservations change. The migration is
-  // idempotent — if nothing needs fixing it returns equivalent state and we
+  // idempotent - if nothing needs fixing it returns equivalent state and we
   // skip the setState. This catches any stale "Shared" / "1-Bedroom Apartment"
   // entries that may have been added via an older code path.
   useEffect(() => {
@@ -80,7 +80,7 @@ export const ReservationProvider = ({ children }) => {
     setReservations((prev) => {
       // Check if this exact unit (property + type) already exists
       const existingIndex = prev.findIndex(r => r.propertyId === unit.propertyId && r.unitType === unit.unitType);
-      
+
       if (existingIndex >= 0) {
         const updated = [...prev];
         if (isUpdate) {
@@ -113,7 +113,7 @@ export const ReservationProvider = ({ children }) => {
       return r;
     }));
   };
-  
+
   const clearReservations = () => {
     setReservations([]);
   }

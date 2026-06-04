@@ -93,7 +93,7 @@ export function normalizeProperty(data) {
   if (units.length === 0) {
     const mockSharedUnitId = `mock-${data.id}-shared`;
     const mockSingleUnitId = `mock-${data.id}-single`;
-    
+
     units = [
       {
         id: mockSharedUnitId,
@@ -145,7 +145,7 @@ export function normalizeProperty(data) {
   }
   const photos = data.property_photos || [];
 
-  // Find cheapest monthly rent — prefer b2b pricing, fallback to any
+  // Find cheapest monthly rent - prefer b2b pricing, fallback to any
   const allPricing = units.flatMap((unit) =>
     (unit.unit_pricing_rules || []).map((p) => ({
       tenantType: p.tenant_type,
