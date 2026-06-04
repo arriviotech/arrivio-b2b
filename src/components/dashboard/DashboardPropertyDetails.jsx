@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProperties } from '../../supabase/hooks/useProperties';
+import { MOCK_EMPLOYEES } from '../../data/mockEmployees';
 import {
     ArrowLeft,
     MapPin,
@@ -31,6 +32,16 @@ const DashboardPropertyDetails = () => {
     const [selectedUnitId, setSelectedUnitId] = useState(null);
     const [allocationEmail, setAllocationEmail] = useState('');
     const [allocationSuccess, setAllocationSuccess] = useState(false);
+
+    // State for direct employee allocation dropdowns
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState('');
+    const [activeAllocatingRoomId, setActiveAllocatingRoomId] = useState(null);
+    const [selectedRoomEmployeeId, setSelectedRoomEmployeeId] = useState('');
+    const [studioDropdownOpen, setStudioDropdownOpen] = useState(false);
+    const [roomDropdownOpen, setRoomDropdownOpen] = useState(null); // stores roomId
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+
 
     // Filters
     const [typeFilter, setTypeFilter] = useState('All');
@@ -69,7 +80,9 @@ const DashboardPropertyDetails = () => {
             checkIn: 'Dec 15, 2026',
             checkOut: 'Dec 15, 2027',
             units: [
-                { type: 'Shared Room', quantity: 5 }
+                { type: 'Shared Room', quantity: 3 },
+                { type: 'Studio Apartment', quantity: 4 },
+                { type: 'Individual Unit', quantity: 3 }
             ],
             status: 'Active',
             totalPrice: '€13,200'
@@ -82,8 +95,9 @@ const DashboardPropertyDetails = () => {
             checkIn: 'Oct 12, 2026',
             checkOut: 'Oct 12, 2027',
             units: [
-                { type: 'Studio Apartment', quantity: 8 },
-                { type: 'Shared Room', quantity: 7 }
+                { type: 'Shared Room', quantity: 4 },
+                { type: 'Studio Apartment', quantity: 5 },
+                { type: 'Individual Unit', quantity: 3 }
             ],
             status: 'Active',
             totalPrice: '€11,200'
@@ -96,7 +110,9 @@ const DashboardPropertyDetails = () => {
             checkIn: 'Nov 01, 2026',
             checkOut: 'Nov 01, 2027',
             units: [
-                { type: 'Individual Unit', quantity: 9 }
+                { type: 'Shared Room', quantity: 2 },
+                { type: 'Studio Apartment', quantity: 3 },
+                { type: 'Individual Unit', quantity: 5 }
             ],
             status: 'Active',
             totalPrice: '€8,100'
@@ -115,109 +131,152 @@ const DashboardPropertyDetails = () => {
         image: contract.image
     } : null);
 
-    // Generate mock unit data based on the contract's units
-    const mockUnits = useMemo(() => {
+    // Generate mock unit data based on the contract's units and employee assignments
+    const units = useMemo(() => {
         if (!contract) return [];
-        const units = [];
+        const unitsList = [];
         let unitCounter = 1;
 
         contract.units.forEach(({ type, quantity }) => {
             for (let i = 0; i < quantity; i++) {
-                // Determine a fixed status based on counter so it doesn't change on re-renders, but looks varied
-                const statusType = unitCounter % 4 === 0 ? 'vacant' : (unitCounter % 7 === 0 ? 'maintenance' : 'occupied');
-
-                // Mocks for details
+                const unitNumber = `S-${100 + unitCounter}`;
                 const isShared = type.toLowerCase().includes('shared');
-                const isApt2 = type.toLowerCase().includes('apartment2') || type.toLowerCase().includes('2-bedroom');
-                const isApt3 = type.toLowerCase().includes('apartment3') || type.toLowerCase().includes('3-bedroom');
-
-                let readableType = type;
+                const isStudio = type.toLowerCase().includes('studio');
+                const isIndividual = type.toLowerCase().includes('individual');
+                
                 const rawType = type.toLowerCase();
+                const rent = isStudio ? 1200 : (isShared ? 850 : 850);
 
-                const rent = isApt3 ? 1800 : (isApt2 ? 1400 : (rawType.includes('studio') ? 1200 : 850));
-
-                let rooms = [];
-                if (isShared) {
-                    const roomTypes = ['Master Bedroom (20 sqm)', 'Single Room (15 sqm)', 'Cozy Room (12 sqm)'];
-                    for (let r = 0; r < roomTypes.length; r++) {
-                        // Make only some rooms occupied if the unit is generally considered "occupied"
-                        const isOccupied = statusType === 'occupied' ? r < 2 : false;
-                        rooms.push({
-                            id: r + 1,
-                            name: roomTypes[r],
-                            status: isOccupied ? 'occupied' : 'vacant',
-                            resident: isOccupied ? `Employee 1-${r + 1}` : null,
-                            moveInDate: isOccupied ? '2026-09-01' : null,
-                            phone: isOccupied ? `+49 151 2345 671${r + 1}` : null,
-                        });
-                    }
-                }
-
-                let tenants = [];
-                let residentString = null;
+                // Find employees assigned to this specific property
+                const propertyEmployees = MOCK_EMPLOYEES.filter(
+                    emp => emp.property === contract.property
+                );
 
                 if (isShared) {
-                    residentString = statusType === 'occupied' ? '2/3 Occupied' : 'Unassigned';
-                } else if (isApt2 || isApt3) {
-                    if (statusType === 'occupied') {
-                        const tenantCount = isApt2 ? 2 : 3;
-                        residentString = `${tenantCount} Employees`;
-                        for (let t = 0; t < tenantCount; t++) {
-                            tenants.push({
-                                id: `t-${unitCounter}-${t}`,
-                                name: `Employee ${unitCounter}-${t + 1}`,
-                                phone: `+49 151 2345 67${unitCounter}${t}`,
-                                email: `employee${unitCounter}.${t + 1}@example.com`,
-                                initials: `E${t + 1}`,
-                                status: 'Verified',
-                                moveInDate: '2026-09-01'
+                    let rooms = [];
+                    let occupiedCount = 0;
+                    let assignedCount = 0;
+                    // Shared rooms have Bed 1, Bed 2, Bed 3
+                    for (let r = 1; r <= 3; r++) {
+                        const bedUnitName = `${unitNumber} (Bed ${r})`;
+                        const emp = propertyEmployees.find(e => e.unit === bedUnitName);
+                        if (emp) {
+                            if (emp.status === 'Assigned') {
+                                assignedCount++;
+                            } else {
+                                occupiedCount++;
+                            }
+                            rooms.push({
+                                id: r,
+                                name: `Bed ${r}`,
+                                status: emp.status === 'Assigned' ? 'assigned' : 'occupied',
+                                resident: emp.name,
+                                moveInDate: emp.arrivingOn,
+                                phone: `+49 151 2345 67${emp.id.replace('emp_', '').padStart(2, '0')}`,
+                                email: emp.email,
+                                employeeId: emp.id
+                            });
+                        } else {
+                            rooms.push({
+                                id: r,
+                                name: `Bed ${r}`,
+                                status: 'vacant',
+                                resident: null,
+                                moveInDate: null,
+                                phone: null,
+                                email: null,
+                                employeeId: null
                             });
                         }
-                    } else if (statusType === 'vacant') {
-                        residentString = 'Unassigned';
                     }
-                } else {
-                    residentString = statusType === 'occupied' ? `Employee ${unitCounter}` : null;
-                }
 
-                units.push({
-                    id: `u-${unitCounter}`,
-                    number: `S-${100 + unitCounter}`,
-                    type: readableType,
-                    rawType: rawType,
-                    status: statusType,
-                    resident: residentString,
-                    tenants: tenants,
-                    moveInDate: statusType === 'occupied' ? '2026-09-01' : null,
-                    leaseEnd: statusType === 'occupied' ? '2027-08-31' : null,
-                    rent: rent,
-                    phone: statusType === 'occupied' ? `+49 151 2345 67${unitCounter.toString().padStart(2, '0')}` : null,
-                    tickets: statusType === 'occupied' && unitCounter % 3 === 0 ? 1 : 0,
-                    isShared: isShared,
-                    isApt2: isApt2,
-                    isApt3: isApt3,
-                    rooms: rooms
-                });
+                    const isUnitOccupiedOrAssigned = occupiedCount > 0 || assignedCount > 0;
+                    const statusType = occupiedCount > 0 ? 'occupied' : (assignedCount > 0 ? 'assigned' : (unitCounter % 7 === 0 ? 'maintenance' : 'vacant'));
+                    const residentString = isUnitOccupiedOrAssigned 
+                        ? (occupiedCount > 0 ? `${occupiedCount + assignedCount}/3 Occupied` : `${assignedCount}/3 Assigned`) 
+                        : 'Unassigned';
+
+                    unitsList.push({
+                        id: `u-${unitCounter}`,
+                        number: unitNumber,
+                        type: type,
+                        rawType: rawType,
+                        status: statusType,
+                        resident: residentString,
+                        tenants: [],
+                        moveInDate: isUnitOccupiedOrAssigned ? rooms.find(rm => rm.status === 'occupied' || rm.status === 'assigned')?.moveInDate : null,
+                        leaseEnd: isUnitOccupiedOrAssigned ? '2027-08-31' : null,
+                        rent: rent,
+                        phone: isUnitOccupiedOrAssigned ? rooms.find(rm => rm.status === 'occupied' || rm.status === 'assigned')?.phone : null,
+                        tickets: (isUnitOccupiedOrAssigned && unitCounter % 3 === 0) ? 1 : 0,
+                        isShared: true,
+                        rooms: rooms
+                    });
+                } else {
+                    const emp = propertyEmployees.find(e => e.unit === unitNumber);
+                    const isUnitOccupiedOrAssigned = !!emp;
+                    const statusType = isUnitOccupiedOrAssigned ? (emp.status === 'Assigned' ? 'assigned' : 'occupied') : (unitCounter % 7 === 0 ? 'maintenance' : 'vacant');
+                    const residentString = isUnitOccupiedOrAssigned ? emp.name : null;
+                    const tenants = isUnitOccupiedOrAssigned ? [{
+                        id: emp.id,
+                        name: emp.name,
+                        phone: `+49 151 2345 67${emp.id.replace('emp_', '').padStart(2, '0')}`,
+                        email: emp.email,
+                        initials: emp.name.split(' ').map(n => n[0]).join(''),
+                        status: emp.status === 'Assigned' ? 'Assigned' : 'Verified',
+                        moveInDate: emp.arrivingOn
+                    }] : [];
+
+                    unitsList.push({
+                        id: `u-${unitCounter}`,
+                        number: unitNumber,
+                        type: type,
+                        rawType: rawType,
+                        status: statusType,
+                        resident: residentString,
+                        tenants: tenants,
+                        moveInDate: isUnitOccupiedOrAssigned ? emp.arrivingOn : null,
+                        leaseEnd: isUnitOccupiedOrAssigned ? '2027-08-31' : null,
+                        rent: rent,
+                        phone: isUnitOccupiedOrAssigned ? `+49 151 2345 67${emp.id.replace('emp_', '').padStart(2, '0')}` : null,
+                        tickets: (isUnitOccupiedOrAssigned && unitCounter % 3 === 0) ? 1 : 0,
+                        isShared: false,
+                        rooms: []
+                    });
+                }
                 unitCounter++;
             }
         });
-        return units;
-    }, [contract]);
+        return unitsList;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [contract, refreshTrigger]);
 
     // Apply filters
     const filteredUnits = useMemo(() => {
-        return mockUnits.filter(unit => {
+        return units.filter(unit => {
             const matchType = typeFilter === 'All' ||
                 (typeFilter === 'Apartment' ? (unit.rawType === 'apartment2' || unit.rawType === 'apartment3') : unit.type.toLowerCase().includes(typeFilter.toLowerCase()));
             const matchStatus = statusFilter === 'All' || unit.status.toLowerCase() === statusFilter.toLowerCase();
             return matchType && matchStatus;
         });
-    }, [mockUnits, typeFilter, statusFilter]);
+    }, [units, typeFilter, statusFilter]);
 
     // Derived selected unit
     const selectedUnit = useMemo(() => {
-        return mockUnits.find(u => u.id === selectedUnitId);
-    }, [mockUnits, selectedUnitId]);
+        return units.find(u => u.id === selectedUnitId);
+    }, [units, selectedUnitId]);
+
+    // Lock background scroll when modal is open
+    useEffect(() => {
+        if (selectedUnitId !== null) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [selectedUnitId]);
 
     // Close modal on Escape key press
     useEffect(() => {
@@ -264,6 +323,8 @@ const DashboardPropertyDetails = () => {
         switch (status) {
             case 'occupied':
                 return <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 text-xs font-bold tracking-wide"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Occupied</span>;
+            case 'assigned':
+                return <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-bold tracking-wide"><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>Assigned</span>;
             case 'vacant':
                 return <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-100 text-gray-600 text-xs font-bold tracking-wide"><span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>Vacant</span>;
             case 'maintenance':
@@ -286,21 +347,51 @@ const DashboardPropertyDetails = () => {
         setSelectedUnitId(unitId);
         setAllocationSuccess(false);
         setAllocationEmail('');
+        setSelectedEmployeeId('');
+        setActiveAllocatingRoomId(null);
+        setSelectedRoomEmployeeId('');
+        setStudioDropdownOpen(false);
+        setRoomDropdownOpen(null);
     };
 
     const closeModal = () => {
         setSelectedUnitId(null);
+        setSelectedEmployeeId('');
+        setActiveAllocatingRoomId(null);
+        setSelectedRoomEmployeeId('');
+        setStudioDropdownOpen(false);
+        setRoomDropdownOpen(null);
     };
 
-    const handleAllocate = (e) => {
-        e.preventDefault();
-        if (allocationEmail) {
+    const handleDirectAllocate = () => {
+        if (!selectedEmployeeId || !selectedUnit) return;
+        const emp = MOCK_EMPLOYEES.find(e => e.id === selectedEmployeeId);
+        if (emp) {
+            emp.property = contract.property;
+            emp.unit = selectedUnit.number;
+            emp.status = 'Assigned';
             setAllocationSuccess(true);
+            setRefreshTrigger(prev => prev + 1);
+            setSelectedEmployeeId('');
             setTimeout(() => {
                 closeModal();
                 setAllocationSuccess(false);
-                setAllocationEmail('');
             }, 3000);
+        }
+    };
+
+    const handleAllocateRoom = (roomId) => {
+        if (!selectedRoomEmployeeId || !selectedUnit) return;
+        const emp = MOCK_EMPLOYEES.find(e => e.id === selectedRoomEmployeeId);
+        if (emp) {
+            emp.property = contract.property;
+            emp.unit = `${selectedUnit.number} (Bed ${roomId})`;
+            emp.status = 'Assigned';
+            
+            // Clean up state
+            setActiveAllocatingRoomId(null);
+            setSelectedRoomEmployeeId('');
+            setRefreshTrigger(prev => prev + 1);
         }
     };
 
@@ -335,7 +426,7 @@ const DashboardPropertyDetails = () => {
                         </div>
                         <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 text-white text-center min-w-[120px] shadow-lg">
                             <p className="text-xs font-bold text-white/70 uppercase tracking-widest mb-1">Total Units</p>
-                            <p className="text-3xl font-bold">{mockUnits.length}</p>
+                            <p className="text-3xl font-bold">{units.length}</p>
                         </div>
                     </div>
                 </div>
@@ -395,6 +486,7 @@ const DashboardPropertyDetails = () => {
                                                 >
                                                     <option value="All">Status</option>
                                                     <option value="Occupied">Occupied</option>
+                                                    <option value="Assigned">Assigned</option>
                                                     <option value="Vacant">Vacant</option>
                                                     <option value="Maintenance">Maintenance</option>
                                                 </select>
@@ -421,7 +513,7 @@ const DashboardPropertyDetails = () => {
                                                 <td className="py-4 px-4">{getStatusBadge(unit.status)}</td>
                                                 <td className="py-4 px-4">
                                                     {unit.isShared ? (
-                                                        <span className={`font-medium text-sm ${unit.status === 'occupied' ? 'text-emerald-700 bg-emerald-50 border-emerald-100' : 'text-gray-500 bg-gray-50 border-gray-100'} px-2.5 py-1 rounded-lg border`}>
+                                                        <span className={`font-medium text-sm ${unit.status === 'occupied' ? 'text-emerald-700 bg-emerald-50 border-emerald-100' : unit.status === 'assigned' ? 'text-blue-700 bg-blue-50 border-blue-100' : 'text-gray-500 bg-gray-50 border-gray-100'} px-2.5 py-1 rounded-lg border`}>
                                                             {unit.resident}
                                                         </span>
                                                     ) : unit.resident ? (
@@ -520,7 +612,7 @@ const DashboardPropertyDetails = () => {
             {/* Modal Overlay */}
             {selectedUnit && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm" onClick={closeModal}>
-                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden animate-in fade-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
                         <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50">
                             <div className="flex items-center gap-4">
                                 <h3 className="text-2xl font-bold text-gray-900 border border-gray-200 bg-white px-4 py-1.5 rounded-xl shadow-sm">Unit {selectedUnit.number}</h3>
@@ -534,7 +626,7 @@ const DashboardPropertyDetails = () => {
                                 <X size={20} />
                             </button>
                         </div>
-                        <div className="p-8">
+                        <div className="p-8 overflow-y-auto arrivio-scrollbar flex-1">
                             <div className="flex flex-col md:flex-row gap-8">
                                 {/* Left Info Panel */}
                                 <div className="w-full md:w-1/3 space-y-4">
@@ -569,15 +661,18 @@ const DashboardPropertyDetails = () => {
                                             </h4>
                                             <div className="space-y-4">
                                                 {selectedUnit.rooms.map((room) => (
-                                                    <div key={room.id} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row justify-between gap-4 transition-all hover:shadow-md hover:border-gray-200">
-                                                        <div className="space-y-3 flex-1">
+                                                    <div 
+                                                        key={room.id} 
+                                                        className={`bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row justify-between gap-4 transition-all hover:shadow-md hover:border-gray-200 relative ${roomDropdownOpen === room.id ? 'z-40' : 'z-10'}`}
+                                                    >
+                                                        <div className="space-y-3 flex-1 text-left">
                                                             <div className="flex items-center justify-between">
                                                                 <h5 className="font-bold text-gray-900 flex items-center gap-2">{room.name}</h5>
-                                                                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${room.status === 'occupied' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-gray-50 text-gray-500 border-gray-200'}`}>
+                                                                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${room.status === 'occupied' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : room.status === 'assigned' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-gray-50 text-gray-500 border-gray-200'}`}>
                                                                     {room.status}
                                                                 </span>
                                                             </div>
-                                                            {room.status === 'occupied' ? (
+                                                            {room.status === 'occupied' || room.status === 'assigned' ? (
                                                                 <div className="flex items-center gap-3 mt-2">
                                                                     <div className="w-10 h-10 rounded-full bg-[#0f4c3a]/10 flex items-center justify-center text-[#0f4c3a] font-bold text-sm">
                                                                         {room.resident.split(' ').map(n => n[0]).join('')}
@@ -587,17 +682,93 @@ const DashboardPropertyDetails = () => {
                                                                         <p className="text-xs text-gray-500 font-medium">{room.phone}</p>
                                                                     </div>
                                                                 </div>
+                                                            ) : activeAllocatingRoomId === room.id ? (
+                                                                <div className="mt-2 space-y-3 w-full animate-in fade-in duration-200">
+                                                                    <div className="relative w-full text-left">
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => setRoomDropdownOpen(roomDropdownOpen === room.id ? null : room.id)}
+                                                                            className={`w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f4c3a]/15 focus:border-[#0f4c3a] transition-all font-medium text-xs flex items-center justify-between cursor-pointer ${selectedRoomEmployeeId ? 'text-gray-900' : 'text-gray-400'}`}
+                                                                        >
+                                                                            <span>
+                                                                                {selectedRoomEmployeeId 
+                                                                                    ? (() => {
+                                                                                        const emp = MOCK_EMPLOYEES.find(e => e.id === selectedRoomEmployeeId);
+                                                                                        return emp ? `${emp.name} (${emp.role})` : "Select Employee...";
+                                                                                      })()
+                                                                                    : "Select Employee..."
+                                                                                }
+                                                                            </span>
+                                                                            <ChevronDown size={14} className={`text-gray-400 transition-transform ${roomDropdownOpen === room.id ? 'rotate-180' : ''}`} />
+                                                                        </button>
+
+                                                                        {roomDropdownOpen === room.id && (
+                                                                            <div className="mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden max-h-48 overflow-y-auto arrivio-scrollbar animate-in fade-in slide-in-from-top-2 duration-150">
+                                                                                {MOCK_EMPLOYEES.map(emp => {
+                                                                                    const isAssigned = !!(emp.property || emp.unit);
+                                                                                    return (
+                                                                                        <button
+                                                                                            key={emp.id}
+                                                                                            type="button"
+                                                                                            disabled={isAssigned}
+                                                                                            onClick={() => {
+                                                                                                setSelectedRoomEmployeeId(emp.id);
+                                                                                                setRoomDropdownOpen(null);
+                                                                                            }}
+                                                                                            className={`w-full px-3 py-2 text-left text-xs transition-colors flex items-center justify-between ${isAssigned ? 'text-gray-300 cursor-not-allowed opacity-50 bg-gray-50/30' : 'text-gray-700 font-medium hover:bg-[#0f4c3a]/5 hover:text-[#0f4c3a]'}`}
+                                                                                        >
+                                                                                            <span>{emp.name} ({emp.role})</span>
+                                                                                            {isAssigned && (
+                                                                                                <span className="text-[9px] bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded border border-gray-100 shrink-0 ml-2">
+                                                                                                    {emp.unit || emp.property}
+                                                                                                </span>
+                                                                                            )}
+                                                                                        </button>
+                                                                                    );
+                                                                                })}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex gap-2 text-left">
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => handleAllocateRoom(room.id)}
+                                                                            disabled={!selectedRoomEmployeeId}
+                                                                            className="px-3 py-1.5 bg-[#0f4c3a] text-white font-bold rounded-lg text-xs hover:bg-[#0a3a2b] transition-all disabled:opacity-50"
+                                                                        >
+                                                                            Confirm
+                                                                        </button>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => {
+                                                                                setActiveAllocatingRoomId(null);
+                                                                                setSelectedRoomEmployeeId('');
+                                                                            }}
+                                                                            className="px-3 py-1.5 border border-gray-200 text-gray-700 font-bold rounded-lg text-xs hover:bg-gray-50 transition-all"
+                                                                        >
+                                                                            Cancel
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
                                                             ) : (
                                                                 <div className="mt-2 text-sm text-gray-400 flex items-center gap-1.5"><Mail size={14} /> Available to allocate</div>
                                                             )}
                                                         </div>
                                                         <div className="flex items-center justify-end sm:border-l border-gray-50 sm:pl-5 pt-4 sm:pt-0 mt-3 sm:mt-0 min-w-[120px]">
-                                                            {room.status === 'occupied' ? (
+                                                            {room.status === 'occupied' || room.status === 'assigned' ? (
                                                                 <button className="px-4 py-2 border border-gray-200 text-gray-700 font-bold rounded-xl text-sm hover:bg-gray-50 transition-all flex items-center justify-center gap-2 w-full">
                                                                     <MessageSquare size={14} /> Message
                                                                 </button>
+                                                            ) : activeAllocatingRoomId === room.id ? (
+                                                                null
                                                             ) : (
-                                                                <button className="px-4 py-2 bg-[#0f4c3a] text-white font-bold rounded-xl text-sm hover:bg-[#0a3a2b] shadow-sm transition-all flex items-center justify-center gap-2 w-full">
+                                                                <button 
+                                                                    onClick={() => {
+                                                                        setActiveAllocatingRoomId(room.id);
+                                                                        setSelectedRoomEmployeeId('');
+                                                                    }}
+                                                                    className="px-4 py-2 bg-[#0f4c3a] text-white font-bold rounded-xl text-sm hover:bg-[#0a3a2b] shadow-sm transition-all flex items-center justify-center gap-2 w-full"
+                                                                >
                                                                     Allocate
                                                                 </button>
                                                             )}
@@ -606,7 +777,7 @@ const DashboardPropertyDetails = () => {
                                                 ))}
                                             </div>
                                         </div>
-                                    ) : selectedUnit.status === 'occupied' ? (
+                                    ) : selectedUnit.status === 'occupied' || selectedUnit.status === 'assigned' ? (
                                         <div className="space-y-4">
                                             <h4 className="font-bold text-gray-900 flex items-center gap-2 mb-2">
                                                 <Users size={16} className="text-[#0f4c3a]" /> {selectedUnit.tenants.length > 0 ? `Employee Details (${selectedUnit.tenants.length})` : 'Employee Information'}
@@ -622,7 +793,7 @@ const DashboardPropertyDetails = () => {
                                                                 </div>
                                                                 <div>
                                                                     <p className="font-bold text-gray-900 text-[15px]">{tenant.name}</p>
-                                                                    <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider flex items-center gap-1 mt-0.5 bg-emerald-50 px-2 py-0.5 rounded-md w-max border border-emerald-100">
+                                                                    <p className={`text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 mt-0.5 px-2 py-0.5 rounded-md w-max border ${tenant.status === 'Assigned' ? 'text-blue-600 bg-blue-50 border-blue-100' : 'text-emerald-600 bg-emerald-50 border-emerald-100'}`}>
                                                                         <CheckCircle2 size={10} /> {tenant.status}
                                                                     </p>
                                                                 </div>
@@ -687,7 +858,8 @@ const DashboardPropertyDetails = () => {
                                             )}
                                         </div>
                                     ) : selectedUnit.status === 'vacant' ? (
-                                        <div className="space-y-4">                                            <h4 className="font-bold text-gray-900 flex items-center gap-2 mb-2">
+                                        <div className="space-y-4">
+                                            <h4 className="font-bold text-gray-900 flex items-center gap-2 mb-2">
                                                 <Mail size={16} className="text-[#0f4c3a]" /> Allocate Employee
                                             </h4>
                                             <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)]">
@@ -696,32 +868,72 @@ const DashboardPropertyDetails = () => {
                                                         <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4 ring-8 ring-emerald-50">
                                                             <CheckCircle2 size={32} />
                                                         </div>
-                                                        <h5 className="text-xl font-bold text-gray-900 mb-2">Invitation Sent!</h5>
-                                                        <p className="text-gray-500 max-w-sm text-sm">A secure login email has been dispatched. They can now create an account and view their moving-in details.</p>
+                                                        <h5 className="text-xl font-bold text-gray-900 mb-2">Employee Allocated!</h5>
+                                                        <p className="text-gray-500 max-w-sm text-sm">They have been assigned to this unit. The employee roster and unit details have been updated.</p>
                                                     </div>
                                                 ) : (
-                                                    <form onSubmit={handleAllocate}>
-                                                        <p className="text-sm text-gray-650 mb-6 leading-relaxed">Send an invitation to the incoming employee so they can create their account, view their floor plan, and prepare for move-in.</p>
-                                                        <div className="flex gap-3">
-                                                            <div className="relative flex-1">
-                                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
-                                                                <input
-                                                                    type="email"
-                                                                    required
-                                                                    placeholder="employee@acme-corp.com"
-                                                                    value={allocationEmail}
-                                                                    onChange={(e) => setAllocationEmail(e.target.value)}
-                                                                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#0f4c3a]/10 focus:border-[#0f4c3a] transition-all font-medium text-gray-900 placeholder-gray-400 inset-y-0"
-                                                                />
+                                                    <div className="space-y-5">
+                                                        <p className="text-sm text-gray-500 leading-relaxed">Select an employee from your organization roster to allocate to this unit. They will receive access details automatically.</p>
+                                                        <div className="space-y-4">
+                                                            <div className="relative w-full text-left">
+                                                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Select Employee</label>
+                                                                <div className="relative">
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => setStudioDropdownOpen(!studioDropdownOpen)}
+                                                                        className={`relative w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#0f4c3a]/10 focus:border-[#0f4c3a] transition-all font-medium flex items-center justify-between cursor-pointer text-sm ${selectedEmployeeId ? 'text-gray-900' : 'text-gray-400'}`}
+                                                                    >
+                                                                        <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+                                                                        <span>
+                                                                            {selectedEmployeeId 
+                                                                                ? (() => {
+                                                                                    const emp = MOCK_EMPLOYEES.find(e => e.id === selectedEmployeeId);
+                                                                                    return emp ? `${emp.name} (${emp.role})` : "Select Employee..."
+                                                                                  })()
+                                                                                : "Select Employee..."
+                                                                            }
+                                                                        </span>
+                                                                        <ChevronDown size={18} className={`text-gray-400 transition-transform ${studioDropdownOpen ? 'rotate-180' : ''}`} />
+                                                                    </button>
+
+                                                                    {studioDropdownOpen && (
+                                                                        <div className="mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden max-h-60 overflow-y-auto arrivio-scrollbar animate-in fade-in slide-in-from-top-2 duration-150">
+                                                                            {MOCK_EMPLOYEES.map(emp => {
+                                                                                const isAssigned = !!(emp.property || emp.unit);
+                                                                                return (
+                                                                                    <button
+                                                                                        key={emp.id}
+                                                                                        type="button"
+                                                                                        disabled={isAssigned}
+                                                                                        onClick={() => {
+                                                                                            setSelectedEmployeeId(emp.id);
+                                                                                            setStudioDropdownOpen(false);
+                                                                                        }}
+                                                                                        className={`w-full px-4 py-2.5 text-left text-sm transition-colors flex items-center justify-between ${isAssigned ? 'text-gray-300 cursor-not-allowed opacity-50 bg-gray-50/30' : 'text-gray-700 font-medium hover:bg-[#0f4c3a]/5 hover:text-[#0f4c3a]'}`}
+                                                                                    >
+                                                                                        <span>{emp.name} ({emp.role})</span>
+                                                                                        {isAssigned && (
+                                                                                            <span className="text-[10px] bg-gray-100 text-gray-400 px-2 py-0.5 rounded border border-gray-100 shrink-0 ml-2">
+                                                                                                {emp.unit || emp.property}
+                                                                                            </span>
+                                                                                        )}
+                                                                                    </button>
+                                                                                );
+                                                                            })}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                             <button
-                                                                type="submit"
-                                                                className="px-8 py-3 bg-[#0f4c3a] text-white font-bold rounded-xl hover:bg-[#0a3a2b] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap flex items-center gap-2 active:translate-y-0"
+                                                                type="button"
+                                                                onClick={handleDirectAllocate}
+                                                                disabled={!selectedEmployeeId}
+                                                                className="w-full sm:w-auto px-8 py-3 bg-[#0f4c3a] text-white font-bold rounded-xl hover:bg-[#0a3a2b] transition-all shadow-md hover:shadow-lg whitespace-nowrap flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                                             >
-                                                                Send Invite <ArrowLeft size={16} className="rotate-180" />
+                                                                Allocate Employee <ArrowLeft size={16} className="rotate-180" />
                                                             </button>
                                                         </div>
-                                                    </form>
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>

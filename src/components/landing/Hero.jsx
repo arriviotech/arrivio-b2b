@@ -58,7 +58,7 @@ const Hero = () => {
                transition={{ duration: 0.5, delay: 0.22 }}
                className="text-[15px] text-gray-500 mb-8 max-w-md leading-relaxed"
              >
-               Reserve housing capacity in advance, manage employee housing from one dashboard, and replace manual coordination with a structured platform.
+               Reserve housing capacity in advance, manage employee settlement from one dashboard, and streamline relocations with accommodation, onboarding, local support, and settlement services.
              </motion.p>
 
              {/* ── 3 equal-style buttons ── */}

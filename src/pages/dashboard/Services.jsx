@@ -205,15 +205,6 @@ export default function Services() {
     });
   }, [groupedOrders, mode]);
 
-  const countsByCategory = useMemo(() => {
-    const list = services || [];
-    const counts = {};
-    list.forEach((s) => {
-      counts[s.category] = (counts[s.category] || 0) + 1;
-    });
-    return counts;
-  }, [services]);
-
   return (
     <div className="max-w-[1400px] mx-auto animate-in fade-in duration-500">
       <div className="flex items-center justify-between gap-6 mb-8 pb-2">

@@ -67,7 +67,7 @@ const Schedule = () => {
                                     </h2>
 
                                     <p className="text-gray-500 text-[15px] leading-relaxed mb-10 max-w-md">
-                                        From reserving capacity before your employees arrive, to managing their day-to-day housing—Arrivio handles it all. Book a 30-minute strategy call to see how.
+                                        From reserving capacity before your employees arrive, to managing their day-to-day housing-Arrivio handles it all. Book a 30-minute strategy call to see how.
                                     </p>
 
                                     {/* Trust stats */}
@@ -106,7 +106,7 @@ const Schedule = () => {
                                             </h3>
 
                                             <p className="text-white/60 text-sm leading-relaxed mb-8">
-                                                Speak directly with our team—a focused conversation about your housing needs, no sales scripts.
+                                                Speak directly with our team-a focused conversation about your housing needs, no sales scripts.
                                             </p>
 
                                             {/* What to expect */}

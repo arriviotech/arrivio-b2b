@@ -9,7 +9,7 @@
  * slots, label maps, localStorage cart entries) off `one_bedroom` (= "Single
  * Room") and `shared_room`. Rather than propagate the DB rename through every
  * one of those touch points (and migrate persisted carts), we normalize the
- * DB value onto B2B's internal scheme at the data boundary — exactly as the
+ * DB value onto B2B's internal scheme at the data boundary - exactly as the
  * app already did for two_bedroom -> shared_room.
  *
  *   single_room -> one_bedroom   (B2B's internal key for "Single Room")

@@ -104,7 +104,7 @@ const Properties = () => {
       const s = searchTerm.toLowerCase();
       if (!p.name?.toLowerCase().includes(s) && !p.city?.toLowerCase().includes(s) && !(p.neighborhood || '').toLowerCase().includes(s) && !(p.address || '').toLowerCase().includes(s)) return false;
     }
-    // Room-type filter — keep properties that have at least one unit of any selected type
+    // Room-type filter - keep properties that have at least one unit of any selected type
     if (selectedRoomTypes.size > 0) {
       const breakdown = p.breakdown || {};
       const hasMatch = [...selectedRoomTypes].some((key) => (breakdown[key] || 0) > 0);
@@ -141,8 +141,8 @@ const Properties = () => {
               <button
                 onClick={() => setIsFilterOpen(true)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full border text-[12px] font-semibold whitespace-nowrap transition-all ${activeFilterCount > 0
-                    ? 'border-[#0f4c3a] bg-[#0f4c3a] text-white shadow-sm'
-                    : 'border-[#d1d5db] bg-white text-[#111827] shadow-sm'
+                  ? 'border-[#0f4c3a] bg-[#0f4c3a] text-white shadow-sm'
+                  : 'border-[#d1d5db] bg-white text-[#111827] shadow-sm'
                   }`}
               >
                 <SlidersHorizontal size={13} className={activeFilterCount > 0 ? 'text-white' : 'text-[#6b7280]'} />
@@ -163,8 +163,8 @@ const Properties = () => {
                   key={city.value}
                   onClick={() => handleCityChange(city.value)}
                   className={`relative px-3.5 py-3 text-[12px] font-semibold whitespace-nowrap transition-colors ${selectedCity === city.value
-                      ? 'text-[#0f4c3a]'
-                      : 'text-[#9ca3af] hover:text-[#6b7280]'
+                    ? 'text-[#0f4c3a]'
+                    : 'text-[#9ca3af] hover:text-[#6b7280]'
                     }`}
                 >
                   {city.label}
@@ -208,8 +208,8 @@ const Properties = () => {
               <button
                 onClick={() => setIsFilterOpen(true)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full border text-[12px] font-semibold whitespace-nowrap transition-all ${activeFilterCount > 0
-                    ? 'border-[#0f4c3a] bg-[#0f4c3a] text-white shadow-sm hover:bg-[#0a3a2b]'
-                    : 'border-[#d1d5db] bg-white text-[#111827] shadow-sm hover:border-[#0f4c3a]/40'
+                  ? 'border-[#0f4c3a] bg-[#0f4c3a] text-white shadow-sm hover:bg-[#0a3a2b]'
+                  : 'border-[#d1d5db] bg-white text-[#111827] shadow-sm hover:border-[#0f4c3a]/40'
                   }`}
               >
                 <SlidersHorizontal size={13} className={activeFilterCount > 0 ? 'text-white' : 'text-[#6b7280]'} />
@@ -235,11 +235,10 @@ const Properties = () => {
                 <button
                   key={key}
                   onClick={() => toggleRoomType(key)}
-                  className={`px-3 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all shrink-0 border ${
-                    isActive
+                  className={`px-3 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all shrink-0 border ${isActive
                       ? 'border-[#0f4c3a] bg-[#0f4c3a] text-white shadow-sm'
                       : 'border-[#e5e7eb] bg-white text-[#374151] hover:border-[#0f4c3a]/40'
-                  }`}
+                    }`}
                 >
                   {label}
                 </button>

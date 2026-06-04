@@ -165,7 +165,7 @@ const Summary = ({
             </div>
           </div>
 
-          {/* One-time services — separate from monthly recurring */}
+          {/* One-time services - separate from monthly recurring */}
           {servicesCount > 0 && (
             <div className="mt-4">
               <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">
@@ -187,11 +187,10 @@ const Summary = ({
         <button
           onClick={handleCheckout}
           disabled={!hasItems || isProcessingCheckout}
-          className={`w-full py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 ${
-            hasItems && !isProcessingCheckout
+          className={`w-full py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 ${hasItems && !isProcessingCheckout
               ? 'bg-[#0f4c3a] hover:bg-[#1A2E22] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5'
               : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-          }`}
+            }`}
         >
           {isProcessingCheckout ? (
             <>
@@ -209,11 +208,10 @@ const Summary = ({
         <button
           onClick={handleDownloadPDF}
           disabled={!hasItems || isGeneratingPDF}
-          className={`w-full py-3 rounded-xl font-bold text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 border ${
-            hasItems
+          className={`w-full py-3 rounded-xl font-bold text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 border ${hasItems
               ? 'border-gray-200 text-gray-700 hover:border-[#0f4c3a]/40 hover:bg-[#0f4c3a]/5'
               : 'border-gray-200 text-gray-300 cursor-not-allowed'
-          }`}
+            }`}
         >
           {isGeneratingPDF ? (
             <>

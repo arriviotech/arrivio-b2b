@@ -308,7 +308,7 @@ const Support = () => {
                   <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Describe your issue in detail — include any affected employee names, property names, or service IDs if relevant..."
+                    placeholder="Describe your issue in detail - include any affected employee names, property names, or service IDs if relevant..."
                     className="w-full min-h-[180px] p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#0f4c3a] focus:ring-2 focus:ring-[#0f4c3a]/10 focus:outline-none transition-all text-gray-800 font-medium text-sm resize-none placeholder:text-gray-300 leading-relaxed"
                     required
                   />

@@ -47,14 +47,12 @@ const StepIndicator = ({ current }) => {
         return (
           <React.Fragment key={step}>
             <div className="flex items-center gap-2">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                isActive ? 'bg-[#0f4c3a] text-white' : isPast ? 'bg-[#0f4c3a]/30 text-[#0f4c3a]' : 'bg-gray-200 text-gray-400'
-              }`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${isActive ? 'bg-[#0f4c3a] text-white' : isPast ? 'bg-[#0f4c3a]/30 text-[#0f4c3a]' : 'bg-gray-200 text-gray-400'
+                }`}>
                 {stepNum}
               </div>
-              <span className={`text-xs font-semibold uppercase tracking-widest ${
-                isActive ? 'text-[#0f4c3a]' : 'text-gray-400'
-              }`}>
+              <span className={`text-xs font-semibold uppercase tracking-widest ${isActive ? 'text-[#0f4c3a]' : 'text-gray-400'
+                }`}>
                 {step}
               </span>
             </div>
@@ -161,7 +159,7 @@ const Proposal = () => {
 
   const groupedProperties = Object.values(propertiesData);
 
-  // Live availability + slug per propertyId — fetched from Supabase on mount.
+  // Live availability + slug per propertyId - fetched from Supabase on mount.
   const [availabilityMap, setAvailabilityMap] = useState({});
   const [slugMap, setSlugMap] = useState({});
 
@@ -306,20 +304,20 @@ const Proposal = () => {
   const resolvedFurniture = !ARIX_ENABLED
     ? []
     : groupedProperties.flatMap((prop) =>
-        designsForProperty(prop)
-          .map(({ label, design }) => ({
-            propertyId: prop.id,
-            propertyName: prop.name,
-            unitLabel: label,
-            items: (design?.selectedItems || []).map((it) => ({
-              id: it.id,
-              name: it.name,
-              price: it.price || 0,
-            })),
-            total: design?.addOnTotal || 0,
-          }))
-          .filter((f) => f.items.length > 0),
-      );
+      designsForProperty(prop)
+        .map(({ label, design }) => ({
+          propertyId: prop.id,
+          propertyName: prop.name,
+          unitLabel: label,
+          items: (design?.selectedItems || []).map((it) => ({
+            id: it.id,
+            name: it.name,
+            price: it.price || 0,
+          })),
+          total: design?.addOnTotal || 0,
+        }))
+        .filter((f) => f.items.length > 0),
+    );
 
   const pdfPayload = {
     groupedProperties,
@@ -402,234 +400,233 @@ const Proposal = () => {
               </div>
             </div>
           ) : (
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className="w-full lg:w-2/3 space-y-12 lg:pt-6">
+            <div className="flex flex-col lg:flex-row gap-8">
+              <div className="w-full lg:w-2/3 space-y-12 lg:pt-6">
 
-              {/* Section 1: Properties */}
-              {hasItems && (
-                <section>
-                  <SectionHeader
-                    number="1"
-                    title="Selected Properties"
-                    subtitle={`${groupedProperties.length} ${groupedProperties.length === 1 ? 'property' : 'properties'}`}
-                  />
-                  <PropertyListWithDrawer
-                    properties={hydratedProperties}
-                    navigate={navigate}
-                    updateQuantity={updateQuantity}
-                    removeReservation={removeReservation}
-                  />
-                </section>
-              )}
-
-              {/* Section 2: Relocation Services */}
-              {hasItems && (
-                <section>
-                  <SectionHeader number="3" title="Relocation Services" subtitle="(Optional)" />
-                  <p className="text-sm text-gray-500 -mt-2 mb-4">
-                    Add-ons our team can bundle with this proposal. Final pricing on the call.
-                  </p>
-
-                  <div className="flex flex-wrap items-center gap-1.5 bg-gray-100/40 border border-gray-200/50 p-1 rounded-2xl w-max max-w-full mb-4 shadow-inner">
-                    {SERVICE_CATEGORIES.map((c) => {
-                      const active = serviceCategory === c.key;
-                      return (
-                        <button
-                          key={c.key}
-                          onClick={() => setServiceCategory(c.key)}
-                          className={`h-8 px-4 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer select-none active:scale-95 ${active
-                            ? 'bg-[#0f4c3a] text-white shadow-sm'
-                            : 'text-gray-500 hover:text-[#0f4c3a] hover:bg-[#0f4c3a]/5'
-                            }`}
-                        >
-                          {c.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {selectedServiceCount > 0 && (
-                    <div className="mb-4 flex items-center justify-between">
-                      <span className="text-sm text-gray-500">
-                        <span className="font-bold text-[#0f4c3a]">{selectedServiceCount}</span>
-                        {' '}{selectedServiceCount === 1 ? 'service' : 'services'} selected
-                      </span>
-                      <button
-                        onClick={() => setSelectedServices({})}
-                        className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-red-500 transition-colors"
-                      >
-                        Clear all
-                      </button>
-                    </div>
-                  )}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {servicesLoading ? (
-                      <div className="col-span-full py-8 text-sm text-gray-400 text-center">Loading services…</div>
-                    ) : filteredServices.length === 0 ? (
-                      <div className="col-span-full py-8 text-sm text-gray-400 text-center">No services in this category.</div>
-                    ) : filteredServices.map(({ id, icon: Icon, label, desc, scalable, priceEur, details }) => {
-                      const qty = selectedServices[id] || 0;
-                      const isSelected = qty > 0;
-
-                      const tileClass = isSelected
-                        ? 'border-[#0f4c3a] bg-[#0f4c3a]/5 shadow-sm'
-                        : 'border-gray-200 bg-white hover:border-[#0f4c3a]/30 hover:shadow-sm cursor-pointer';
-
-                      const handleTileClick = isSelected ? undefined : () => toggleService(id);
-
-                      return (
-                        <div
-                          key={id}
-                          onClick={handleTileClick}
-                          className={`relative p-4 rounded-xl border transition-all ${tileClass}`}
-                        >
-                          {isSelected && (
-                            <button
-                              onClick={(e) => { e.stopPropagation(); toggleService(id); }}
-                              className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 hover:text-red-500 flex items-center justify-center text-gray-400 transition-colors"
-                              title="Remove"
-                            >
-                              <X size={12} />
-                            </button>
-                          )}
-
-                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-colors ${
-                            isSelected ? 'bg-[#0f4c3a] text-white' : 'bg-gray-50 text-[#0f4c3a] border border-gray-100'
-                          }`}>
-                            <Icon className="w-5 h-5" />
-                          </div>
-                          
-                          <div className="flex items-start justify-between gap-2 mb-1.5">
-                            <div className="text-sm font-bold text-gray-900 leading-tight">{label}</div>
-                            <div className="flex items-center gap-1.5 shrink-0">
-                              <div className="text-xs font-extrabold text-[#0f4c3a] bg-[#0f4c3a]/5 px-2 py-0.5 rounded-md whitespace-nowrap">
-                                €{priceEur}
-                              </div>
-                              {details && details.length > 0 && (
-                                <div
-                                  className="relative inline-block"
-                                  onMouseEnter={() => setHoveredServiceId(id)}
-                                  onMouseLeave={() => setHoveredServiceId(null)}
-                                >
-                                  <BadgeInfo
-                                    size={14}
-                                    className="text-gray-400 hover:text-[#0f4c3a] transition-colors cursor-help shrink-0"
-                                  />
-                                  
-                                  {hoveredServiceId === id && (
-                                    <div className="absolute right-0 bottom-full mb-2.5 w-64 bg-white border border-gray-100 p-3.5 rounded-xl shadow-xl z-[60] pointer-events-none text-left animate-in fade-in slide-in-from-bottom-1 duration-200">
-                                      <div className="text-[10px] font-bold text-gray-400 mb-2 pb-1 border-b border-gray-100 uppercase tracking-widest">
-                                        Specifications
-                                      </div>
-                                      <div className="space-y-2">
-                                        {details.map((detail, idx) => (
-                                          <div key={idx} className="flex flex-col gap-0.5 text-[10px] leading-snug">
-                                            <span className="font-extrabold text-[#0f4c3a] uppercase tracking-wider">{detail.label}</span>
-                                            <span className="text-gray-600 font-medium">{detail.value}</span>
-                                          </div>
-                                        ))}
-                                      </div>
-                                      {/* Popover Arrow */}
-                                      <div className="absolute top-full right-1 -translate-y-1 w-2.5 h-2.5 bg-white border-r border-b border-gray-100 rotate-45" />
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          
-                          <div className="text-xs text-gray-500 leading-snug">{desc}</div>
-
-                          {isSelected && scalable && (
-                            <div className="mt-3 pt-3 border-t border-[#0f4c3a]/15 flex items-center gap-3">
-                              <div className="flex items-center bg-white rounded-lg border border-gray-200 overflow-hidden shrink-0">
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); setServiceQty(id, qty - 1); }}
-                                  disabled={qty <= 1}
-                                  className="w-7 h-7 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                                  title={qty <= 1 ? 'Use × to remove' : 'Decrease'}
-                                >
-                                  <Minus size={12} />
-                                </button>
-                                <span className="w-9 text-center text-sm font-bold text-gray-900 py-1 border-x border-gray-200">{qty}</span>
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); setServiceQty(id, qty + 1); }}
-                                  className="w-7 h-7 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors"
-                                  title="Increase"
-                                >
-                                  <Plus size={12} />
-                                </button>
-                              </div>
-                              <span className="text-[11px] text-gray-500">employees</span>
-                            </div>
-                          )}
-
-                          {isSelected && !scalable && (
-                            <div className="mt-3 pt-3 border-t border-[#0f4c3a]/15 flex items-center gap-1.5 text-xs text-[#0f4c3a] font-bold">
-                              <Check size={13} strokeWidth={3} />
-                              Added
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </section>
-              )}
-
-              {/* Section 3: Notes */}
-              {hasItems && (
-                <section>
-                  <SectionHeader number="4" title="Notes for the Arrivio Team" subtitle="(Optional)" />
-                  <div className="bg-white rounded-2xl p-6 md:p-7 shadow-sm border border-gray-100">
-                    <p className="text-sm text-gray-500 mb-4">
-                      Headcount waves, timing, special requirements anything our team should know before the call.
-                    </p>
-                    <textarea
-                      value={additionalNotes}
-                      onChange={(e) => setAdditionalNotes(e.target.value)}
-                      placeholder="e.g. 8 engineers moving in July, 4 more in September. Need parking at the Berlin units."
-                      rows={5}
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-transparent text-sm focus:bg-white focus:border-[#0f4c3a]/20 focus:ring-2 focus:ring-[#0f4c3a]/5 transition-all outline-none resize-none placeholder:text-gray-400"
-                    />
-                    {additionalNotes.length > 0 && (
-                      <p className="text-[10px] text-gray-400 mt-2 text-right">{additionalNotes.length} chars</p>
-                    )}
-                  </div>
-                </section>
-              )}
-
-            </div>
-
-            {/* Right column: Summary + Fees act as ONE unit, fixed to the right, no inner scroller */}
-            <div className="w-full lg:w-1/3 lg:pt-[76px]">
-              <div className="lg:sticky lg:top-28 space-y-4">
-                <Summary
-                  reservations={reservations}
-                  groupedProperties={groupedProperties}
-                  handleCheckout={handleCheckout}
-                  handleDownloadPDF={handleDownloadPDF}
-                  isGeneratingPDF={isGeneratingPDF}
-                  isProcessingCheckout={isProcessingCheckout}
-                  servicesCount={selectedServiceCount}
-                  servicesTotal={servicesTotal}
-                  estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
-                  furnitureAddOnTotal={furnitureAddOnTotal}
-                  furnitureCount={furnitureCount}
-                  cityCounts={cityCounts}
-                />
+                {/* Section 1: Properties */}
                 {hasItems && (
-                  <FeesAndInclusions
-                    totalUnits={reservations.reduce(
-                      (s, r) =>
-                        r.isService || r.propertyId === 'services' ? s : s + (r.quantity || 0),
-                      0,
-                    )}
-                  />
+                  <section>
+                    <SectionHeader
+                      number="1"
+                      title="Selected Properties"
+                      subtitle={`${groupedProperties.length} ${groupedProperties.length === 1 ? 'property' : 'properties'}`}
+                    />
+                    <PropertyListWithDrawer
+                      properties={hydratedProperties}
+                      navigate={navigate}
+                      updateQuantity={updateQuantity}
+                      removeReservation={removeReservation}
+                    />
+                  </section>
                 )}
+
+                {/* Section 2: Relocation Services */}
+                {hasItems && (
+                  <section>
+                    <SectionHeader number="3" title="Relocation Services" subtitle="(Optional)" />
+                    <p className="text-sm text-gray-500 -mt-2 mb-4">
+                      Add-ons our team can bundle with this proposal. Final pricing on the call.
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-1.5 bg-gray-100/40 border border-gray-200/50 p-1 rounded-2xl w-max max-w-full mb-4 shadow-inner">
+                      {SERVICE_CATEGORIES.map((c) => {
+                        const active = serviceCategory === c.key;
+                        return (
+                          <button
+                            key={c.key}
+                            onClick={() => setServiceCategory(c.key)}
+                            className={`h-8 px-4 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer select-none active:scale-95 ${active
+                              ? 'bg-[#0f4c3a] text-white shadow-sm'
+                              : 'text-gray-500 hover:text-[#0f4c3a] hover:bg-[#0f4c3a]/5'
+                              }`}
+                          >
+                            {c.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {selectedServiceCount > 0 && (
+                      <div className="mb-4 flex items-center justify-between">
+                        <span className="text-sm text-gray-500">
+                          <span className="font-bold text-[#0f4c3a]">{selectedServiceCount}</span>
+                          {' '}{selectedServiceCount === 1 ? 'service' : 'services'} selected
+                        </span>
+                        <button
+                          onClick={() => setSelectedServices({})}
+                          className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-red-500 transition-colors"
+                        >
+                          Clear all
+                        </button>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {servicesLoading ? (
+                        <div className="col-span-full py-8 text-sm text-gray-400 text-center">Loading services…</div>
+                      ) : filteredServices.length === 0 ? (
+                        <div className="col-span-full py-8 text-sm text-gray-400 text-center">No services in this category.</div>
+                      ) : filteredServices.map(({ id, icon: Icon, label, desc, scalable, priceEur, details }) => {
+                        const qty = selectedServices[id] || 0;
+                        const isSelected = qty > 0;
+
+                        const tileClass = isSelected
+                          ? 'border-[#0f4c3a] bg-[#0f4c3a]/5 shadow-sm'
+                          : 'border-gray-200 bg-white hover:border-[#0f4c3a]/30 hover:shadow-sm cursor-pointer';
+
+                        const handleTileClick = isSelected ? undefined : () => toggleService(id);
+
+                        return (
+                          <div
+                            key={id}
+                            onClick={handleTileClick}
+                            className={`relative p-4 rounded-xl border transition-all ${tileClass}`}
+                          >
+                            {isSelected && (
+                              <button
+                                onClick={(e) => { e.stopPropagation(); toggleService(id); }}
+                                className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 hover:text-red-500 flex items-center justify-center text-gray-400 transition-colors"
+                                title="Remove"
+                              >
+                                <X size={12} />
+                              </button>
+                            )}
+
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-colors ${isSelected ? 'bg-[#0f4c3a] text-white' : 'bg-gray-50 text-[#0f4c3a] border border-gray-100'
+                              }`}>
+                              <Icon className="w-5 h-5" />
+                            </div>
+
+                            <div className="flex items-start justify-between gap-2 mb-1.5">
+                              <div className="text-sm font-bold text-gray-900 leading-tight">{label}</div>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <div className="text-xs font-extrabold text-[#0f4c3a] bg-[#0f4c3a]/5 px-2 py-0.5 rounded-md whitespace-nowrap">
+                                  €{priceEur}
+                                </div>
+                                {details && details.length > 0 && (
+                                  <div
+                                    className="relative inline-block"
+                                    onMouseEnter={() => setHoveredServiceId(id)}
+                                    onMouseLeave={() => setHoveredServiceId(null)}
+                                  >
+                                    <BadgeInfo
+                                      size={14}
+                                      className="text-gray-400 hover:text-[#0f4c3a] transition-colors cursor-help shrink-0"
+                                    />
+
+                                    {hoveredServiceId === id && (
+                                      <div className="absolute right-0 bottom-full mb-2.5 w-64 bg-white border border-gray-100 p-3.5 rounded-xl shadow-xl z-[60] pointer-events-none text-left animate-in fade-in slide-in-from-bottom-1 duration-200">
+                                        <div className="text-[10px] font-bold text-gray-400 mb-2 pb-1 border-b border-gray-100 uppercase tracking-widest">
+                                          Specifications
+                                        </div>
+                                        <div className="space-y-2">
+                                          {details.map((detail, idx) => (
+                                            <div key={idx} className="flex flex-col gap-0.5 text-[10px] leading-snug">
+                                              <span className="font-extrabold text-[#0f4c3a] uppercase tracking-wider">{detail.label}</span>
+                                              <span className="text-gray-600 font-medium">{detail.value}</span>
+                                            </div>
+                                          ))}
+                                        </div>
+                                        {/* Popover Arrow */}
+                                        <div className="absolute top-full right-1 -translate-y-1 w-2.5 h-2.5 bg-white border-r border-b border-gray-100 rotate-45" />
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="text-xs text-gray-500 leading-snug">{desc}</div>
+
+                            {isSelected && scalable && (
+                              <div className="mt-3 pt-3 border-t border-[#0f4c3a]/15 flex items-center gap-3">
+                                <div className="flex items-center bg-white rounded-lg border border-gray-200 overflow-hidden shrink-0">
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); setServiceQty(id, qty - 1); }}
+                                    disabled={qty <= 1}
+                                    className="w-7 h-7 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                                    title={qty <= 1 ? 'Use × to remove' : 'Decrease'}
+                                  >
+                                    <Minus size={12} />
+                                  </button>
+                                  <span className="w-9 text-center text-sm font-bold text-gray-900 py-1 border-x border-gray-200">{qty}</span>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); setServiceQty(id, qty + 1); }}
+                                    className="w-7 h-7 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors"
+                                    title="Increase"
+                                  >
+                                    <Plus size={12} />
+                                  </button>
+                                </div>
+                                <span className="text-[11px] text-gray-500">employees</span>
+                              </div>
+                            )}
+
+                            {isSelected && !scalable && (
+                              <div className="mt-3 pt-3 border-t border-[#0f4c3a]/15 flex items-center gap-1.5 text-xs text-[#0f4c3a] font-bold">
+                                <Check size={13} strokeWidth={3} />
+                                Added
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+                )}
+
+                {/* Section 3: Notes */}
+                {hasItems && (
+                  <section>
+                    <SectionHeader number="4" title="Notes for the Arrivio Team" subtitle="(Optional)" />
+                    <div className="bg-white rounded-2xl p-6 md:p-7 shadow-sm border border-gray-100">
+                      <p className="text-sm text-gray-500 mb-4">
+                        Headcount waves, timing, special requirements anything our team should know before the call.
+                      </p>
+                      <textarea
+                        value={additionalNotes}
+                        onChange={(e) => setAdditionalNotes(e.target.value)}
+                        placeholder="e.g. 8 engineers moving in July, 4 more in September. Need parking at the Berlin units."
+                        rows={5}
+                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-transparent text-sm focus:bg-white focus:border-[#0f4c3a]/20 focus:ring-2 focus:ring-[#0f4c3a]/5 transition-all outline-none resize-none placeholder:text-gray-400"
+                      />
+                      {additionalNotes.length > 0 && (
+                        <p className="text-[10px] text-gray-400 mt-2 text-right">{additionalNotes.length} chars</p>
+                      )}
+                    </div>
+                  </section>
+                )}
+
+              </div>
+
+              {/* Right column: Summary + Fees act as ONE unit, fixed to the right, no inner scroller */}
+              <div className="w-full lg:w-1/3 lg:pt-[76px]">
+                <div className="lg:sticky lg:top-28 space-y-4">
+                  <Summary
+                    reservations={reservations}
+                    groupedProperties={groupedProperties}
+                    handleCheckout={handleCheckout}
+                    handleDownloadPDF={handleDownloadPDF}
+                    isGeneratingPDF={isGeneratingPDF}
+                    isProcessingCheckout={isProcessingCheckout}
+                    servicesCount={selectedServiceCount}
+                    servicesTotal={servicesTotal}
+                    estimatedMonthlyCost={estimatedMonthlyTotalWithAddons}
+                    furnitureAddOnTotal={furnitureAddOnTotal}
+                    furnitureCount={furnitureCount}
+                    cityCounts={cityCounts}
+                  />
+                  {hasItems && (
+                    <FeesAndInclusions
+                      totalUnits={reservations.reduce(
+                        (s, r) =>
+                          r.isService || r.propertyId === 'services' ? s : s + (r.quantity || 0),
+                        0,
+                      )}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
           )}
         </div>
       </main>

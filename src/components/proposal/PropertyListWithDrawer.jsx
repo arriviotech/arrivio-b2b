@@ -15,7 +15,7 @@ import { useArixDesigner } from '../../context/ArixDesignerContext';
 import { ARIX_ENABLED } from '../../App';
 import ArixPropertyBlock from './ArixPropertyBlock';
 
-// Display label for each unit_type — used in list row chips.
+// Display label for each unit_type - used in list row chips.
 // Kept as a map (rather than passing the label through directly) so we can
 // override here later if any label needs trimming for the chip context.
 const SHORT_UNIT_LABEL = {
@@ -87,7 +87,7 @@ const PropertyListWithDrawer = ({
     <>
       {/* Tight list */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        {/* Discovery banner — bright and eye-catching */}
+        {/* Discovery banner - bright and eye-catching */}
         {ARIX_ENABLED && (
           <div className="relative px-4 py-3 bg-gradient-to-r from-[#0f4c3a] via-[#0f4c3a] to-[#08311c] border-b border-[#0f4c3a]/30 flex items-center gap-3 overflow-hidden">
             {/* Decorative shimmer dots */}
@@ -109,138 +109,138 @@ const PropertyListWithDrawer = ({
         )}
 
         <div className="divide-y divide-gray-100">
-        {properties.map((p) => {
-          const pUnits = p.units.filter((u) => u.unitPrice > 0);
-          const totalQty = pUnits.reduce((sum, u) => sum + u.quantity, 0);
-          const totalMonthly = pUnits.reduce(
-            (sum, u) => sum + Math.round(u.unitPrice * u.quantity),
-            0,
-          );
-          // Sum Arix add-ons across all per-unit-type slots for this property
-          const pArixTotal = ARIX_ENABLED ? arixTotalForProperty(p) : 0;
-          const pArixItems = ARIX_ENABLED ? arixItemsForProperty(p) : 0;
-          const pHasDesign = pArixItems > 0;
-          // (4) Maxed availability — every unit at its cap
-          const pIsMaxed =
-            pUnits.length > 0 &&
-            pUnits.every((u) => u.maxAvailable > 0 && u.quantity >= u.maxAvailable);
+          {properties.map((p) => {
+            const pUnits = p.units.filter((u) => u.unitPrice > 0);
+            const totalQty = pUnits.reduce((sum, u) => sum + u.quantity, 0);
+            const totalMonthly = pUnits.reduce(
+              (sum, u) => sum + Math.round(u.unitPrice * u.quantity),
+              0,
+            );
+            // Sum Arix add-ons across all per-unit-type slots for this property
+            const pArixTotal = ARIX_ENABLED ? arixTotalForProperty(p) : 0;
+            const pArixItems = ARIX_ENABLED ? arixItemsForProperty(p) : 0;
+            const pHasDesign = pArixItems > 0;
+            // (4) Maxed availability - every unit at its cap
+            const pIsMaxed =
+              pUnits.length > 0 &&
+              pUnits.every((u) => u.maxAvailable > 0 && u.quantity >= u.maxAvailable);
 
-          return (
-            <div
-              key={p.id}
-              role="button"
-              tabIndex={0}
-              onClick={() => setActiveId(p.id)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setActiveId(p.id);
-                }
-              }}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left group cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 border border-gray-100">
-                <img
-                  src={p.image}
-                  alt={p.name}
-                  className="w-full h-full object-cover transition-transform group-hover:scale-105"
+            return (
+              <div
+                key={p.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => setActiveId(p.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setActiveId(p.id);
+                  }
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left group cursor-pointer"
+              >
+                <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 border border-gray-100">
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                  />
+                </div>
+                <div className="flex-grow min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="text-sm font-bold text-gray-900 truncate group-hover:text-[#0f4c3a] transition-colors">
+                      {p.name}
+                    </h3>
+                    {pHasDesign && (
+                      <span className="relative inline-flex shrink-0 group/sparkle">
+                        <Sparkles size={11} className="text-[#0f4c3a]" />
+                        <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-1.5 whitespace-nowrap rounded-md bg-gray-900 text-white text-[10px] font-bold px-2 py-1 opacity-0 group-hover/sparkle:opacity-100 transition-opacity z-20 shadow-md">
+                          ✦ Designed with Arix
+                        </span>
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1 text-[11px] text-gray-500 mt-0.5">
+                    <MapPin size={10} />
+                    <span className="truncate">
+                      {p.neighborhood ? `${p.neighborhood}, ` : ''}
+                      {p.city}
+                    </span>
+                  </div>
+                  {/* Unit type chips + Arix chip + Max badge */}
+                  <div className="flex flex-wrap items-center gap-1 mt-1.5">
+                    {pUnits.map((u) => (
+                      <span
+                        key={u.unitType}
+                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#0f4c3a]/[0.06] text-[10px] font-bold text-[#0f4c3a]"
+                      >
+                        {SHORT_UNIT_LABEL[u.unitType] || u.unitType}
+                        <span className="text-[#0f4c3a]/60">·{u.quantity}</span>
+                      </span>
+                    ))}
+                    {/* (2) Arix designed chip */}
+                    {pHasDesign && (
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#DAA520]/15 text-[10px] font-bold text-[#0f4c3a] border border-[#DAA520]/30">
+                        <Sparkles size={9} strokeWidth={2.5} />
+                        +€{pArixTotal}/mo
+                      </span>
+                    )}
+                    {/* (4) Max reached badge */}
+                    {pIsMaxed && (
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-50 text-[10px] font-bold text-red-600 border border-red-100">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500" />
+                        Max reached
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="text-right shrink-0">
+                  <div
+                    className={`relative inline-flex flex-col items-end ${pHasDesign ? 'group/price' : ''}`}
+                  >
+                    <div className="text-sm font-bold text-[#0f4c3a]">
+                      €{(totalMonthly + pArixTotal).toLocaleString()}
+                      <span className="text-[10px] font-normal text-[#0f4c3a]/60">/mo</span>
+                    </div>
+                    <div className="text-[10px] text-gray-400 uppercase tracking-wider mt-0.5">
+                      {totalQty} {totalQty === 1 ? 'unit' : 'units'}
+                    </div>
+                    {pHasDesign && (
+                      <div className="pointer-events-none absolute right-0 top-full mt-1.5 z-20 whitespace-nowrap rounded-md bg-gray-900 text-white text-[10px] font-medium px-2.5 py-1.5 opacity-0 group-hover/price:opacity-100 transition-opacity shadow-md">
+                        €{totalMonthly.toLocaleString()} housing +{' '}
+                        <span className="text-[#DAA520] font-bold">✦</span> €{pArixTotal} furniture
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {/* (1) Quick remove - wipes all units for this property */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    pUnits.forEach((u) => removeReservation(u.propertyId, u.unitType));
+                  }}
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
+                  title="Remove this property"
+                >
+                  <Trash2 size={14} />
+                </button>
+                <ChevronRight
+                  size={16}
+                  className="text-gray-300 group-hover:text-[#0f4c3a] group-hover:translate-x-0.5 transition-all shrink-0"
                 />
               </div>
-              <div className="flex-grow min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <h3 className="text-sm font-bold text-gray-900 truncate group-hover:text-[#0f4c3a] transition-colors">
-                    {p.name}
-                  </h3>
-                  {pHasDesign && (
-                    <span className="relative inline-flex shrink-0 group/sparkle">
-                      <Sparkles size={11} className="text-[#0f4c3a]" />
-                      <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-1.5 whitespace-nowrap rounded-md bg-gray-900 text-white text-[10px] font-bold px-2 py-1 opacity-0 group-hover/sparkle:opacity-100 transition-opacity z-20 shadow-md">
-                        ✦ Designed with Arix
-                      </span>
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-1 text-[11px] text-gray-500 mt-0.5">
-                  <MapPin size={10} />
-                  <span className="truncate">
-                    {p.neighborhood ? `${p.neighborhood}, ` : ''}
-                    {p.city}
-                  </span>
-                </div>
-                {/* Unit type chips + Arix chip + Max badge */}
-                <div className="flex flex-wrap items-center gap-1 mt-1.5">
-                  {pUnits.map((u) => (
-                    <span
-                      key={u.unitType}
-                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#0f4c3a]/[0.06] text-[10px] font-bold text-[#0f4c3a]"
-                    >
-                      {SHORT_UNIT_LABEL[u.unitType] || u.unitType}
-                      <span className="text-[#0f4c3a]/60">·{u.quantity}</span>
-                    </span>
-                  ))}
-                  {/* (2) Arix designed chip */}
-                  {pHasDesign && (
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#DAA520]/15 text-[10px] font-bold text-[#0f4c3a] border border-[#DAA520]/30">
-                      <Sparkles size={9} strokeWidth={2.5} />
-                      +€{pArixTotal}/mo
-                    </span>
-                  )}
-                  {/* (4) Max reached badge */}
-                  {pIsMaxed && (
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-50 text-[10px] font-bold text-red-600 border border-red-100">
-                      <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500" />
-                      Max reached
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="text-right shrink-0">
-                <div
-                  className={`relative inline-flex flex-col items-end ${pHasDesign ? 'group/price' : ''}`}
-                >
-                  <div className="text-sm font-bold text-[#0f4c3a]">
-                    €{(totalMonthly + pArixTotal).toLocaleString()}
-                    <span className="text-[10px] font-normal text-[#0f4c3a]/60">/mo</span>
-                  </div>
-                  <div className="text-[10px] text-gray-400 uppercase tracking-wider mt-0.5">
-                    {totalQty} {totalQty === 1 ? 'unit' : 'units'}
-                  </div>
-                  {pHasDesign && (
-                    <div className="pointer-events-none absolute right-0 top-full mt-1.5 z-20 whitespace-nowrap rounded-md bg-gray-900 text-white text-[10px] font-medium px-2.5 py-1.5 opacity-0 group-hover/price:opacity-100 transition-opacity shadow-md">
-                      €{totalMonthly.toLocaleString()} housing +{' '}
-                      <span className="text-[#DAA520] font-bold">✦</span> €{pArixTotal} furniture
-                    </div>
-                  )}
-                </div>
-              </div>
-              {/* (1) Quick remove — wipes all units for this property */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  pUnits.forEach((u) => removeReservation(u.propertyId, u.unitType));
-                }}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
-                title="Remove this property"
-              >
-                <Trash2 size={14} />
-              </button>
-              <ChevronRight
-                size={16}
-                className="text-gray-300 group-hover:text-[#0f4c3a] group-hover:translate-x-0.5 transition-all shrink-0"
-              />
-            </div>
-          );
-        })}
-        {/* (3) Browse more properties CTA */}
-        <button
-          type="button"
-          onClick={() => navigate('/properties')}
-          className="w-full flex items-center justify-center gap-1.5 px-4 py-3 text-[11px] font-bold uppercase tracking-widest text-gray-500 hover:text-[#0f4c3a] hover:bg-[#0f4c3a]/5 transition-colors group"
-        >
-          <Plus size={13} strokeWidth={2.5} className="group-hover:rotate-90 transition-transform" />
-          Browse more properties
-        </button>
+            );
+          })}
+          {/* (3) Browse more properties CTA */}
+          <button
+            type="button"
+            onClick={() => navigate('/properties')}
+            className="w-full flex items-center justify-center gap-1.5 px-4 py-3 text-[11px] font-bold uppercase tracking-widest text-gray-500 hover:text-[#0f4c3a] hover:bg-[#0f4c3a]/5 transition-colors group"
+          >
+            <Plus size={13} strokeWidth={2.5} className="group-hover:rotate-90 transition-transform" />
+            Browse more properties
+          </button>
         </div>
       </div>
 
@@ -322,7 +322,7 @@ const DrawerContent = ({
 
   return (
     <>
-      {/* Compact header — small image + title + place + close */}
+      {/* Compact header - small image + title + place + close */}
       <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-3">
         <div className="w-20 h-14 rounded-lg overflow-hidden shrink-0 border border-gray-100">
           <img src={property.image} alt={property.name} className="w-full h-full object-cover" />
@@ -443,11 +443,11 @@ const DrawerContent = ({
           })}
         </div>
 
-        {/* Arix designer block — extracted to its own component */}
+        {/* Arix designer block - extracted to its own component */}
         <ArixPropertyBlock property={property} />
       </div>
 
-      {/* (7) Sticky footer — collapsible price breakdown + CTA */}
+      {/* (7) Sticky footer - collapsible price breakdown + CTA */}
       <div className="border-t border-gray-200 bg-white p-4 shadow-[0_-4px_12px_-4px_rgba(0,0,0,0.06)]">
         {/* Breakdown toggle */}
         <button
@@ -465,7 +465,7 @@ const DrawerContent = ({
           />
         </button>
 
-        {/* Breakdown body — hidden until toggled */}
+        {/* Breakdown body - hidden until toggled */}
         {breakdownOpen && (
           <div className="space-y-1 mb-3 text-xs">
             {housingUnits.map((unit) => {
