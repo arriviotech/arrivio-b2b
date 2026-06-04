@@ -33,7 +33,7 @@ const LocationsSection = () => {
 
   // Derive live "homes per city" counts from the loaded properties.
   // Previously this referenced an unimported `supabase` global, so the
-  // guard `typeof supabase !== 'undefined'` was always false — the fetch
+  // guard `typeof supabase !== 'undefined'` was always false - the fetch
   // never ran and every city stayed stuck at its hardcoded count: 0.
   const locations = useMemo(() => {
     // Normalize for matching: lowercase, trim, and strip diacritics so the

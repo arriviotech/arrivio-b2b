@@ -1,5 +1,27 @@
-import React from 'react';
-import { Download, Loader2, ArrowRight, Building2, BedDouble, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  Download,
+  Loader2,
+  Calendar,
+  Building2,
+  BedDouble,
+  MapPin,
+  ChevronDown,
+  Wifi,
+  Zap,
+  Sparkles,
+  Wrench,
+} from 'lucide-react';
+
+// Surfaced as a tooltip next to the Housing line (moved here from the
+// Fees & Inclusions card so the "all bills included" promise sits right
+// beside the housing cost).
+const INCLUSIONS = [
+  { icon: Wifi, label: 'High-speed WiFi' },
+  { icon: Zap, label: 'Utilities (water, electricity, gas, heating)' },
+  { icon: Sparkles, label: 'Cleaning (where applicable)' },
+  { icon: Wrench, label: 'Property maintenance' },
+];
 
 const Summary = ({
   reservations,
@@ -15,6 +37,7 @@ const Summary = ({
   furnitureCount = 0,
   cityCounts = [],
 }) => {
+  const [showInclusions, setShowInclusions] = useState(false);
   const totalUnits = reservations
     .filter((r) => r.propertyId !== 'services')
     .reduce((acc, curr) => acc + curr.quantity, 0);
@@ -74,9 +97,43 @@ const Summary = ({
           </div>
           <div className="space-y-2.5 text-sm">
             <div className="flex justify-between text-gray-600">
-              <span>Housing</span>
+              <span className="inline-flex items-center gap-1">
+                Housing
+                <button
+                  type="button"
+                  onClick={() => setShowInclusions((v) => !v)}
+                  aria-label="What's included in the monthly rent"
+                  aria-expanded={showInclusions}
+                  className={`transition-colors ${
+                    showInclusions ? 'text-[#0f4c3a]' : 'text-gray-400 hover:text-[#0f4c3a]'
+                  }`}
+                >
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform ${showInclusions ? 'rotate-180' : ''}`}
+                  />
+                </button>
+              </span>
               <span className="font-bold text-gray-900">{formatCurrency(baseHousing)}/mo</span>
             </div>
+            {showInclusions && (
+              <div className="rounded-lg border border-[#0f4c3a]/10 bg-[#0f4c3a]/[0.04] p-3">
+                <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">
+                  Included in monthly rent
+                </div>
+                <div className="space-y-1.5">
+                  {INCLUSIONS.map(({ icon, label }) => (
+                    <div key={label} className="flex items-center gap-2 text-[12px] text-gray-700">
+                      {React.createElement(icon, {
+                        size: 12,
+                        className: 'text-[#0f4c3a] flex-shrink-0',
+                      })}
+                      <span>{label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             {furnitureAddOnTotal > 0 && (
               <div className="flex justify-between text-gray-600">
                 <span>
@@ -108,7 +165,7 @@ const Summary = ({
             </div>
           </div>
 
-          {/* One-time services — separate from monthly recurring */}
+          {/* One-time services - separate from monthly recurring */}
           {servicesCount > 0 && (
             <div className="mt-4">
               <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">
@@ -130,21 +187,20 @@ const Summary = ({
         <button
           onClick={handleCheckout}
           disabled={!hasItems || isProcessingCheckout}
-          className={`w-full py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 ${
-            hasItems && !isProcessingCheckout
+          className={`w-full py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 ${hasItems && !isProcessingCheckout
               ? 'bg-[#0f4c3a] hover:bg-[#1A2E22] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5'
               : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-          }`}
+            }`}
         >
           {isProcessingCheckout ? (
             <>
               <Loader2 size={18} className="animate-spin" />
-              Sending...
+              Opening scheduler…
             </>
           ) : (
             <>
-              Request Quote
-              <ArrowRight size={16} />
+              <Calendar size={16} />
+              Schedule a Call
             </>
           )}
         </button>
@@ -152,11 +208,10 @@ const Summary = ({
         <button
           onClick={handleDownloadPDF}
           disabled={!hasItems || isGeneratingPDF}
-          className={`w-full py-3 rounded-xl font-bold text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 border ${
-            hasItems
+          className={`w-full py-3 rounded-xl font-bold text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 border ${hasItems
               ? 'border-gray-200 text-gray-700 hover:border-[#0f4c3a]/40 hover:bg-[#0f4c3a]/5'
               : 'border-gray-200 text-gray-300 cursor-not-allowed'
-          }`}
+            }`}
         >
           {isGeneratingPDF ? (
             <>

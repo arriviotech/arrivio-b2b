@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Building2, Clock, Heart, ArrowRight, Home } from 'lucide-react';
 
@@ -12,7 +12,9 @@ const Contracts = () => {
             checkIn: 'Dec 15, 2026',
             checkOut: 'Dec 15, 2027',
             units: [
-                { type: 'Shared Room', quantity: 5 }
+                { type: 'Shared Room', quantity: 3 },
+                { type: 'Studio Apartment', quantity: 4 },
+                { type: 'Individual Unit', quantity: 3 }
             ],
             status: 'Active',
             totalPrice: '€13,200'
@@ -25,8 +27,9 @@ const Contracts = () => {
             checkIn: 'Oct 12, 2026',
             checkOut: 'Oct 12, 2027',
             units: [
-                { type: 'Studio Apartment', quantity: 8 },
-                { type: 'Shared Room', quantity: 7 }
+                { type: 'Shared Room', quantity: 4 },
+                { type: 'Studio Apartment', quantity: 5 },
+                { type: 'Individual Unit', quantity: 3 }
             ],
             status: 'Active',
             totalPrice: '€11,200'
@@ -39,7 +42,9 @@ const Contracts = () => {
             checkIn: 'Nov 01, 2026',
             checkOut: 'Nov 01, 2027',
             units: [
-                { type: 'Individual Unit', quantity: 9 }
+                { type: 'Shared Room', quantity: 2 },
+                { type: 'Studio Apartment', quantity: 3 },
+                { type: 'Individual Unit', quantity: 5 }
             ],
             status: 'Active',
             totalPrice: '€8,100'

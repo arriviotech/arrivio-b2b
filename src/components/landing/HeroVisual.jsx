@@ -3,16 +3,16 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Cell
 } from 'recharts';
-import { Users, Building2, TrendingUp } from 'lucide-react';
+import { Users, Building2, LayoutGrid } from 'lucide-react';
 
-const occupancyData = [
-  { name: 'Jan', value: 45 },
-  { name: 'Feb', value: 52 },
-  { name: 'Mar', value: 48 },
-  { name: 'Apr', value: 61 },
-  { name: 'May', value: 55 },
-  { name: 'Jun', value: 67 },
-  { name: 'Jul', value: 72 },
+const retentionData = [
+  { name: 'Jan', value: 78 },
+  { name: 'Feb', value: 80 },
+  { name: 'Mar', value: 79 },
+  { name: 'Apr', value: 84 },
+  { name: 'May', value: 87 },
+  { name: 'Jun', value: 91 },
+  { name: 'Jul', value: 94 },
 ];
 
 const cityData = [
@@ -25,7 +25,7 @@ const cityData = [
 const stats = [
   { label: 'Active Residents', value: '1,280', icon: <Users size={18} />, trend: '+12%', iconColor: 'text-emerald-600', iconBg: 'bg-emerald-50' },
   { label: 'Total Properties', value: '450', icon: <Building2 size={18} />, trend: '+24%', iconColor: 'text-[#0f4c3a]', iconBg: 'bg-[#0f4c3a]/8' },
-  { label: 'Avg. Occupancy', value: '96%', icon: <TrendingUp size={18} />, trend: '+5%', iconColor: 'text-emerald-600', iconBg: 'bg-emerald-50' },
+  { label: 'Services Offered', value: '18', icon: <LayoutGrid size={18} />, trend: '+3 new', iconColor: 'text-emerald-600', iconBg: 'bg-emerald-50' },
 ];
 
 const HeroVisual = () => {
@@ -59,17 +59,17 @@ const HeroVisual = () => {
         <div className="col-span-3 bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <div className="flex justify-between items-center mb-4">
             <div>
-              <p className="font-bold text-gray-800 text-[13px]">Portfolio Growth</p>
-              <p className="text-[11px] text-gray-400 mt-0.5">Capacity over time</p>
+              <p className="font-bold text-gray-800 text-[13px]">Employee Retention</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">Avg. across client companies</p>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full bg-[#0f4c3a]" />
-              <span className="text-[11px] text-gray-400 font-medium">Capacity</span>
+              <span className="text-[11px] text-gray-400 font-medium">Retention %</span>
             </div>
           </div>
           <div className="h-[160px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={occupancyData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+              <AreaChart data={retentionData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#0f4c3a" stopOpacity={0.1} />
@@ -86,6 +86,7 @@ const HeroVisual = () => {
                 />
                 <YAxis hide />
                 <Tooltip
+                  formatter={(v) => [`${v}%`, 'Retention']}
                   contentStyle={{
                     borderRadius: '10px',
                     border: 'none',

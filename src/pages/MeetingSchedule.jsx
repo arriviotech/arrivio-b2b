@@ -13,12 +13,14 @@ import {
   Info,
   X,
   Plus,
+  Download,
 } from 'lucide-react';
 import PropertiesNavbar from '../components/layout/PropertiesNavbar';
 import Footer from '../components/layout/Footer';
 import { useReservation } from '../context/ReservationContext';
 import { useArixDesigner } from '../context/ArixDesignerContext';
 import { ARIX_ENABLED } from '../App';
+import { generateNativePDF } from '../components/proposal/Pdf';
 
 // Cities Arrivio currently operates in. Add to this list as coverage grows.
 const SUPPORTED_CITIES = ['Aachen', 'Berlin', 'Bonn', 'Hamburg'];
@@ -35,20 +37,18 @@ const StepIndicator = ({ current }) => {
           <React.Fragment key={step}>
             <div className="flex items-center gap-2">
               <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                  isActive
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${isActive
                     ? 'bg-[#0f4c3a] text-white'
                     : isPast
                       ? 'bg-[#0f4c3a]/30 text-[#0f4c3a]'
                       : 'bg-gray-200 text-gray-400'
-                }`}
+                  }`}
               >
                 {stepNum}
               </div>
               <span
-                className={`text-xs font-semibold uppercase tracking-widest ${
-                  isActive ? 'text-[#0f4c3a]' : 'text-gray-400'
-                }`}
+                className={`text-xs font-semibold uppercase tracking-widest ${isActive ? 'text-[#0f4c3a]' : 'text-gray-400'
+                  }`}
               >
                 {step}
               </span>
@@ -67,6 +67,7 @@ const SLOT_SUFFIX_BY_LABEL = { Studio: 'studio', 'Single Room': 'one_bedroom' };
 
 const ProposalSummary = ({ reservations }) => {
   const { getDesignForProperty, getSharedDesignForProperty } = useArixDesigner();
+  const { proposalServices, proposalNotes } = useReservation();
 
   const housing = reservations.filter((r) => r.propertyId !== 'services');
   const totalUnits = housing.reduce((acc, r) => acc + (r.quantity || 0), 0);
@@ -96,19 +97,19 @@ const ProposalSummary = ({ reservations }) => {
   const furnitureMonthly = !ARIX_ENABLED
     ? 0
     : properties.reduce((acc, prop) => {
-        const labels = [...new Set(prop.units.map((u) => u.unitType).filter(Boolean))];
-        return (
-          acc +
-          labels.reduce((s, label) => {
-            if (label === 'Shared Room') {
-              return s + (getSharedDesignForProperty(prop.id)?.addOnTotal || 0);
-            }
-            const suffix = SLOT_SUFFIX_BY_LABEL[label];
-            if (!suffix) return s;
-            return s + (getDesignForProperty(`${prop.id}_${suffix}`)?.addOnTotal || 0);
-          }, 0)
-        );
-      }, 0);
+      const labels = [...new Set(prop.units.map((u) => u.unitType).filter(Boolean))];
+      return (
+        acc +
+        labels.reduce((s, label) => {
+          if (label === 'Shared Room') {
+            return s + (getSharedDesignForProperty(prop.id)?.addOnTotal || 0);
+          }
+          const suffix = SLOT_SUFFIX_BY_LABEL[label];
+          if (!suffix) return s;
+          return s + (getDesignForProperty(`${prop.id}_${suffix}`)?.addOnTotal || 0);
+        }, 0)
+      );
+    }, 0);
 
   const monthlyTotal = housingMonthly + furnitureMonthly;
   const formatCurrency = (n) =>
@@ -117,6 +118,70 @@ const ProposalSummary = ({ reservations }) => {
       currency: 'EUR',
       maximumFractionDigits: 0,
     }).format(n);
+
+  // ── Download PDF (same generator + same data as the Proposal page) ───
+  // Services + the free-text note are read from the persisted proposal
+  // context (see ReservationContext) so this PDF is identical to the one
+  // produced on the Proposal page.
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const handleDownloadPDF = async () => {
+    if (properties.length === 0) return;
+    setIsGeneratingPDF(true);
+    try {
+      const pdfFurniture = !ARIX_ENABLED
+        ? []
+        : properties.flatMap((prop) => {
+            const labels = [...new Set(prop.units.map((u) => u.unitType).filter(Boolean))];
+            return labels
+              .map((label) => {
+                const design =
+                  label === 'Shared Room'
+                    ? getSharedDesignForProperty(prop.id)
+                    : SLOT_SUFFIX_BY_LABEL[label]
+                      ? getDesignForProperty(`${prop.id}_${SLOT_SUFFIX_BY_LABEL[label]}`)
+                      : null;
+                return {
+                  propertyId: prop.id,
+                  propertyName: prop.name,
+                  unitLabel: label,
+                  items: (design?.selectedItems || []).map((it) => ({
+                    id: it.id,
+                    name: it.name,
+                    price: it.price || 0,
+                  })),
+                  total: design?.addOnTotal || 0,
+                };
+              })
+              .filter((f) => f.items.length > 0);
+          });
+      const cityCounts = Object.entries(
+        housing.reduce((acc, r) => {
+          if (r.propertyCity) acc[r.propertyCity] = (acc[r.propertyCity] || 0) + (r.quantity || 0);
+          return acc;
+        }, {}),
+      );
+      await generateNativePDF({
+        groupedProperties: properties.map((p) => ({
+          id: p.id,
+          name: p.name,
+          image: p.image,
+          city: p.city,
+          neighborhood: p.units[0]?.propertyNeighborhood,
+          units: p.units,
+        })),
+        services: proposalServices || [],
+        furniture: pdfFurniture,
+        additionalNotes: proposalNotes || '',
+        estimatedMonthlyCost: housingMonthly,
+        cityCounts,
+      });
+    } catch (error) {
+      console.error('PDF Error:', error);
+      alert('PDF generation failed: ' + error.message);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
@@ -170,13 +235,13 @@ const ProposalSummary = ({ reservations }) => {
           const propFurniture = !ARIX_ENABLED
             ? 0
             : propLabels.reduce((s, label) => {
-                if (label === 'Shared Room') {
-                  return s + (getSharedDesignForProperty(p.id)?.addOnTotal || 0);
-                }
-                const suffix = SLOT_SUFFIX_BY_LABEL[label];
-                if (!suffix) return s;
-                return s + (getDesignForProperty(`${p.id}_${suffix}`)?.addOnTotal || 0);
-              }, 0);
+              if (label === 'Shared Room') {
+                return s + (getSharedDesignForProperty(p.id)?.addOnTotal || 0);
+              }
+              const suffix = SLOT_SUFFIX_BY_LABEL[label];
+              if (!suffix) return s;
+              return s + (getDesignForProperty(`${p.id}_${suffix}`)?.addOnTotal || 0);
+            }, 0);
           const propMonthly = propHousing + propFurniture;
           return (
             <li key={p.id} className="flex items-center gap-2.5">
@@ -230,6 +295,15 @@ const ProposalSummary = ({ reservations }) => {
           </span>
         </div>
       </div>
+
+      <button
+        onClick={handleDownloadPDF}
+        disabled={isGeneratingPDF}
+        className="mt-5 w-full flex items-center justify-center gap-2 rounded-xl border border-[#0f4c3a]/20 bg-white py-2.5 text-xs font-bold uppercase tracking-widest text-[#0f4c3a] transition-colors hover:bg-[#0f4c3a]/5 disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        <Download size={14} />
+        {isGeneratingPDF ? 'Generating…' : 'Download PDF'}
+      </button>
     </div>
   );
 };
@@ -243,150 +317,149 @@ const DiscoveryCallInfo = ({ fields, onEdit, isLivePreview = false }) => {
       fields.notes);
 
   return (
-  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-    <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
-      30-minute discovery call
-    </div>
-    <h2 className="text-base font-bold text-gray-900 mb-4">What we&rsquo;ll cover</h2>
-
-    <ul className="space-y-3 mb-5 text-xs text-gray-700">
-      <li className="flex items-start gap-2.5">
-        <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
-          <CheckCircle2 size={12} />
-        </div>
-        <span>Your team size, cities, and timeline to scope the right housing.</span>
-      </li>
-      <li className="flex items-start gap-2.5">
-        <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
-          <Building2 size={12} />
-        </div>
-        <span>A quick tour of buildings that match Studios, Single Rooms, Shared.</span>
-      </li>
-      <li className="flex items-start gap-2.5">
-        <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
-          <Sparkles size={12} />
-        </div>
-        <span>Furniture, relocation services, brokerage fees pricing transparency.</span>
-      </li>
-      <li className="flex items-start gap-2.5">
-        <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
-          <MessageSquare size={12} />
-        </div>
-        <span>Questions, paperwork, and custom requests.</span>
-      </li>
-    </ul>
-
-    {hasAny && (
-      <div className="pt-4 border-t border-gray-100">
-        <div className="flex items-baseline justify-between mb-3">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-            {isLivePreview ? 'Your brief · live preview' : 'Your brief'}
-          </span>
-          {onEdit && (
-            <button
-              type="button"
-              onClick={onEdit}
-              className="text-[10px] font-bold uppercase tracking-widest text-[#0f4c3a] hover:underline"
-            >
-              Edit
-            </button>
-          )}
-        </div>
-
-        <dl className="space-y-3">
-          {fields.cities && fields.cities.length > 0 && (
-            <div className="flex items-start gap-2.5">
-              <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
-                <MapPin size={11} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <dt className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1">
-                  Cities
-                </dt>
-                <dd className="flex flex-wrap gap-1">
-                  {fields.cities.map((c) => {
-                    const isUnsupported = (fields.unsupported || []).some(
-                      (u) => u.toLowerCase() === c.toLowerCase(),
-                    );
-                    return (
-                      <span
-                        key={c}
-                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                          isUnsupported
-                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                            : 'bg-[#0f4c3a]/10 text-[#0f4c3a]'
-                        }`}
-                      >
-                        {c}
-                        {isUnsupported && <span className="ml-1 opacity-70">!</span>}
-                      </span>
-                    );
-                  })}
-                </dd>
-              </div>
-            </div>
-          )}
-
-          {fields.headcount && (
-            <div className="flex items-start gap-2.5">
-              <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
-                <BedDouble size={11} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <dt className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">
-                  Headcount
-                </dt>
-                <dd className="text-sm font-bold text-gray-900 leading-tight">
-                  {fields.headcount}
-                </dd>
-              </div>
-            </div>
-          )}
-
-          {fields.timeline && (
-            <div className="flex items-start gap-2.5">
-              <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Calendar size={11} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <dt className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">
-                  Timeline
-                </dt>
-                <dd className="text-xs font-bold text-gray-900 leading-tight">
-                  {fields.timeline}
-                </dd>
-              </div>
-            </div>
-          )}
-
-          {fields.notes && (
-            <div className="flex items-start gap-2.5">
-              <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
-                <MessageSquare size={11} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <dt className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">
-                  Notes
-                </dt>
-                <dd className="text-[11px] text-gray-700 leading-relaxed whitespace-pre-wrap">
-                  {fields.notes}
-                </dd>
-              </div>
-            </div>
-          )}
-
-          {fields.unsupported && fields.unsupported.length > 0 && (
-            <div className="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-lg px-2.5 py-1.5 text-[10px] text-amber-900 leading-snug">
-              <Info size={11} className="mt-0.5 flex-shrink-0 text-amber-600" />
-              <span>
-                Not currently served: <strong>{fields.unsupported.join(', ')}</strong>
-              </span>
-            </div>
-          )}
-        </dl>
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+      <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
+        30-minute discovery call
       </div>
-    )}
-  </div>
+      <h2 className="text-base font-bold text-gray-900 mb-4">What we&rsquo;ll cover</h2>
+
+      <ul className="space-y-3 mb-5 text-xs text-gray-700">
+        <li className="flex items-start gap-2.5">
+          <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
+            <CheckCircle2 size={12} />
+          </div>
+          <span>Your team size, cities, and timeline to scope the right housing.</span>
+        </li>
+        <li className="flex items-start gap-2.5">
+          <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
+            <Building2 size={12} />
+          </div>
+          <span>A quick tour of buildings that match Studios, Single Rooms, Shared.</span>
+        </li>
+        <li className="flex items-start gap-2.5">
+          <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
+            <Sparkles size={12} />
+          </div>
+          <span>Furniture, relocation services, brokerage fees pricing transparency.</span>
+        </li>
+        <li className="flex items-start gap-2.5">
+          <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
+            <MessageSquare size={12} />
+          </div>
+          <span>Questions, paperwork, and custom requests.</span>
+        </li>
+      </ul>
+
+      {hasAny && (
+        <div className="pt-4 border-t border-gray-100">
+          <div className="flex items-baseline justify-between mb-3">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+              {isLivePreview ? 'Your brief · live preview' : 'Your brief'}
+            </span>
+            {onEdit && (
+              <button
+                type="button"
+                onClick={onEdit}
+                className="text-[10px] font-bold uppercase tracking-widest text-[#0f4c3a] hover:underline"
+              >
+                Edit
+              </button>
+            )}
+          </div>
+
+          <dl className="space-y-3">
+            {fields.cities && fields.cities.length > 0 && (
+              <div className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <MapPin size={11} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <dt className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1">
+                    Cities
+                  </dt>
+                  <dd className="flex flex-wrap gap-1">
+                    {fields.cities.map((c) => {
+                      const isUnsupported = (fields.unsupported || []).some(
+                        (u) => u.toLowerCase() === c.toLowerCase(),
+                      );
+                      return (
+                        <span
+                          key={c}
+                          className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${isUnsupported
+                              ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                              : 'bg-[#0f4c3a]/10 text-[#0f4c3a]'
+                            }`}
+                        >
+                          {c}
+                          {isUnsupported && <span className="ml-1 opacity-70">!</span>}
+                        </span>
+                      );
+                    })}
+                  </dd>
+                </div>
+              </div>
+            )}
+
+            {fields.headcount && (
+              <div className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <BedDouble size={11} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <dt className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">
+                    Headcount
+                  </dt>
+                  <dd className="text-sm font-bold text-gray-900 leading-tight">
+                    {fields.headcount}
+                  </dd>
+                </div>
+              </div>
+            )}
+
+            {fields.timeline && (
+              <div className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Calendar size={11} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <dt className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">
+                    Timeline
+                  </dt>
+                  <dd className="text-xs font-bold text-gray-900 leading-tight">
+                    {fields.timeline}
+                  </dd>
+                </div>
+              </div>
+            )}
+
+            {fields.notes && (
+              <div className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-md bg-[#0f4c3a]/10 text-[#0f4c3a] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <MessageSquare size={11} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <dt className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">
+                    Notes
+                  </dt>
+                  <dd className="text-[11px] text-gray-700 leading-relaxed whitespace-pre-wrap">
+                    {fields.notes}
+                  </dd>
+                </div>
+              </div>
+            )}
+
+            {fields.unsupported && fields.unsupported.length > 0 && (
+              <div className="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-lg px-2.5 py-1.5 text-[10px] text-amber-900 leading-snug">
+                <Info size={11} className="mt-0.5 flex-shrink-0 text-amber-600" />
+                <span>
+                  Not currently served: <strong>{fields.unsupported.join(', ')}</strong>
+                </span>
+              </div>
+            )}
+          </dl>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -415,7 +488,7 @@ const BriefForm = ({ onContinue, onSkip, onPreview }) => {
     (c) => !SUPPORTED_CITIES.some((sc) => sc.toLowerCase() === c.toLowerCase()),
   );
 
-  // Structured brief data — used for both live preview rendering AND for
+  // Structured brief data - used for both live preview rendering AND for
   // formatting the string that gets attached to the Cal.com booking notes.
   const briefFields = {
     cities: selectedCities,
@@ -425,7 +498,7 @@ const BriefForm = ({ onContinue, onSkip, onPreview }) => {
     notes: notes.trim(),
   };
 
-  // Live preview — emit current fields whenever they change
+  // Live preview - emit current fields whenever they change
   useEffect(() => {
     if (onPreview) onPreview(briefFields);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -459,11 +532,10 @@ const BriefForm = ({ onContinue, onSkip, onPreview }) => {
                 key={city}
                 type="button"
                 onClick={() => toggleCity(city)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all border ${
-                  isActive
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all border ${isActive
                     ? 'border-[#0f4c3a] bg-[#0f4c3a] text-white shadow-sm'
                     : 'border-gray-200 bg-white text-gray-700 hover:border-[#0f4c3a]/40'
-                }`}
+                  }`}
               >
                 {city}
               </button>
@@ -769,7 +841,7 @@ const MeetingSchedule = () => {
                   <p className="text-[11px] text-gray-400 mt-3 leading-snug">
                     Powered by Cal.com.
                     {hasProposal
-                      ? " Your proposal details will be sent to our team with the booking — no need to re-explain on the call."
+                      ? " Your proposal details will be sent to our team with the booking - no need to re-explain on the call."
                       : finalNotes
                         ? ' Your brief is included with the booking so we can prepare.'
                         : " Once you book, you'll get a confirmation email with the meeting link."}
